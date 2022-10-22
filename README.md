@@ -26,3 +26,13 @@
 - [ ] The local net is defined by the netmask, and in our case, it is max. 254 computers/ips that need scanning.
 - [ ] Clients can send messages. The messages are broadcasted to every other client, that is connected
 - [ ] client authentication
+
+## Even further future
+
+### usecase 1
+- the vm can send a request to be shut down by force
+- the host-client receives the message and executes the appropriate powershell command as an administrator
+
+### usecase 2
+- the build hosts messaging systems with which they babble all the time with the users is replaced by this new communication service
+
