@@ -9,12 +9,16 @@
   - [ ] ASP.Net Web Application using websockets
 - [ ] there is an endpoint for sending a message and one to receive messages
 
-- Server.exe is executed at a known location
+- Server.exe is executed at a known location `server.exe --port 8080`
+
 - client.exe 1 connects ( `client.exe --server 192.168.88.15` ) 
 - client.exe 2 connects  ( `client.exe --server 192.168.88.15` ) 
 - client.exe 2 sends a message  ( `client.exe --server 192.168.88.15` ) 
 - client.exe 1 receives the message and displays it on the screen  ( `client.exe --server 192.168.88.15` ) 
 
+- "clients are able to chat with each other"
+- clients generate a guid which serves as their "nickname", it can be a new guid with every app start
+- messages have information about who sent them (which client)
 
 ## Future lookout
 
