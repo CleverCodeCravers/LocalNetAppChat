@@ -1,0 +1,1 @@
+- The server will always try to relay messages directly. So what we are mostly going for is instantanious communication.

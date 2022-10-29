@@ -1,0 +1,3 @@
+- All communication is encrypted
+- A server can have a key.
+	- If the server has a key then clients need to send the key to the server or the server will simply drop the things the client sends.
