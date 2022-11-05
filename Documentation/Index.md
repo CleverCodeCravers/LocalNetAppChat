@@ -3,7 +3,7 @@
 1. LocalNetAppChat is a set of a server and a client application that are here to add the ability for more or less complicated scripting interaction to your network.
 
 ## General Definitions
-- [ ] [[R009 What is a message?]]
+- [ ] [[R009 What is a message]]
 
 ## Functionality
 - [ ] [[R001 Sending and Receiving Log Messages Synchronously]]
