@@ -1,8 +1,6 @@
-﻿using System.Collections.Specialized;
-using System.Net;
-using System.Net.Http.Json;
-using System.Text.Json;
+﻿using System.Net.Http.Json;
 using LocalNetAppChat.Domain;
+
 
 // using (WebClient client = new WebClient())
 // {
