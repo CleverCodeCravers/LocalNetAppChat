@@ -1,6 +1,7 @@
-using System.Collections.Concurrent;
 using System.Text.Json;
 using LocalNetAppChat.Domain;
+
+var list = new SynchronizedCollection<Message>();
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();

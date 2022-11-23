@@ -10,4 +10,10 @@
       <ProjectReference Include="..\LocalNetAppChat.Domain\LocalNetAppChat.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="System.ServiceModel.Primitives">
+        <HintPath>..\..\..\..\..\Users\Entwickler\.nuget\packages\system.servicemodel.primitives\4.10.0\ref\net6.0\System.ServiceModel.Primitives.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
