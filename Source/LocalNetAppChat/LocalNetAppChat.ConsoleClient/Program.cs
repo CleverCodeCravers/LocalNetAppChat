@@ -44,17 +44,24 @@ try
 
     if (parser.GetBoolOption("listener"))
     {
-        using (WebClient client = new WebClient())
+        while (true)
         {
-            while (true)
+            try
             {
-                var result = client.DownloadString("http://localhost:5000/receive");
-                Console.WriteLine(result);
-                Thread.Sleep(1000);
+                using (WebClient client = new WebClient())
+                {
+                    var result = client.DownloadString("http://localhost:5000/receive");
+                    Console.WriteLine(result);
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("Reestablishing connection...");
+            }
+
+            Thread.Sleep(1000);
         }
     }
-    
 } catch (Exception ex) {
     Console.WriteLine("");
     Console.WriteLine("Exception: " + ex.Message);
