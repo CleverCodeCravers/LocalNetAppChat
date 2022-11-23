@@ -1,4 +1,4 @@
-﻿namespace LocalNetAppChat.ConsoleClient.CommandLineArguments;
+﻿namespace CommandLineArguments;
 
 public interface ICommandLineOption
 {

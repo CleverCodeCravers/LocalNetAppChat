@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalNetAppChat.Server", "L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalNetAppChat.ConsoleClient", "LocalNetAppChat.ConsoleClient\LocalNetAppChat.ConsoleClient.csproj", "{5420C9F0-34E4-4316-BAF8-CEB3509AAA8B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineArguments", "CommandLineArguments\CommandLineArguments.csproj", "{C99ABCB1-0858-4136-9B6E-32A1FDA87449}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{5420C9F0-34E4-4316-BAF8-CEB3509AAA8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5420C9F0-34E4-4316-BAF8-CEB3509AAA8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5420C9F0-34E4-4316-BAF8-CEB3509AAA8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C99ABCB1-0858-4136-9B6E-32A1FDA87449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C99ABCB1-0858-4136-9B6E-32A1FDA87449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C99ABCB1-0858-4136-9B6E-32A1FDA87449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C99ABCB1-0858-4136-9B6E-32A1FDA87449}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
