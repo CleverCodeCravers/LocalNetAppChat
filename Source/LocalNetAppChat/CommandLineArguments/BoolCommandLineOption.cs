@@ -1,6 +1,6 @@
 ﻿namespace CommandLineArguments;
 
-public class BoolCommandLineOption 
+public class BoolCommandLineOption : IBoolCommandLineOption
 {
     private bool _value = false;
     private bool _hasValue = false;

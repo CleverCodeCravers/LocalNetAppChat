@@ -1,6 +1,6 @@
 ﻿namespace CommandLineArguments;
 
-public abstract class WithValueCommandLineOption<T>
+public abstract class WithValueCommandLineOption<T> : IWithValueCommandLineOption<T>
 {
     public string Name { get; }
 
