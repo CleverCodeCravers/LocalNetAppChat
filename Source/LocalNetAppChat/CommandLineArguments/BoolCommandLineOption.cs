@@ -34,7 +34,6 @@ public class BoolCommandLineOption : IBoolCommandLineOption
         var arg = args[position].ToLower().Trim();
 
         if (myName == arg) {
-            Console.WriteLine(" - detected " + myName + " parameter");
             _hasValue = true;
             _value = true;
             position += 1;

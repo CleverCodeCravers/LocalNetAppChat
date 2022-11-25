@@ -1,30 +1,24 @@
 using System.Text.Json;
 using LocalNetAppChat.Domain;
 
-var list = new SynchronizedCollection<Message>();
+var messageList = new MessageList();
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
-
-var messages = new List<Message>();
-messages.Add(new Message(
-    Guid.NewGuid().ToString(),
-    "Joe",
-    "This is some text",
-    Array.Empty<string>(),
-    true,
-    "Message"));
     
-app.MapGet("/", () => "Hello World!");
-app.MapGet("/receive", () =>
+app.MapGet("/", () => "LocalNetAppChat Server!");
+
+app.MapGet("/receive", (string clientName) =>
 {
-    Console.WriteLine("Receiving!");
+    var messages = messageList.GetMessagesForClient(clientName);
+    Console.WriteLine($"- client {clientName} has requested messages... sending {messages.Length} messages");
     return JsonSerializer.Serialize(messages);
 });
 
 app.MapPost("/send", (Message message) =>
 {
-    Console.WriteLine(message);
+    Console.WriteLine($"- client {message.Name} has sent us a new message...");
+    messageList.Add(message);
 });
 
 app.Run();

@@ -33,7 +33,6 @@ public abstract class WithValueCommandLineOption<T> : IWithValueCommandLineOptio
         var arg = args[position].ToLower().Trim();
 
         if (myName == arg) {
-            Console.WriteLine(" - detected " + myName + " parameter");
             if (args.Length <= position +1) {
                 throw new Exception("Value missing for " + myName);
             }
