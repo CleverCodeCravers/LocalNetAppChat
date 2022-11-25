@@ -16,7 +16,7 @@ public class MessageList
     {
         if (!_clientStates.ContainsKey(clientId))
         {
-            _clientStates.AddOrUpdate(clientId, 0, (_,_) => 0);
+            _clientStates.AddOrUpdate(clientId, -1, (_,_) => -1);
         }
 
         var result = new List<Message>();
