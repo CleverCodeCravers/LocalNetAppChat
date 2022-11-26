@@ -4,7 +4,7 @@ on:
 env:
   DOTNET_VERSION: "7.0.x" # The .NET SDK version to use
   SOLUTION_DIR: "LocalNetAppChat"
-  PROJECT: "./LocalNetAppChat/LocalNetAppChat.Server/LocalNetAppChat.Server.csproj"
+  PROJECT: "./LocalNetAppChat.Server/LocalNetAppChat.Server.csproj"
   RELEASEPREFIX: "LocalNetAppChat"
 
 jobs:
