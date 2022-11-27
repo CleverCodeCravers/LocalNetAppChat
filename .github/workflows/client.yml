@@ -4,7 +4,7 @@ on:
 env:
   DOTNET_VERSION: "7.0.x" # The .NET SDK version to use
   SOLUTION_DIR: "LocalNetAppChat"
-  PROJECT: "./LocalNetAppChat.Server/LocalNetAppChat.Server.csproj"
+  PROJECT: "./LocalNetAppChat.ConsoleClient/LocalNetAppChat.ConsoleClient.csproj"
   RELEASEPREFIX: "LocalNetAppChat"
 
 jobs:
@@ -17,15 +17,15 @@ jobs:
         include:
         - os: macos-latest
           RUNTIMEID: osx-x64
-          OUTPUTDIR: lnac-osx-x64
+          OUTPUTDIR: lnac-client-osx-x64
 
         - os: ubuntu-latest
           RUNTIMEID: linux-x64
-          OUTPUTDIR: lnac-linux-x64
+          OUTPUTDIR: lnac-client-linux-x64
 
         - os: windows-latest
           RUNTIMEID: win-x64
-          OUTPUTDIR: lnac-win-x64
+          OUTPUTDIR: lnac-client-win-x64
 
     steps:
       - uses: actions/checkout@v2
