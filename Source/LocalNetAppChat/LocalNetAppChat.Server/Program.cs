@@ -1,9 +1,28 @@
 using System.Text.Json;
+using CommandLineArguments;
 using LocalNetAppChat.Domain;
+
+var parser = new Parser(
+    new ICommandLineOption[] {
+        new StringCommandLineOption("--listenOn", "localhost"),
+        new Int32CommandLineOption("--port", 5000),
+        new BoolCommandLineOption("--https")
+    });
+
+if (!parser.TryParse(args, true)) {
+    Console.WriteLine("Unfortunately there have been problems with the command line arguments.");
+    Console.WriteLine("");
+    return;
+}
 
 var messageList = new MessageList();
 
-var builder = WebApplication.CreateBuilder(args);
+var hostingUrl = HostingUrlGenerator.GenerateUrl(
+    parser.GetOptionWithValue<string>("--listenOn") ?? "",
+    parser.GetOptionWithValue<int>("--port"), 
+    parser.GetBoolOption("--https"));
+
+var builder = WebApplication.CreateBuilder(new[] { "--urls", hostingUrl });
 var app = builder.Build();
     
 app.MapGet("/", () => "LocalNetAppChat Server!");

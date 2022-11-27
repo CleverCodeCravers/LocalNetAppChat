@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\CommandLineArguments\CommandLineArguments.csproj" />
       <ProjectReference Include="..\LocalNetAppChat.Domain\LocalNetAppChat.Domain.csproj" />
     </ItemGroup>
 
