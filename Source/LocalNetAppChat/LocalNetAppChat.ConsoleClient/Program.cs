@@ -62,12 +62,13 @@ try
                 using (WebClient client = new WebClient())
                 {
                     var result = client.DownloadString($"{hostingUrl}/receive?clientName={clientName}");
-                    var messages = JsonSerializer.Deserialize<Message[]>(result);
-                    if (messages.Length > 0)
+                    var receivedMessages = JsonSerializer.Deserialize<ReceivedMessage[]>(result);
+                    if (receivedMessages.Length > 0)
                     {
-                        foreach (var message in messages)
+                        foreach (var receivedMessage in receivedMessages)
                         {
-                            Console.WriteLine($"{message.Name} : {message.Text}");                            
+                            var text = MessageForDisplayFormatter.GetTextFor(receivedMessage);
+                            Console.WriteLine(text);                            
                         }
                     }
                 }
