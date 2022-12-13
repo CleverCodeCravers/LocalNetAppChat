@@ -12,12 +12,14 @@ public class MessageListTests
         messageList.Add(GetTestMessage());
     }
     
-    private static Message GetTestMessage()
+    private static ReceivedMessage GetTestMessage()
     {
-        return new Message(Guid.NewGuid().ToString(), "NaseifBigBoss", "HeyThere",
-            Array.Empty<string>(),
-            true,
-            "Message");
+        return new ReceivedMessage(
+                DateTime.Now,
+                new Message(Guid.NewGuid().ToString(), "NaseifBigBoss", "HeyThere",
+                    Array.Empty<string>(),
+                    true,
+                    "Message"));
     }
 
     [Test]

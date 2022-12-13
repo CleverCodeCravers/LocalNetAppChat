@@ -37,7 +37,12 @@ app.MapGet("/receive", (string clientName) =>
 app.MapPost("/send", (Message message) =>
 {
     Console.WriteLine($"- client {message.Name} has sent us a new message...");
-    messageList.Add(message);
+    messageList.Add(
+        new ReceivedMessage(
+            DateTime.Now,
+            message
+            )
+        );
 });
 
 app.Run();

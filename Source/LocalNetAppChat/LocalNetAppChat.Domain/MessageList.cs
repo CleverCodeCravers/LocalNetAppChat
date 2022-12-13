@@ -4,22 +4,22 @@ namespace LocalNetAppChat.Domain;
 
 public class MessageList
 {
-    private readonly SynchronizedCollection<Message> _messages = new();
+    private readonly SynchronizedCollection<ReceivedMessage> _messages = new();
     private readonly ConcurrentDictionary<string, int> _clientStates = new();
 
-    public void Add(Message message)
+    public void Add(ReceivedMessage message)
     {
         _messages.Add(message);
     }
 
-    public Message[] GetMessagesForClient(string clientId)
+    public ReceivedMessage[] GetMessagesForClient(string clientId)
     {
         if (!_clientStates.ContainsKey(clientId))
         {
             _clientStates.AddOrUpdate(clientId, -1, (_,_) => -1);
         }
 
-        var result = new List<Message>();
+        var result = new List<ReceivedMessage>();
         
         if (_clientStates.TryGetValue(clientId, out int lastSubmittedIndex))
         {
