@@ -14,7 +14,8 @@ var parser = new Parser(
         new BoolCommandLineOption("--https"),
 
         new StringCommandLineOption("--text"),
-        new StringCommandLineOption("--clientName", Environment.MachineName)
+        new StringCommandLineOption("--clientName", Environment.MachineName),
+        new StringCommandLineOption("--key", "1234")
     });
 
 if (!parser.TryParse(args, true) || args.Length == 0) {
@@ -23,6 +24,7 @@ if (!parser.TryParse(args, true) || args.Length == 0) {
     return;
 }
 
+var serverKey = parser.GetOptionWithValue<string>("--key");
 var clientName = parser.GetOptionWithValue<string>("--clientName");
 
 var hostingUrl = HostingUrlGenerator.GenerateUrl(
@@ -45,9 +47,11 @@ try
                 "Message"
             );
 
-            var result = await client.PostAsJsonAsync($"{hostingUrl}/send", message);
-    
-            Console.WriteLine(result);
+            var result = await client.PostAsJsonAsync($"{hostingUrl}/send?key={WebUtility.UrlEncode(serverKey)}", 
+                message);
+            var resultText = await result.Content.ReadAsStringAsync();
+            
+            Console.WriteLine(resultText);
         }
 
         return;
@@ -61,7 +65,7 @@ try
             {
                 using (WebClient client = new WebClient())
                 {
-                    var result = client.DownloadString($"{hostingUrl}/receive?clientName={clientName}");
+                    var result = client.DownloadString($"{hostingUrl}/receive?clientName={WebUtility.UrlEncode(clientName)}&key={WebUtility.UrlEncode(serverKey)}");
                     var receivedMessages = JsonSerializer.Deserialize<ReceivedMessage[]>(result);
                     if (receivedMessages.Length > 0)
                     {

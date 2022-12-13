@@ -1,12 +1,14 @@
 using System.Text.Json;
 using CommandLineArguments;
 using LocalNetAppChat.Domain;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 var parser = new Parser(
     new ICommandLineOption[] {
         new StringCommandLineOption("--listenOn", "localhost"),
         new Int32CommandLineOption("--port", 5000),
-        new BoolCommandLineOption("--https")
+        new BoolCommandLineOption("--https"),
+        new StringCommandLineOption("--key", "1234")
     });
 
 if (!parser.TryParse(args, true)) {
@@ -14,6 +16,8 @@ if (!parser.TryParse(args, true)) {
     Console.WriteLine("");
     return;
 }
+
+var serverKey = parser.TryGetOptionWithValue<string>("--key");
 
 var messageList = new MessageList();
 
@@ -27,15 +31,25 @@ var app = builder.Build();
     
 app.MapGet("/", () => "LocalNetAppChat Server!");
 
-app.MapGet("/receive", (string clientName) =>
+app.MapGet("/receive", (string key, string clientName) =>
 {
+    if (key != serverKey)
+    {
+        return "Access Denied";
+    }
+    
     var messages = messageList.GetMessagesForClient(clientName);
     Console.WriteLine($"- client {clientName} has requested messages... sending {messages.Length} messages");
     return JsonSerializer.Serialize(messages);
 });
 
-app.MapPost("/send", (Message message) =>
+app.MapPost("/send", (string key, Message message) =>
 {
+    if (key != serverKey)
+    {
+        return "Access Denied";
+    }
+    
     Console.WriteLine($"- client {message.Name} has sent us a new message...");
     messageList.Add(
         new ReceivedMessage(
@@ -43,6 +57,7 @@ app.MapPost("/send", (Message message) =>
             message
             )
         );
+    return "Ok";
 });
 
 app.Run();
