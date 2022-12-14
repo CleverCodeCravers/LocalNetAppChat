@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using LocalNetAppChat.Domain.Clientside;
+using LocalNetAppChat.Domain.Clientside.OperatingModes;
 using LocalNetAppChat.Domain.Shared;
 
 var parser = new ClientSideCommandLineParser();
@@ -17,65 +18,22 @@ if (!commandLineParametersResult.IsSuccess)
 
 var parameters = commandLineParametersResult.Value;
 
-var hostingUrl = HostingUrlGenerator.GenerateUrl(parameters.Server, parameters.Port, parameters.Https);
-
 try
 {
-    if (parameters.Message) 
-    {
-        using (HttpClient client = new HttpClient())
-        {
-            Message message = new Message(
-                Guid.NewGuid().ToString(),
-                parameters.ClientName,
-                parameters.Text,
-                Array.Empty<string>(),
-                true,
-                "Message"
-            );
+    
+    var operatingModeCollection = new OperatingModeCollection();
+    operatingModeCollection.Add(new SendMessageOperatingMode());
+    operatingModeCollection.Add(new ListenerOperatingMode());
 
-            var result = 
-                await client.PostAsJsonAsync($"{hostingUrl}/send?key={WebUtility.UrlEncode(parameters.Key)}", message);
-            var resultText = await result.Content.ReadAsStringAsync();
-            
-            Console.WriteLine(resultText);
-        }
-
-        return;
-    }
-
-    if (parameters.Listener)
-    {
-        while (true)
-        {
-            try
-            {
-                using (WebClient client = new WebClient())
-                {
-                    var result = client.DownloadString($"{hostingUrl}/receive?clientName={WebUtility.UrlEncode(parameters.ClientName)}&key={WebUtility.UrlEncode(parameters.Key)}");
-                    var receivedMessages = JsonSerializer.Deserialize<ReceivedMessage[]>(result);
-                    if (receivedMessages?.Length > 0)
-                    {
-                        foreach (var receivedMessage in receivedMessages)
-                        {
-                            var text = MessageForDisplayFormatter.GetTextFor(receivedMessage);
-                            Console.WriteLine(text);                            
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Reestablishing connection...");
-            }
-
-            Thread.Sleep(1000);
-        }
-    }
+    var operatingMode = operatingModeCollection.GetResponsibleOperatingMode(parameters);
+    operatingMode?.Run(parameters);
+    
 } catch (Exception ex) {
+    
     Console.WriteLine("");
     Console.WriteLine("Exception: " + ex.Message);
     Console.WriteLine("");
+    
 }
 
 
