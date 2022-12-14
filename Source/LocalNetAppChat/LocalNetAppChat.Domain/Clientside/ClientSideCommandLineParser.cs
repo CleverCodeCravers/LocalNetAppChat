@@ -31,11 +31,11 @@ public class ClientSideCommandLineParser
         
         return Result<ClientSideCommandLineParameters>.Success(
             new ClientSideCommandLineParameters(
-                parser.GetOptionWithValue<bool>("message"),
-                parser.GetOptionWithValue<bool>("listener"),
+                parser.GetBoolOption("message"),
+                parser.GetBoolOption("listener"),
                 parser.GetOptionWithValue<string>("--server") ?? "localhost",
                 parser.GetOptionWithValue<int>("--port"),
-                parser.GetOptionWithValue<bool>("--https"),
+                parser.GetBoolOption("--https"),
                 parser.GetOptionWithValue<string>("--text") ?? "",
                 parser.GetOptionWithValue<string>("--clientName") ?? Environment.MachineName,
                 parser.GetOptionWithValue<string>("--key")?? "1234"
