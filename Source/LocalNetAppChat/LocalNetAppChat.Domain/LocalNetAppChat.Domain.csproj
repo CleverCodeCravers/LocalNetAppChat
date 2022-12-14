@@ -11,8 +11,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Clientside" />
       <Folder Include="Serverside" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CommandLineArguments\CommandLineArguments.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,55 +1,41 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
-using CommandLineArguments;
-using LocalNetAppChat.Domain;
+using LocalNetAppChat.Domain.Clientside;
 using LocalNetAppChat.Domain.Shared;
 
-var parser = new Parser(
-    new ICommandLineOption[] {
-        new BoolCommandLineOption("message"),
-        new BoolCommandLineOption("listener"),
+var parser = new ClientSideCommandLineParser();
 
-        new StringCommandLineOption("--server", "localhost"),
-        new Int32CommandLineOption("--port", 5000),
-        new BoolCommandLineOption("--https"),
+var commandLineParametersResult = parser.Parse(args);
 
-        new StringCommandLineOption("--text"),
-        new StringCommandLineOption("--clientName", Environment.MachineName),
-        new StringCommandLineOption("--key", "1234")
-    });
-
-if (!parser.TryParse(args, true) || args.Length == 0) {
+if (!commandLineParametersResult.IsSuccess)
+{
     Console.WriteLine("Unfortunately there have been problems with the command line arguments.");
     Console.WriteLine("");
     return;
 }
 
-var serverKey = parser.GetOptionWithValue<string>("--key");
-var clientName = parser.GetOptionWithValue<string>("--clientName");
+var parameters = commandLineParametersResult.Value;
 
-var hostingUrl = HostingUrlGenerator.GenerateUrl(
-    parser.GetOptionWithValue<string>("--server") ?? "",
-    parser.GetOptionWithValue<int>("--port"),
-    parser.GetBoolOption("--https")
-    );
+var hostingUrl = HostingUrlGenerator.GenerateUrl(parameters.Server, parameters.Port, parameters.Https);
 
 try
 {
-    if (parser.GetBoolOption("message")) {
+    if (parameters.Message) 
+    {
         using (HttpClient client = new HttpClient())
         {
             Message message = new Message(
                 Guid.NewGuid().ToString(),
-                clientName,
-                parser.GetOptionWithValue<string>("--text") ?? "",
+                parameters.ClientName,
+                parameters.Text,
                 Array.Empty<string>(),
                 true,
                 "Message"
             );
 
-            var result = await client.PostAsJsonAsync($"{hostingUrl}/send?key={WebUtility.UrlEncode(serverKey)}", 
-                message);
+            var result = 
+                await client.PostAsJsonAsync($"{hostingUrl}/send?key={WebUtility.UrlEncode(parameters.Key)}", message);
             var resultText = await result.Content.ReadAsStringAsync();
             
             Console.WriteLine(resultText);
@@ -58,7 +44,7 @@ try
         return;
     }
 
-    if (parser.GetBoolOption("listener"))
+    if (parameters.Listener)
     {
         while (true)
         {
@@ -66,9 +52,9 @@ try
             {
                 using (WebClient client = new WebClient())
                 {
-                    var result = client.DownloadString($"{hostingUrl}/receive?clientName={WebUtility.UrlEncode(clientName)}&key={WebUtility.UrlEncode(serverKey)}");
+                    var result = client.DownloadString($"{hostingUrl}/receive?clientName={WebUtility.UrlEncode(parameters.ClientName)}&key={WebUtility.UrlEncode(parameters.Key)}");
                     var receivedMessages = JsonSerializer.Deserialize<ReceivedMessage[]>(result);
-                    if (receivedMessages.Length > 0)
+                    if (receivedMessages?.Length > 0)
                     {
                         foreach (var receivedMessage in receivedMessages)
                         {
@@ -78,7 +64,7 @@ try
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("Reestablishing connection...");
             }
