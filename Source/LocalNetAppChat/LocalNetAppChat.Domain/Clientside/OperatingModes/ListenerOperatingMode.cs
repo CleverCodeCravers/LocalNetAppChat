@@ -11,14 +11,14 @@ public class ListenerOperatingMode : IOperatingMode
         return parameters.Listener;
     }
 
-    public async void Run(ClientSideCommandLineParameters parameters)
+    public Task Run(ClientSideCommandLineParameters parameters)
     {
+        var hostingUrl = HostingUrlGenerator.GenerateUrl(parameters.Server, parameters.Port, parameters.Https);
+        Console.WriteLine($"Listening to server {hostingUrl}...");
         while (true)
         {
             try
             {
-                var hostingUrl = HostingUrlGenerator.GenerateUrl(parameters.Server, parameters.Port, parameters.Https);
-                
                 using (WebClient client = new WebClient())
                 {
                     var result = client.DownloadString($"{hostingUrl}/receive?clientName={WebUtility.UrlEncode(parameters.ClientName)}&key={WebUtility.UrlEncode(parameters.Key)}");

@@ -11,12 +11,13 @@ public class SendMessageOperatingMode : IOperatingMode
         return parameters.Message;
     }
 
-    public async void Run(ClientSideCommandLineParameters parameters)
+    public async Task Run(ClientSideCommandLineParameters parameters)
     {
+        var hostingUrl = HostingUrlGenerator.GenerateUrl(parameters.Server, parameters.Port, parameters.Https);
+        Console.WriteLine($"Sending message to {hostingUrl}...");
+        
         using (HttpClient client = new HttpClient())
         {
-            var hostingUrl = HostingUrlGenerator.GenerateUrl(parameters.Server, parameters.Port, parameters.Https);
-
             Message message = new Message(
                 Guid.NewGuid().ToString(),
                 parameters.ClientName,

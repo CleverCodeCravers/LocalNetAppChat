@@ -4,5 +4,5 @@ public interface IOperatingMode
 {
     bool IsResponsibleFor(ClientSideCommandLineParameters parameters);
 
-    void Run(ClientSideCommandLineParameters parameters);
+    Task Run(ClientSideCommandLineParameters parameters);
 }

@@ -40,7 +40,7 @@ app.MapGet("/receive", (string key, string clientName) =>
     }
     
     var messages = messageList.GetMessagesForClient(clientName);
-    Console.WriteLine($"- client {clientName} has requested messages... sending {messages.Length} messages");
+    Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] client {clientName} has requested messages... sending {messages.Length} messages");
     return JsonSerializer.Serialize(messages);
 });
 
@@ -50,8 +50,8 @@ app.MapPost("/send", (string key, Message message) =>
     {
         return "Access Denied";
     }
-    
-    Console.WriteLine($"- client {message.Name} has sent us a new message...");
+    // format a timestamp "YYYY-MM-DD HH:MM:SS"
+    Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] client {message.Name} has sent us a new message...");
     messageList.Add(
         new ReceivedMessage(
             DateTime.Now,
