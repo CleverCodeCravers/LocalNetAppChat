@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace LocalNetAppChat.Domain;
+namespace LocalNetAppChat.Domain.Shared;
 
 public class MessageList
 {

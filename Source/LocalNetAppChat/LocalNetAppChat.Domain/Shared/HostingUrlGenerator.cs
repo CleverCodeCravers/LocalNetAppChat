@@ -1,4 +1,4 @@
-﻿namespace LocalNetAppChat.Domain;
+﻿namespace LocalNetAppChat.Domain.Shared;
 
 public static class HostingUrlGenerator
 {

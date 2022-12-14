@@ -10,4 +10,9 @@
       <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Clientside" />
+      <Folder Include="Serverside" />
+    </ItemGroup>
+
 </Project>

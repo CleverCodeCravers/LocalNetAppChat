@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using CommandLineArguments;
 using LocalNetAppChat.Domain;
+using LocalNetAppChat.Domain.Shared;
 
 var parser = new Parser(
     new ICommandLineOption[] {

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using LocalNetAppChat.Domain.Shared;
+using NUnit.Framework;
 
 namespace LocalNetAppChat.Domain.Tests;
 
