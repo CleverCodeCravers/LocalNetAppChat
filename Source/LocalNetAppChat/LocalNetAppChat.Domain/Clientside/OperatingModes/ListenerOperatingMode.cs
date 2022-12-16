@@ -19,6 +19,7 @@ public class ListenerOperatingMode : IOperatingMode
         {
             try
             {
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
                 using (WebClient client = new WebClient())
                 {
                     var result = client.DownloadString($"{hostingUrl}/receive?clientName={WebUtility.UrlEncode(parameters.ClientName)}&key={WebUtility.UrlEncode(parameters.Key)}");
@@ -33,9 +34,9 @@ public class ListenerOperatingMode : IOperatingMode
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Console.WriteLine("Reestablishing connection...");
+                Console.WriteLine(e.Message + ": Reestablishing connection...");
             }
 
             Thread.Sleep(1000);

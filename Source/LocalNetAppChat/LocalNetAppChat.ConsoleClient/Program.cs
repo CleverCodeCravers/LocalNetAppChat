@@ -27,7 +27,14 @@ namespace LocalNetAppChat.ConsoleClient
                 operatingModeCollection.Add(new ListenerOperatingMode());
 
                 var operatingMode = operatingModeCollection.GetResponsibleOperatingMode(parameters);
-                await operatingMode?.Run(parameters);
+                if (operatingMode == null)
+                {
+                    Console.WriteLine("No mode selected");
+                }
+                else
+                {
+                    await operatingMode?.Run(parameters);                    
+                }
             }
             catch (Exception ex)
             {

@@ -1,8 +1,6 @@
 using System.Text.Json;
 using CommandLineArguments;
-using LocalNetAppChat.Domain;
 using LocalNetAppChat.Domain.Shared;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 var parser = new Parser(
     new ICommandLineOption[] {

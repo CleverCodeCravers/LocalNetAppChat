@@ -16,7 +16,13 @@ public class SendMessageOperatingMode : IOperatingMode
         var hostingUrl = HostingUrlGenerator.GenerateUrl(parameters.Server, parameters.Port, parameters.Https);
         Console.WriteLine($"Sending message to {hostingUrl}...");
         
-        using (HttpClient client = new HttpClient())
+        HttpClientHandler handler = new HttpClientHandler();
+        if (parameters.IgnoreSslErrors)
+        {
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;            
+        }
+        
+        using (HttpClient client = new HttpClient(handler))
         {
             Message message = new Message(
                 Guid.NewGuid().ToString(),

@@ -8,4 +8,5 @@ public record ClientSideCommandLineParameters(
     bool Https,
     string Text,
     string ClientName,
-    string Key);
+    string Key,
+    bool IgnoreSslErrors);

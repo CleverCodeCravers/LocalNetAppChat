@@ -38,7 +38,8 @@ public class ClientSideCommandLineParser
                 parser.GetBoolOption("--https"),
                 parser.GetOptionWithValue<string>("--text") ?? "",
                 parser.GetOptionWithValue<string>("--clientName") ?? Environment.MachineName,
-                parser.GetOptionWithValue<string>("--key")?? "1234"
-                ));
+                parser.GetOptionWithValue<string>("--key")?? "1234",
+                parser.GetBoolOption("--ignoresslerrors")
+            ));
     }
 }
