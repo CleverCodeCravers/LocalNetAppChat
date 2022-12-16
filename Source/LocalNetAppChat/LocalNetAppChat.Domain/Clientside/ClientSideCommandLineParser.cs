@@ -22,7 +22,9 @@ public class ClientSideCommandLineParser
 
                 new StringCommandLineOption("--text"),
                 new StringCommandLineOption("--clientName", Environment.MachineName),
-                new StringCommandLineOption("--key", "1234")
+                new StringCommandLineOption("--key", "1234"),
+                
+                new BoolCommandLineOption("--ignoresslerrors")
             });
         
         if (!parser.TryParse(args, true) || args.Length == 0) {
