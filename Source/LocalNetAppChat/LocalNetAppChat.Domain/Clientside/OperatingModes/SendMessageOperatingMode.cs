@@ -13,7 +13,6 @@ public class SendMessageOperatingMode : IOperatingMode
 
     public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
     {
-        output.WriteLine($"Sending message to {lnacServer}...");
         await lnacServer.SendMessage(parameters.Text);
     }
 }

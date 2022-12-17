@@ -1,8 +1,4 @@
-using System.Net;
-using System.ServiceModel.Channels;
-using System.Text.Json;
 using LocalNetAppChat.Domain.Clientside.ServerApis;
-using LocalNetAppChat.Domain.Shared;
 using LocalNetAppChat.Domain.Shared.Inputs;
 using LocalNetAppChat.Domain.Shared.Outputs;
 
@@ -30,7 +26,6 @@ public class ChatOperatingMode : IOperatingMode
             if (input.IsInputWaiting())
             {
                 var message = input.GetInput();
-                output.WriteLine($"Sending message... {message}");
                 await lnacServer.SendMessage(message);
             }
 

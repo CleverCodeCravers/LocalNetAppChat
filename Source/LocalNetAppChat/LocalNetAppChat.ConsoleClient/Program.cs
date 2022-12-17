@@ -6,7 +6,7 @@ using LocalNetAppChat.Domain.Shared.Outputs;
 
 namespace LocalNetAppChat.ConsoleClient
 {
-    public class Program
+    public static class Program
     {
         public static async Task Main(string[] args)
         {
