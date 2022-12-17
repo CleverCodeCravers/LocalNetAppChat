@@ -1,4 +1,5 @@
 using System.Net;
+using System.ServiceModel.Channels;
 using System.Text.Json;
 using LocalNetAppChat.Domain.Clientside.ServerApis;
 using LocalNetAppChat.Domain.Shared;
@@ -7,16 +8,16 @@ using LocalNetAppChat.Domain.Shared.Outputs;
 
 namespace LocalNetAppChat.Domain.Clientside.OperatingModes;
 
-public class ListenerOperatingMode : IOperatingMode
+public class ChatOperatingMode : IOperatingMode
 {
     public bool IsResponsibleFor(ClientSideCommandLineParameters parameters)
     {
-        return parameters.Listener;
+        return parameters.Chat;
     }
 
     public Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
     {
-        output.WriteLine($"Listening to server {lnacServer}...");
+        output.WriteLine($"Connecting to server {lnacServer}...");
         while (true)
         {
             try
@@ -26,6 +27,12 @@ public class ListenerOperatingMode : IOperatingMode
                 foreach (var receivedMessage in receivedMessages)
                 {
                     output.WriteLine(receivedMessage);
+                }
+                
+                if (input.IsInputWaiting())
+                {
+                    var message = input.GetInput();
+                    lnacServer.SendMessage(message);
                 }
             }
             catch (Exception e)

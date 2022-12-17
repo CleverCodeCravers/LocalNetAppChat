@@ -1,6 +1,7 @@
 ﻿using LocalNetAppChat.Domain.Clientside;
 using LocalNetAppChat.Domain.Clientside.OperatingModes;
 using LocalNetAppChat.Domain.Clientside.ServerApis;
+using LocalNetAppChat.Domain.Shared.Inputs;
 using LocalNetAppChat.Domain.Shared.Outputs;
 
 namespace LocalNetAppChat.ConsoleClient
@@ -10,6 +11,7 @@ namespace LocalNetAppChat.ConsoleClient
         public static async Task Main(string[] args)
         {
             IOutput output = new ConsoleOutput();
+            IInput input = new ConsoleInput(); 
             
             var parser = new ClientSideCommandLineParser();
 
@@ -39,7 +41,7 @@ namespace LocalNetAppChat.ConsoleClient
                 }
                 else
                 {
-                    await operatingMode?.Run(parameters, output, lnacServer)!;                    
+                    await operatingMode?.Run(parameters, output, lnacServer, input)!;                    
                 }
             }
             catch (Exception ex)

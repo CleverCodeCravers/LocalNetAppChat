@@ -15,6 +15,7 @@ public class ClientSideCommandLineParser
             new ICommandLineOption[] {
                 new BoolCommandLineOption("message"),
                 new BoolCommandLineOption("listener"),
+                new BoolCommandLineOption("chat"),
 
                 new StringCommandLineOption("--server", "localhost"),
                 new Int32CommandLineOption("--port", 5000),
@@ -35,6 +36,8 @@ public class ClientSideCommandLineParser
             new ClientSideCommandLineParameters(
                 parser.GetBoolOption("message"),
                 parser.GetBoolOption("listener"),
+                parser.GetBoolOption("chat"),
+                
                 parser.GetOptionWithValue<string>("--server") ?? "localhost",
                 parser.GetOptionWithValue<int>("--port"),
                 parser.GetBoolOption("--https"),
