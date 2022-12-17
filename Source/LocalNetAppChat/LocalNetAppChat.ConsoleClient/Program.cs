@@ -28,26 +28,19 @@ namespace LocalNetAppChat.ConsoleClient
                 parameters.Server, parameters.Port, parameters.Https, parameters.IgnoreSslErrors,
                 parameters.ClientName, parameters.Key);
 
-            try
-            {
-                var operatingModeCollection = new OperatingModeCollection();
-                operatingModeCollection.Add(new SendMessageOperatingMode());
-                operatingModeCollection.Add(new ListenerOperatingMode());
-                operatingModeCollection.Add(new ChatOperatingMode());
+            var operatingModeCollection = new OperatingModeCollection();
+            operatingModeCollection.Add(new SendMessageOperatingMode());
+            operatingModeCollection.Add(new ListenerOperatingMode());
+            operatingModeCollection.Add(new ChatOperatingMode());
 
-                var operatingMode = operatingModeCollection.GetResponsibleOperatingMode(parameters);
-                if (operatingMode == null)
-                {
-                    output.WriteLine("No mode selected");
-                }
-                else
-                {
-                    await operatingMode?.Run(parameters, output, lnacServer, input)!;                    
-                }
-            }
-            catch (Exception ex)
+            var operatingMode = operatingModeCollection.GetResponsibleOperatingMode(parameters);
+            if (operatingMode == null)
             {
-                output.WriteLine("Exception: " + ex.Message);
+                output.WriteLine("No mode selected");
+            }
+            else
+            {
+                await operatingMode?.Run(parameters, output, lnacServer, input)!;                    
             }
         }
     }

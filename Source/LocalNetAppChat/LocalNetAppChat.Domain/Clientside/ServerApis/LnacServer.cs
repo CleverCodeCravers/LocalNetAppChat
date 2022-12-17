@@ -51,7 +51,7 @@ public class LnacServer : ILnacServer
         HttpClientHandler handler = new HttpClientHandler();
         if (_ignoreSslErrors)
         {
-            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;            
+            handler.ServerCertificateCustomValidationCallback = (reqMessage, cert, chain, errors) => true;            
         }
         
         using (HttpClient client = new HttpClient(handler))

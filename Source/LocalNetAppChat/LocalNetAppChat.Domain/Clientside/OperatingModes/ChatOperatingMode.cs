@@ -20,24 +20,18 @@ public class ChatOperatingMode : IOperatingMode
         output.WriteLine($"Connecting to server {lnacServer}...");
         while (true)
         {
-            try
+            var receivedMessages = lnacServer.GetMessages();
+            
+            foreach (var receivedMessage in receivedMessages)
             {
-                var receivedMessages = lnacServer.GetMessages();
-                
-                foreach (var receivedMessage in receivedMessages)
-                {
-                    output.WriteLine(receivedMessage);
-                }
-                
-                if (input.IsInputWaiting())
-                {
-                    var message = input.GetInput();
-                    await lnacServer.SendMessage(message);
-                }
+                output.WriteLine(receivedMessage);
             }
-            catch (Exception e)
+            
+            if (input.IsInputWaiting())
             {
-                output.WriteLine(e.Message + ": Retry in 1s...");
+                var message = input.GetInput();
+                output.WriteLine($"Sending message... {message}");
+                await lnacServer.SendMessage(message);
             }
 
             Thread.Sleep(1000);

@@ -4,7 +4,7 @@ public class ConsoleOutput : IOutput
 {
     public void WriteLine(string text)
     {
-        Console.WriteLine($"- [{DateTime.Now:yyyyy-MM-dd HH:mm:ss}] {text}");
+        Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {text}");
     }
 
     public void WriteLine(ReceivedMessage receivedMessage)
