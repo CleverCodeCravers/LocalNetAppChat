@@ -42,7 +42,7 @@ app.MapGet("/receive", (string key, string clientName) =>
     return JsonSerializer.Serialize(messages);
 });
 
-app.MapPost("/send", (string key, Message message) =>
+app.MapPost("/send", (string key, LnacMessage message) =>
 {
     if (key != serverKey)
     {

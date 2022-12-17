@@ -17,7 +17,7 @@ public class MessageListTests
     {
         return new ReceivedMessage(
                 DateTime.Now,
-                new Message(Guid.NewGuid().ToString(), "NaseifBigBoss", "HeyThere",
+                new LnacMessage(Guid.NewGuid().ToString(), "NaseifBigBoss", "HeyThere",
                     Array.Empty<string>(),
                     true,
                     "Message"));

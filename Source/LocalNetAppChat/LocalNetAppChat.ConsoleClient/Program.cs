@@ -1,5 +1,6 @@
 ﻿using LocalNetAppChat.Domain.Clientside;
 using LocalNetAppChat.Domain.Clientside.OperatingModes;
+using LocalNetAppChat.Domain.Clientside.ServerApis;
 using LocalNetAppChat.Domain.Shared.Outputs;
 
 namespace LocalNetAppChat.ConsoleClient
@@ -21,6 +22,9 @@ namespace LocalNetAppChat.ConsoleClient
             }
 
             var parameters = commandLineParametersResult.Value;
+            ILnacServer lnacServer = new LnacServer(
+                parameters.Server, parameters.Port, parameters.Https, parameters.IgnoreSslErrors,
+                parameters.ClientName, parameters.Key);
 
             try
             {
@@ -35,7 +39,7 @@ namespace LocalNetAppChat.ConsoleClient
                 }
                 else
                 {
-                    await operatingMode?.Run(parameters, output)!;                    
+                    await operatingMode?.Run(parameters, output, lnacServer)!;                    
                 }
             }
             catch (Exception ex)

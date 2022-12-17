@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using LocalNetAppChat.Domain.Clientside.ServerApis;
 using LocalNetAppChat.Domain.Shared;
 using LocalNetAppChat.Domain.Shared.Outputs;
 
@@ -12,31 +13,23 @@ public class ListenerOperatingMode : IOperatingMode
         return parameters.Listener;
     }
 
-    public Task Run(ClientSideCommandLineParameters parameters, IOutput output)
+    public Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer)
     {
-        var hostingUrl = HostingUrlGenerator.GenerateUrl(parameters.Server, parameters.Port, parameters.Https);
-        output.WriteLine($"Listening to server {hostingUrl}...");
+        output.WriteLine($"Listening to server {lnacServer}...");
         while (true)
         {
             try
             {
-                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-                using (WebClient client = new WebClient())
+                var receivedMessages = lnacServer.GetMessages();
+                
+                foreach (var receivedMessage in receivedMessages)
                 {
-                    var result = client.DownloadString($"{hostingUrl}/receive?clientName={WebUtility.UrlEncode(parameters.ClientName)}&key={WebUtility.UrlEncode(parameters.Key)}");
-                    var receivedMessages = JsonSerializer.Deserialize<ReceivedMessage[]>(result);
-                    if (receivedMessages?.Length > 0)
-                    {
-                        foreach (var receivedMessage in receivedMessages)
-                        {
-                            output.WriteLine(receivedMessage);
-                        }
-                    }
+                    output.WriteLine(receivedMessage);
                 }
             }
             catch (Exception e)
             {
-                output.WriteLine(e.Message + ": Reestablishing connection...");
+                output.WriteLine(e.Message + ": Retry in 1s...");
             }
 
             Thread.Sleep(1000);

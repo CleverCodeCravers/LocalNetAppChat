@@ -1,6 +1,6 @@
 ﻿namespace LocalNetAppChat.Domain.Shared;
 
-public record Message (
+public record LnacMessage (
     string Id,
     string Name,
     string Text,
