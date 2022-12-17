@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using LocalNetAppChat.Domain.Shared;
+using LocalNetAppChat.Domain.Shared.Outputs;
 
 namespace LocalNetAppChat.Domain.Clientside.OperatingModes;
 
@@ -11,10 +12,10 @@ public class SendMessageOperatingMode : IOperatingMode
         return parameters.Message;
     }
 
-    public async Task Run(ClientSideCommandLineParameters parameters)
+    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output)
     {
         var hostingUrl = HostingUrlGenerator.GenerateUrl(parameters.Server, parameters.Port, parameters.Https);
-        Console.WriteLine($"Sending message to {hostingUrl}...");
+        output.WriteLine($"Sending message to {hostingUrl}...");
         
         HttpClientHandler handler = new HttpClientHandler();
         if (parameters.IgnoreSslErrors)
@@ -38,7 +39,7 @@ public class SendMessageOperatingMode : IOperatingMode
                 message);
             var resultText = await result.Content.ReadAsStringAsync();
             
-            Console.WriteLine(resultText);
+            output.WriteLine(resultText);
         }
     }
 }

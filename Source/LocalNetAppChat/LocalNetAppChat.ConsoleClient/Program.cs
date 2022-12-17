@@ -1,5 +1,6 @@
 ﻿using LocalNetAppChat.Domain.Clientside;
 using LocalNetAppChat.Domain.Clientside.OperatingModes;
+using LocalNetAppChat.Domain.Shared.Outputs;
 
 namespace LocalNetAppChat.ConsoleClient
 {
@@ -7,14 +8,15 @@ namespace LocalNetAppChat.ConsoleClient
     {
         public static async Task Main(string[] args)
         {
+            IOutput output = new ConsoleOutput();
+            
             var parser = new ClientSideCommandLineParser();
 
             var commandLineParametersResult = parser.Parse(args);
 
             if (!commandLineParametersResult.IsSuccess)
             {
-                Console.WriteLine("Unfortunately there have been problems with the command line arguments.");
-                Console.WriteLine("");
+                output.WriteLine("Unfortunately there have been problems with the command line arguments.");
                 return;
             }
 
@@ -29,18 +31,16 @@ namespace LocalNetAppChat.ConsoleClient
                 var operatingMode = operatingModeCollection.GetResponsibleOperatingMode(parameters);
                 if (operatingMode == null)
                 {
-                    Console.WriteLine("No mode selected");
+                    output.WriteLine("No mode selected");
                 }
                 else
                 {
-                    await operatingMode?.Run(parameters);                    
+                    await operatingMode?.Run(parameters, output)!;                    
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("");
-                Console.WriteLine("Exception: " + ex.Message);
-                Console.WriteLine("");
+                output.WriteLine("Exception: " + ex.Message);
             }
         }
     }

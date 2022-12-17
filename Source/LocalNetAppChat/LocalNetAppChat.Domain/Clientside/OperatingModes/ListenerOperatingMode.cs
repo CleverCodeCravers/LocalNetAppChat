@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using LocalNetAppChat.Domain.Shared;
+using LocalNetAppChat.Domain.Shared.Outputs;
 
 namespace LocalNetAppChat.Domain.Clientside.OperatingModes;
 
@@ -11,10 +12,10 @@ public class ListenerOperatingMode : IOperatingMode
         return parameters.Listener;
     }
 
-    public Task Run(ClientSideCommandLineParameters parameters)
+    public Task Run(ClientSideCommandLineParameters parameters, IOutput output)
     {
         var hostingUrl = HostingUrlGenerator.GenerateUrl(parameters.Server, parameters.Port, parameters.Https);
-        Console.WriteLine($"Listening to server {hostingUrl}...");
+        output.WriteLine($"Listening to server {hostingUrl}...");
         while (true)
         {
             try
@@ -28,15 +29,14 @@ public class ListenerOperatingMode : IOperatingMode
                     {
                         foreach (var receivedMessage in receivedMessages)
                         {
-                            var text = MessageForDisplayFormatter.GetTextFor(receivedMessage);
-                            Console.WriteLine(text);                            
+                            output.WriteLine(receivedMessage);
                         }
                     }
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message + ": Reestablishing connection...");
+                output.WriteLine(e.Message + ": Reestablishing connection...");
             }
 
             Thread.Sleep(1000);
