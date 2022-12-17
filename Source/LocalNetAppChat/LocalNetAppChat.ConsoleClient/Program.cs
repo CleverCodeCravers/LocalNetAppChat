@@ -33,6 +33,7 @@ namespace LocalNetAppChat.ConsoleClient
                 var operatingModeCollection = new OperatingModeCollection();
                 operatingModeCollection.Add(new SendMessageOperatingMode());
                 operatingModeCollection.Add(new ListenerOperatingMode());
+                operatingModeCollection.Add(new ChatOperatingMode());
 
                 var operatingMode = operatingModeCollection.GetResponsibleOperatingMode(parameters);
                 if (operatingMode == null)
