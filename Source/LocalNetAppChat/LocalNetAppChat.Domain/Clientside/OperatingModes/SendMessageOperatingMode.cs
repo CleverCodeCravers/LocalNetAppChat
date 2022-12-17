@@ -1,7 +1,4 @@
-using System.Net;
-using System.Net.Http.Json;
 using LocalNetAppChat.Domain.Clientside.ServerApis;
-using LocalNetAppChat.Domain.Shared;
 using LocalNetAppChat.Domain.Shared.Inputs;
 using LocalNetAppChat.Domain.Shared.Outputs;
 
@@ -14,9 +11,9 @@ public class SendMessageOperatingMode : IOperatingMode
         return parameters.Message;
     }
 
-    public Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
+    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
     {
         output.WriteLine($"Sending message to {lnacServer}...");
-        return Task.FromResult(lnacServer.SendMessage(parameters.Text));
+        await lnacServer.SendMessage(parameters.Text);
     }
 }
