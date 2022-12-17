@@ -35,6 +35,8 @@ public class LnacServer : ILnacServer
 
     public ReceivedMessage[] GetMessages()
     {
+        Thread.Sleep(1000);
+        
         ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
         using (WebClient client = new WebClient())
         {

@@ -1,7 +1,4 @@
-using System.Net;
-using System.Text.Json;
 using LocalNetAppChat.Domain.Clientside.ServerApis;
-using LocalNetAppChat.Domain.Shared;
 using LocalNetAppChat.Domain.Shared.Inputs;
 using LocalNetAppChat.Domain.Shared.Outputs;
 
@@ -30,10 +27,8 @@ public class ListenerOperatingMode : IOperatingMode
             }
             catch (Exception e)
             {
-                output.WriteLine(e.Message + ": Retry in 1s...");
+                output.WriteLine(e.Message + ": Retry...");
             }
-
-            Thread.Sleep(1000);
         }
     }
 }
