@@ -11,10 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Serverside" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\CommandLineArguments\CommandLineArguments.csproj" />
     </ItemGroup>
 

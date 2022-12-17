@@ -9,6 +9,7 @@ public class MessageForDisplayFormatterTests
     private ReceivedMessage MessageUnderTest()
     {
         return new ReceivedMessage(
+            1,
             new DateTime(2022, 1, 1, 12, 0, 0),
             new LnacMessage(
             Guid.NewGuid().ToString(),

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using CommandLineArguments;
+using LocalNetAppChat.Domain.Serverside;
 using LocalNetAppChat.Domain.Shared;
 
 var parser = new Parser(
@@ -18,7 +19,9 @@ if (!parser.TryParse(args, true)) {
 
 var serverKey = parser.TryGetOptionWithValue<string>("--key");
 
-var messageList = new MessageList();
+var messageList = new SynchronizedCollectionBasedMessageList(
+    TimeSpan.FromMinutes(10), 
+    new StampService(new ThreadSafeCounter(), new DateTimeProvider()));
 
 var hostingUrl = HostingUrlGenerator.GenerateUrl(
     parser.GetOptionWithValue<string>("--listenOn") ?? "",
@@ -38,7 +41,6 @@ app.MapGet("/receive", (string key, string clientName) =>
     }
     
     var messages = messageList.GetMessagesForClient(clientName);
-    Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] client {clientName} has requested messages... sending {messages.Length} messages");
     return JsonSerializer.Serialize(messages);
 });
 
@@ -48,14 +50,10 @@ app.MapPost("/send", (string key, LnacMessage message) =>
     {
         return "Access Denied";
     }
-    // format a timestamp "YYYY-MM-DD HH:MM:SS"
-    Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] client {message.Name} has sent us a new message...");
-    messageList.Add(
-        new ReceivedMessage(
-            DateTime.Now,
-            message
-            )
-        );
+    
+    Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] queue status {messageList.GetStatus()}");
+    messageList.Add(message);
+    
     return "Ok";
 });
 
