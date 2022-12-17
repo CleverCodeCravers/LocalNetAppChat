@@ -15,7 +15,7 @@ public class ChatOperatingMode : IOperatingMode
         return parameters.Chat;
     }
 
-    public Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
+    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
     {
         output.WriteLine($"Connecting to server {lnacServer}...");
         while (true)
@@ -32,7 +32,7 @@ public class ChatOperatingMode : IOperatingMode
                 if (input.IsInputWaiting())
                 {
                     var message = input.GetInput();
-                    lnacServer.SendMessage(message);
+                    await lnacServer.SendMessage(message);
                 }
             }
             catch (Exception e)
