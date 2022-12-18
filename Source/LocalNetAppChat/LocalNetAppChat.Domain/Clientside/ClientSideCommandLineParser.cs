@@ -15,8 +15,9 @@ public class ClientSideCommandLineParser
             new ICommandLineOption[] {
                 new BoolCommandLineOption("message"),
                 new BoolCommandLineOption("listener"),
+                new BoolCommandLineOption("fileupload"),
                 new BoolCommandLineOption("chat"),
-
+                new StringCommandLineOption("--file"),
                 new StringCommandLineOption("--server", "localhost"),
                 new Int32CommandLineOption("--port", 5000),
                 new BoolCommandLineOption("--https"),
@@ -36,10 +37,11 @@ public class ClientSideCommandLineParser
             new ClientSideCommandLineParameters(
                 parser.GetBoolOption("message"),
                 parser.GetBoolOption("listener"),
+                parser.GetBoolOption("fileupload"),
                 parser.GetBoolOption("chat"),
-                
                 parser.GetOptionWithValue<string>("--server") ?? "localhost",
                 parser.GetOptionWithValue<int>("--port"),
+                parser.GetOptionWithValue<string>("--file"),
                 parser.GetBoolOption("--https"),
                 parser.GetOptionWithValue<string>("--text") ?? "",
                 parser.GetOptionWithValue<string>("--clientName") ?? Environment.MachineName,
