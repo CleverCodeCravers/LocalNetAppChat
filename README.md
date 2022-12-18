@@ -1,6 +1,6 @@
 # LocalNetAppChat
 
-LocalNetAppChat (LNAC) is a server/client C# command line interface that gives your apps a way to communicate with each other locally.
+LocalNetAppChat (LNAC) is a server/client C# command line interface that gives your apps a way to communicate with each other over the local network.
 
 <!-- TOC -->
 
