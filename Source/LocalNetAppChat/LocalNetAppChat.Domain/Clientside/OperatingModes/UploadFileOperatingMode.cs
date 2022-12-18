@@ -13,6 +13,6 @@ public class UploadFileOperatingMode : IOperatingMode
 
     public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
     {
-        await lnacServer.SendFile(parameters.FileName);
+        await lnacServer.SendFile(parameters.File);
     }
 }

@@ -133,4 +133,25 @@ public class LnacServer : ILnacServer
     }
 
   }
+
+  public async Task DownloadFile(string filename, string targetPath)
+  {
+    HttpClientHandler handler = new HttpClientHandler();
+    if (_ignoreSslErrors)
+    {
+      handler.ServerCertificateCustomValidationCallback = (reqMessage, cert, chain, errors) => true;
+    }
+
+    var uri = new Uri($"{_hostingUrl}/download?key={WebUtility.UrlEncode(_key)}&filename={filename}");
+    using (HttpClient client = new HttpClient(handler))
+    {
+      var response = await client.GetAsync(uri);
+      var targetFilename = Path.Combine(targetPath, filename);
+      using (var fs = new FileStream(targetFilename, FileMode.CreateNew))
+      {
+        await response.Content.CopyToAsync(fs);
+      }
+
+    }
+  }
 }

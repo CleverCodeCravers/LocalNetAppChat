@@ -108,10 +108,30 @@ app.MapGet("/listallfiles", (string key) =>
   var dataPath = Path.Combine(currentPath, "data");
 
   string[] files = Directory.GetFiles(dataPath);
-    
-  files = files.Select( x => x.Remove(0, dataPath.Length + 1)).ToArray();
+
+  files = files.Select(x => x.Remove(0, dataPath.Length + 1)).ToArray();
 
   return JsonSerializer.Serialize(files);
 });
+
+
+app.MapGet("/download", async (HttpRequest request, string key, string filename) =>
+{
+
+  if (key != serverKey)
+  {
+    return Results.BadRequest("Access Denied");
+  }
+
+  string currentPath = Directory.GetCurrentDirectory();
+  var dataPath = Path.Combine(currentPath, $"data\\{filename}");
+
+  if (!File.Exists(dataPath)) return Results.BadRequest("File does not exist!");
+
+  var fileContent = await File.ReadAllBytesAsync(dataPath);
+
+  return Results.File(fileContent, fileDownloadName: filename);
+});
+
 
 app.Run();

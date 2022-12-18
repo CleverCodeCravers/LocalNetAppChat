@@ -17,6 +17,7 @@ public class ClientSideCommandLineParser
                 new BoolCommandLineOption("listener"),
                 new BoolCommandLineOption("fileupload"),
                 new BoolCommandLineOption("listfiles"),
+                new BoolCommandLineOption("filedownload"),
                 new BoolCommandLineOption("chat"),
                 new StringCommandLineOption("--file"),
                 new StringCommandLineOption("--server", "localhost"),
@@ -26,8 +27,8 @@ public class ClientSideCommandLineParser
                 new StringCommandLineOption("--text"),
                 new StringCommandLineOption("--clientName", Environment.MachineName),
                 new StringCommandLineOption("--key", "1234"),
-
-                new BoolCommandLineOption("--ignoresslerrors")
+                new BoolCommandLineOption("--ignoresslerrors"),
+                new StringCommandLineOption("--targetPath")
         });
 
     if (!parser.TryParse(args, true) || args.Length == 0)
@@ -41,6 +42,7 @@ public class ClientSideCommandLineParser
             parser.GetBoolOption("listener"),
             parser.GetBoolOption("fileupload"),
             parser.GetBoolOption("listfiles"),
+            parser.GetBoolOption("filedownload"),
             parser.GetBoolOption("chat"),
             parser.GetOptionWithValue<string>("--server") ?? "localhost",
             parser.GetOptionWithValue<int>("--port"),
@@ -49,7 +51,9 @@ public class ClientSideCommandLineParser
             parser.GetOptionWithValue<string>("--text") ?? "",
             parser.GetOptionWithValue<string>("--clientName") ?? Environment.MachineName,
             parser.GetOptionWithValue<string>("--key") ?? "1234",
-            parser.GetBoolOption("--ignoresslerrors")
+            parser.GetBoolOption("--ignoresslerrors"),
+            parser.GetOptionWithValue<string>("--targetPath") ?? Directory.GetCurrentDirectory()
+
         ));
   }
 }
