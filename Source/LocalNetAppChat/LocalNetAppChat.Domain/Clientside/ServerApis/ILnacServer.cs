@@ -10,4 +10,5 @@ public interface ILnacServer
   Task SendFile(string filePath, string type = "Task");
   string[] GetServerFiles();
   Task DownloadFile(string filename, string targetPath);
+  Task DeleteFile(string filename);
 }

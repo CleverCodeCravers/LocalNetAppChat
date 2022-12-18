@@ -2,6 +2,7 @@ using System.Text.Json;
 using CommandLineArguments;
 using LocalNetAppChat.Domain.Serverside;
 using LocalNetAppChat.Domain.Shared;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 
 var parser = new Parser(
     new ICommandLineOption[] {
@@ -133,5 +134,21 @@ app.MapGet("/download", async (HttpRequest request, string key, string filename)
   return Results.File(fileContent, fileDownloadName: filename);
 });
 
+app.MapPost("/deletefile", (HttpRequest request, string filename, string key) =>
+{
+    if (key != serverKey)
+    {
+        return Results.BadRequest("Access Denied");
+    }
+
+
+    string currentPath = Directory.GetCurrentDirectory();
+    var dataPath = Path.Combine(currentPath, $"data\\{filename}");
+
+    if (!File.Exists(dataPath)) return Results.BadRequest("File does not exist!");
+    File.Delete(dataPath);
+
+    return Results.Text("Ok");
+});
 
 app.Run();

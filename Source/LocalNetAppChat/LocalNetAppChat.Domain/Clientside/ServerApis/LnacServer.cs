@@ -154,4 +154,18 @@ public class LnacServer : ILnacServer
 
     }
   }
+
+  public async Task DeleteFile(string filename)
+  {
+    HttpClientHandler handler = new HttpClientHandler();
+    if (_ignoreSslErrors)
+    {
+      handler.ServerCertificateCustomValidationCallback = (reqMessage, cert, chain, errors) => true;
+    }
+
+    using (HttpClient client = new HttpClient(handler))
+    {
+      await client.PostAsync($"{_hostingUrl}/deletefile?key={WebUtility.UrlEncode(_key)}&filename={filename}", null);
+    }
+  }
 }
