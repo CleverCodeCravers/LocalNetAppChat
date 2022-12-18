@@ -1,9 +1,8 @@
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using CommandLineArguments;
 using LocalNetAppChat.Domain.Serverside;
 using LocalNetAppChat.Domain.Shared;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
+
 
 var parser = new Parser(
     new ICommandLineOption[] {
@@ -15,9 +14,9 @@ var parser = new Parser(
 
 if (!parser.TryParse(args, true))
 {
-  Console.WriteLine("Unfortunately there have been problems with the command line arguments.");
-  Console.WriteLine("");
-  return;
+    Console.WriteLine("Unfortunately there have been problems with the command line arguments.");
+    Console.WriteLine("");
+    return;
 }
 
 var serverKey = parser.TryGetOptionWithValue<string>("--key");
@@ -38,26 +37,26 @@ app.MapGet("/", () => "LocalNetAppChat Server!");
 
 app.MapGet("/receive", (string key, string clientName) =>
 {
-  if (key != serverKey)
-  {
-    return "Access Denied";
-  }
+    if (key != serverKey)
+    {
+        return "Access Denied";
+    }
 
-  var messages = messageList.GetMessagesForClient(clientName);
-  return JsonSerializer.Serialize(messages);
+    var messages = messageList.GetMessagesForClient(clientName);
+    return JsonSerializer.Serialize(messages);
 });
 
 app.MapPost("/send", (string key, LnacMessage message) =>
 {
-  if (key != serverKey)
-  {
-    return "Access Denied";
-  }
+    if (key != serverKey)
+    {
+        return "Access Denied";
+    }
 
-  Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] queue status {messageList.GetStatus()}");
-  messageList.Add(message);
+    Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] queue status {messageList.GetStatus()}");
+    messageList.Add(message);
 
-  return "Ok";
+    return "Ok";
 });
 
 
