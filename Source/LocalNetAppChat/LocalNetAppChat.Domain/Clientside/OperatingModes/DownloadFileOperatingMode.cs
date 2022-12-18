@@ -6,13 +6,13 @@ namespace LocalNetAppChat.Domain.Clientside.OperatingModes;
 
 public class DownloadFileOperatingMode : IOperatingMode
 {
-  public bool IsResponsibleFor(ClientSideCommandLineParameters parameters)
-  {
-    return parameters.FileDownload;
-  }
+    public bool IsResponsibleFor(ClientSideCommandLineParameters parameters)
+    {
+        return parameters.FileDownload;
+    }
 
-  public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
-  {
-    await lnacServer.DownloadFile(parameters.File, parameters.TargetPath);
-  }
+    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
+    {
+        await lnacServer.DownloadFile(parameters.File, parameters.TargetPath);
+    }
 }

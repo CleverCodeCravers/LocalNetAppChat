@@ -6,17 +6,17 @@ namespace LocalNetAppChat.Domain.Clientside.OperatingModes;
 
 public class ListAllFilesOperatingMode : IOperatingMode
 {
-  public bool IsResponsibleFor(ClientSideCommandLineParameters parameters)
-  {
-    return parameters.ListServerFiles;
-  }
-
-  public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
-  {
-    var files = lnacServer.GetServerFiles();
-    foreach (var file in files)
+    public bool IsResponsibleFor(ClientSideCommandLineParameters parameters)
     {
-      output.WriteLineUnformatted(file);
+        return parameters.ListServerFiles;
     }
-  }
+
+    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
+    {
+        var files = lnacServer.GetServerFiles();
+        foreach (var file in files)
+        {
+            output.WriteLineUnformatted(file);
+        }
+    }
 }

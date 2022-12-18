@@ -64,75 +64,75 @@ app.MapPost("/send", (string key, LnacMessage message) =>
 app.MapPost("/upload",
     async (HttpRequest request, string key) =>
     {
-      if (key != serverKey)
-        return Results.Text("Access Denied");
+        if (key != serverKey)
+            return Results.Text("Access Denied");
 
-      if (!request.HasFormContentType)
-        return Results.BadRequest();
+        if (!request.HasFormContentType)
+            return Results.BadRequest();
 
-      var form = await request.ReadFormAsync();
+        var form = await request.ReadFormAsync();
 
-      if (form.Files.Any() == false)
-        return Results.BadRequest("There are no files");
+        if (form.Files.Any() == false)
+            return Results.BadRequest("There are no files");
 
-      var file = form.Files.FirstOrDefault();
+        var file = form.Files.FirstOrDefault();
 
-      if (file is null || file.Length == 0)
-        return Results.BadRequest("File cannot be empty");
-
-
-      string currentPath = Directory.GetCurrentDirectory();
-
-      if (!Directory.Exists(Path.Combine(currentPath, "data")))
-        Directory.CreateDirectory(Path.Combine(currentPath, "data"));
+        if (file is null || file.Length == 0)
+            return Results.BadRequest("File cannot be empty");
 
 
-      var dataPath = Path.Combine(currentPath, $"data\\{file.FileName}");
+        string currentPath = Directory.GetCurrentDirectory();
 
-      using (var fileStream = new FileStream(dataPath, FileMode.Create))
-      {
-        await file.CopyToAsync(fileStream);
-      }
+        if (!Directory.Exists(Path.Combine(currentPath, "data")))
+            Directory.CreateDirectory(Path.Combine(currentPath, "data"));
 
-      return Results.Text("Ok");
+
+        var dataPath = Path.Combine(currentPath, $"data\\{file.FileName}");
+
+        using (var fileStream = new FileStream(dataPath, FileMode.Create))
+        {
+            await file.CopyToAsync(fileStream);
+        }
+
+        return Results.Text("Ok");
     });
 
 
 app.MapGet("/listallfiles", (string key) =>
 {
 
-  if (key != serverKey)
-  {
-    return "Access Denied";
-  }
+    if (key != serverKey)
+    {
+        return "Access Denied";
+    }
 
-  string currentPath = Directory.GetCurrentDirectory();
-  var dataPath = Path.Combine(currentPath, "data");
+    string currentPath = Directory.GetCurrentDirectory();
+    var dataPath = Path.Combine(currentPath, "data");
 
-  string[] files = Directory.GetFiles(dataPath);
+    string[] files = Directory.GetFiles(dataPath);
 
-  files = files.Select(x => x.Remove(0, dataPath.Length + 1)).ToArray();
+    files = files.Select(x => x.Remove(0, dataPath.Length + 1)).ToArray();
 
-  return JsonSerializer.Serialize(files);
+    return JsonSerializer.Serialize(files);
 });
 
 
 app.MapGet("/download", async (HttpRequest request, string key, string filename) =>
 {
 
-  if (key != serverKey)
-  {
-    return Results.BadRequest("Access Denied");
-  }
+    if (key != serverKey)
+    {
+        return Results.BadRequest("Access Denied");
+    }
 
-  string currentPath = Directory.GetCurrentDirectory();
-  var dataPath = Path.Combine(currentPath, $"data\\{filename}");
+    string currentPath = Directory.GetCurrentDirectory();
+    var dataPath = Path.Combine(currentPath, $"data\\{filename}");
 
-  if (!File.Exists(dataPath)) return Results.BadRequest("File does not exist!");
+    if (!File.Exists(dataPath)) return Results.BadRequest("File does not exist!");
 
-  var fileContent = await File.ReadAllBytesAsync(dataPath);
+    var fileContent = await File.ReadAllBytesAsync(dataPath);
 
-  return Results.File(fileContent, fileDownloadName: filename);
+    return Results.File(fileContent, fileDownloadName: filename);
 });
 
 string SanatizeFilename(string filename)

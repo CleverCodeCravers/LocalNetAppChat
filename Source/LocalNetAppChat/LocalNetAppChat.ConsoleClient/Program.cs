@@ -6,46 +6,46 @@ using LocalNetAppChat.Domain.Shared.Outputs;
 
 namespace LocalNetAppChat.ConsoleClient
 {
-  public static class Program
-  {
-    public static async Task Main(string[] args)
+    public static class Program
     {
-      IOutput output = new ConsoleOutput();
-      IInput input = new ConsoleInput();
+        public static async Task Main(string[] args)
+        {
+            IOutput output = new ConsoleOutput();
+            IInput input = new ConsoleInput();
 
-      var parser = new ClientSideCommandLineParser();
+            var parser = new ClientSideCommandLineParser();
 
-      var commandLineParametersResult = parser.Parse(args);
+            var commandLineParametersResult = parser.Parse(args);
 
-      if (!commandLineParametersResult.IsSuccess)
-      {
-        output.WriteLine("Unfortunately there have been problems with the command line arguments.");
-        return;
-      }
+            if (!commandLineParametersResult.IsSuccess)
+            {
+                output.WriteLine("Unfortunately there have been problems with the command line arguments.");
+                return;
+            }
 
-      var parameters = commandLineParametersResult.Value;
-      ILnacServer lnacServer = new LnacServer(
-          parameters.Server, parameters.Port, parameters.Https, parameters.IgnoreSslErrors,
-          parameters.ClientName, parameters.Key);
+            var parameters = commandLineParametersResult.Value;
+            ILnacServer lnacServer = new LnacServer(
+                parameters.Server, parameters.Port, parameters.Https, parameters.IgnoreSslErrors,
+                parameters.ClientName, parameters.Key);
 
-      var operatingModeCollection = new OperatingModeCollection();
-      operatingModeCollection.Add(new SendMessageOperatingMode());
-      operatingModeCollection.Add(new ListenerOperatingMode());
-      operatingModeCollection.Add(new ChatOperatingMode());
-      operatingModeCollection.Add(new UploadFileOperatingMode());
-      operatingModeCollection.Add(new ListAllFilesOperatingMode());
-      operatingModeCollection.Add(new DownloadFileOperatingMode());
-      operatingModeCollection.Add(new DeleteFileOperatingMode());
+            var operatingModeCollection = new OperatingModeCollection();
+            operatingModeCollection.Add(new SendMessageOperatingMode());
+            operatingModeCollection.Add(new ListenerOperatingMode());
+            operatingModeCollection.Add(new ChatOperatingMode());
+            operatingModeCollection.Add(new UploadFileOperatingMode());
+            operatingModeCollection.Add(new ListAllFilesOperatingMode());
+            operatingModeCollection.Add(new DownloadFileOperatingMode());
+            operatingModeCollection.Add(new DeleteFileOperatingMode());
 
-      var operatingMode = operatingModeCollection.GetResponsibleOperatingMode(parameters);
-      if (operatingMode == null)
-      {
-        output.WriteLine("No mode selected");
-      }
-      else
-      {
-        await operatingMode?.Run(parameters, output, lnacServer, input)!;
-      }
+            var operatingMode = operatingModeCollection.GetResponsibleOperatingMode(parameters);
+            if (operatingMode == null)
+            {
+                output.WriteLine("No mode selected");
+            }
+            else
+            {
+                await operatingMode?.Run(parameters, output, lnacServer, input)!;
+            }
+        }
     }
-  }
 }

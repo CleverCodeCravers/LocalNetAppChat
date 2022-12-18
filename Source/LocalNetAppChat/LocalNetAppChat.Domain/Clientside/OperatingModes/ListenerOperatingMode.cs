@@ -19,7 +19,7 @@ public class ListenerOperatingMode : IOperatingMode
             try
             {
                 var receivedMessages = lnacServer.GetMessages();
-                
+
                 foreach (var receivedMessage in receivedMessages)
                 {
                     output.WriteLine(receivedMessage);
