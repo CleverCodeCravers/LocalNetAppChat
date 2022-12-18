@@ -1,6 +1,6 @@
 # LocalNetAppChat
 
-LocalNetAppChat (LNAC) is a server/client command line interface that gives your apps a way to communicate with each other localy.
+LocalNetAppChat (LNAC) is a server/client C# command line interface that gives your apps a way to communicate with each other locally.
 
 <!-- TOC -->
 
@@ -8,10 +8,11 @@ LocalNetAppChat (LNAC) is a server/client command line interface that gives your
 - [Installation](#installation)
   - [Server](#server)
   - [Client](#client)
+  - [Bot](#bot)
 - [Usage](#usage)
   - [Server CLI](#server-cli)
   - [Client CLI](#client-cli)
-- [ToDo](#todo)
+  - [Bot CLI](#bot-cli)
 - [Contributions](#contributions)
 - [Questions?](#questions?)
 
@@ -21,8 +22,8 @@ LocalNetAppChat (LNAC) is a server/client command line interface that gives your
 
 - Available for Windows, Linux and macOS
 - Easy to use
-- Direct Communication between apps
-- Ability to execute and run tasks between your local apps through command line
+- Adds a few simple entry points / command line tools that enable network communication between a group of hosts and sub applications.
+- Ability to execute and run tasks between your local apps through command line over the network
 - Encrypted communication
 - and more
 
@@ -30,17 +31,23 @@ LocalNetAppChat (LNAC) is a server/client command line interface that gives your
 
 ### Server
 
-To start using LNAC, you have to install the LNAC Server on your host machine, which will be responsible for handling the communication between your clients. You can download the server from the [Release Page](https://github.com/stho32/LocalNetAppChat/releases) for your preffered operating system.
+To start using LNAC, you have to install the LNAC Server on your host machine, which will be responsible for handling the communication between your clients. You can download the server from the [Release Page](https://github.com/stho32/LocalNetAppChat/releases) for your preferred operating system.
 
 ### Client
 
-The client app is responsible for sending messages to other clients and recieving new updates/messages from the server. You can download the client from the [Release Page](https://github.com/stho32/LocalNetAppChat/releases) as well.
+The client app is responsible for sending messages to other clients and receiving new updates/messages from the server. You can download the client from the [Release Page](https://github.com/stho32/LocalNetAppChat/releases) as well.
+
+### Bot
+
+The LNAC Bot behaves like a listener and gets the messages from the server. If one of the messages that the clients have sent includes one of the bot commands, it will perform an operation accordingly, for example, if a client sent `/ping`, the bot will send a message to the server including the following: `responding to ping from {clientName} ==> a very dear pong from " + botName`.
+
+To install the bot, simply download it from the [Release Page](https://github.com/stho32/LocalNetAppChat/releases).
 
 ## Usage
 
 ### Server CLI
 
-After installing the server and the client apps, start the server client with your preffered options:
+After installing the server and the client apps, start the server client with your preferred options:
 
 ```console
 LocalNetAppChat.Server [options]
@@ -65,7 +72,7 @@ LocalNetAppChat.Server [options]
 
 ### Client CLI
 
-The client can be run in two modes, the `message` and `listener` mode. The `message` mode allows the client to send messages to the server that then will be displayed either to all the clients or only to one client. When running the client in `listener` mode, it will only listen to incoming messages done by other clients from the server.
+The client can be run in two modes, the `message` and `listener` mode. The `message` mode allows the client to send messages to the server that then will be displayed either to all the clients or only to one client. When running the client in `listener` mode, it will only listen for incoming messages done by other clients from the server.
 
 ```console
 LocalNetAppChat.ConsoleClient [options]
@@ -91,20 +98,30 @@ LocalNetAppChat.ConsoleClient [options]
 
 ```
 
-## ToDo
+### Bot CLI
 
-- [x] add documentation
-- [ ] add task management
-  - [ ] is task management another bot?
-- [ ] powershell clients
-- [ ] do message management more correctly (forget them after 1 hour)
-- [ ] microsoft teams relay?
-- [ ] discord relay?
-- [ ] performance testing with naseifs typescript implementation
+```console
+LocalNetAppChat.Bot [options]
+
+  Options:
+
+    --server             The IP Address the bot should connect to (e.g localhost)
+    --port               The port that the bot should connect to (default: 5000)
+    --https              Whether to connect per HTTP or HTTPs
+    --key                An Authentication password that the bot should send along the requests to be able to perform tasks. (default: 1234)
+    --clientName         Specifies the bot name, otherwise the name of the machine will be used
+    --ignoresslerrors    Whether to ignore SSL Erros in console.
+
+  Examples:
+
+  – Start the bot
+    $ LocalNetAppChat.Bot --server "localhost" --port 54214 --key 1234 --clientName "TheBestBot"
+
+```
 
 ## Contributions
 
-Software contributions are welcome. If you are not a dev, testing and reproting bugs can also be very helpful!
+Software contributions are welcome. If you are not a dev, testing and reporting bugs can also be very helpful!
 
 ## Questions?
 
