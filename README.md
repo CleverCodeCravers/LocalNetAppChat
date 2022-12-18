@@ -81,6 +81,10 @@ LocalNetAppChat.ConsoleClient [options]
 
     message              Run the client in message mode
     listener             Run the client in listener mode
+<<<<<<< HEAD
+=======
+    chat                 Runs the client essentially in a listener mode, but when you start typing you are delivered a prompt and with enter you will send the message
+>>>>>>> 1c3cdf96224b732db1355704efec6c18ac0b3b65
     --text               The text message to send to the server. (only when in message mode!)
     --clientName         The name of your client. If not specified, your machine name will be sent as clientName to the server
     --ignoresslerrors    Ignore SSL Erros and do not print them in the console
