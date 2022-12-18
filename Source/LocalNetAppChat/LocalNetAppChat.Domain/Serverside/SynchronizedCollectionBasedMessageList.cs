@@ -1,6 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Linq;
-using System.ServiceModel.Channels;
 using LocalNetAppChat.Domain.Shared;
 
 namespace LocalNetAppChat.Domain.Serverside;

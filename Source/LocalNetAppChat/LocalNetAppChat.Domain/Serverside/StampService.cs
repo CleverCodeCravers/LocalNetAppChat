@@ -1,5 +1,4 @@
 using LocalNetAppChat.Domain.Shared;
-using System.Drawing;
 
 namespace LocalNetAppChat.Domain.Serverside;
 
