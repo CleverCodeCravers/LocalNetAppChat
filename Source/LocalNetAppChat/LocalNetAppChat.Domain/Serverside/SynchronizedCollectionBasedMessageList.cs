@@ -1,4 +1,6 @@
 ﻿using System.Collections.Concurrent;
+using System.Linq;
+using System.ServiceModel.Channels;
 using LocalNetAppChat.Domain.Shared;
 
 namespace LocalNetAppChat.Domain.Serverside;
@@ -8,7 +10,9 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
     private readonly TimeSpan _messageLifetime;
     private readonly IStampService _stampService;
     private readonly SynchronizedCollection<ReceivedMessage> _messages = new();
+    private readonly SynchronizedCollection<ReceivedDirectMessage> _directMessages = new();
     private readonly ConcurrentDictionary<string, long> _clientStates = new();
+
 
     public SynchronizedCollectionBasedMessageList(TimeSpan messageLifetime, IStampService stampService)
     {
@@ -30,6 +34,15 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
         }
     }
     
+    public void AddDirect(LnacMessage message, string receiver)
+    {
+        var stampedMessage = _stampService.StampDirectMessage(message, receiver);
+
+        _directMessages.Add(stampedMessage);
+
+        Cleanup();
+    }
+
     public void Add(LnacMessage message)
     {
         var stampedMessage = _stampService.StampMessage(message);
@@ -37,6 +50,39 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
         _messages.Add(stampedMessage);
         
         Cleanup();
+    }
+
+
+    public bool CheckIfClientHasDirectMessages(string clientName)
+    {
+        bool direct = false;
+        foreach (ReceivedDirectMessage message in _directMessages)
+        {
+            if (message.Receiver == clientName)
+            {
+                direct = true;
+                break;
+            }
+        }
+        return direct;
+    }
+
+    public ReceivedDirectMessage[] GetDirectMessagesForClient(string clientId)
+    {
+
+        var messages = _directMessages.Where(x => x.Receiver == clientId).ToArray();
+
+        if (messages.Length > 0)
+        {
+            foreach (var message in messages)
+            {
+                _directMessages.Remove(message);
+            }
+            return messages.ToArray();
+        }
+
+        return messages.ToArray();
+
     }
 
     public ReceivedMessage[] GetMessagesForClient(string clientId)

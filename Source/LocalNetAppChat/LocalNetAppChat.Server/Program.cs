@@ -42,6 +42,12 @@ app.MapGet("/receive", (string key, string clientName) =>
         return "Access Denied";
     }
 
+    if (messageList.CheckIfClientHasDirectMessages(clientName))
+    {
+        var directMessages = messageList.GetDirectMessagesForClient(clientName);
+        return JsonSerializer.Serialize(directMessages);
+    }
+
     var messages = messageList.GetMessagesForClient(clientName);
     return JsonSerializer.Serialize(messages);
 });
@@ -51,6 +57,19 @@ app.MapPost("/send", (string key, LnacMessage message) =>
     if (key != serverKey)
     {
         return "Access Denied";
+    }
+
+    if (message.Text.StartsWith("/msg"))
+    {
+        string directMessagePrefix = "/msg";
+
+        string slicePrefix = message.Text.Substring(directMessagePrefix.Length).Trim();
+
+        string[] messageArgs = slicePrefix.Split(new string[] { " " }, StringSplitOptions.None);
+
+        messageList.AddDirect(message, messageArgs[0]);
+
+        return "Ok";
     }
 
     Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] queue status {messageList.GetStatus()}");
