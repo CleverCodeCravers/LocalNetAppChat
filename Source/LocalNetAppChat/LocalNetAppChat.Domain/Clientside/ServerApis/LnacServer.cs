@@ -165,7 +165,17 @@ public class LnacServer : ILnacServer
 
     using (HttpClient client = new HttpClient(handler))
     {
-      await client.PostAsync($"{_hostingUrl}/deletefile?key={WebUtility.UrlEncode(_key)}&filename={filename}", null);
+      var response = await client.PostAsync($"{_hostingUrl}/deletefile?key={WebUtility.UrlEncode(_key)}&filename={filename}", null);
+
+      var resultText = await response.Content.ReadAsStringAsync();
+
+      var resultStatus = resultText == "Ok";
+
+      if (resultStatus != true)
+      {
+        throw new Exception(resultText);
+      }
+
     }
   }
 }
