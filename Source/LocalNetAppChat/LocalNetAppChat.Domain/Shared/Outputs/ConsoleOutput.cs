@@ -12,4 +12,9 @@ public class ConsoleOutput : IOutput
         var text = MessageForDisplayFormatter.GetTextFor(receivedMessage);
         Console.WriteLine(text);
     }
+
+    public void WriteLineUnformatted(string text)
+    {
+        Console.WriteLine(text);
+    }
 }

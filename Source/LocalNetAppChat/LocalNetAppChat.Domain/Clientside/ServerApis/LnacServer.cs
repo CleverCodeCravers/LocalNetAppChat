@@ -122,4 +122,15 @@ public class LnacServer : ILnacServer
 
     }
   }
+
+  public string[] GetServerFiles()
+  {
+    using (WebClient client = new WebClient())
+    {
+      var result = client.DownloadString($"{_hostingUrl}/listallfiles?key={WebUtility.UrlEncode(_key)}");
+      var receivedFilesList = JsonSerializer.Deserialize<string[]>(result);
+      return receivedFilesList ?? Array.Empty<string>();
+    }
+
+  }
 }

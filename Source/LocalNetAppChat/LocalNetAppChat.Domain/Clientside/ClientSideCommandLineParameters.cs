@@ -4,6 +4,7 @@ public record ClientSideCommandLineParameters(
     bool Message,
     bool Listener,
     bool FileUpload,
+    bool ListServerFiles,
     bool Chat,
     string Server,
     int Port,
