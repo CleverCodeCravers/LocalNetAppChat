@@ -1,5 +1,9 @@
+using System.Globalization;
+using System.IO;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Reflection;
 using System.Text.Json;
 using LocalNetAppChat.Domain.Shared;
 
@@ -36,7 +40,7 @@ public class LnacServer : ILnacServer
     public ReceivedMessage[] GetMessages()
     {
         Thread.Sleep(1000);
-        
+
         ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
         using (WebClient client = new WebClient())
         {
@@ -49,13 +53,13 @@ public class LnacServer : ILnacServer
     public async Task SendMessage(string message, string[]? tags = null, string type = "Message")
     {
         tags = tags ?? Array.Empty<string>();
-        
+
         HttpClientHandler handler = new HttpClientHandler();
         if (_ignoreSslErrors)
         {
-            handler.ServerCertificateCustomValidationCallback = (reqMessage, cert, chain, errors) => true;            
+            handler.ServerCertificateCustomValidationCallback = (reqMessage, cert, chain, errors) => true;
         }
-        
+
         using (HttpClient client = new HttpClient(handler))
         {
             LnacMessage lnacMessage = new LnacMessage(
@@ -66,18 +70,112 @@ public class LnacServer : ILnacServer
                 true,
                 type
             );
-            
+
             var result = await client.PostAsJsonAsync(
-                $"{_hostingUrl}/send?key={WebUtility.UrlEncode(_key)}", 
+                $"{_hostingUrl}/send?key={WebUtility.UrlEncode(_key)}",
                 lnacMessage);
             var resultText = await result.Content.ReadAsStringAsync();
 
             var resultStatus = resultText == "Ok";
-            
-            if (resultStatus!=true)
+
+            if (resultStatus != true)
             {
                 throw new Exception(resultText);
             }
+        }
+    }
+
+    public async Task SendFile(string filePath, string type = "Task")
+    {
+
+        HttpClientHandler handler = new HttpClientHandler();
+        if (_ignoreSslErrors)
+        {
+            handler.ServerCertificateCustomValidationCallback = (reqMessage, cert, chain, errors) => true;
+        }
+
+        using (HttpClient client = new HttpClient(handler))
+        {
+
+            using (var multipartFormContent = new MultipartFormDataContent())
+            {
+                //Load the file and set the file's Content-Type header
+                var path = $"{filePath}";
+                var fileinfo = new FileInfo(path);
+
+                var fileStreamContent = new StreamContent(fileinfo.OpenRead());
+                fileStreamContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MimeMapping.GetMimeMapping(fileinfo.Name));
+                multipartFormContent.Add(fileStreamContent, name: "file", fileName: fileinfo.Name);
+                //Send it
+                var response = await client.PostAsync($"{_hostingUrl}/upload?key={WebUtility.UrlEncode(_key)}", multipartFormContent);
+
+                var resultText = await response.Content.ReadAsStringAsync();
+
+                var resultStatus = resultText == "Ok";
+
+                if (resultStatus != true)
+                {
+                    throw new Exception(resultText);
+                }
+
+            }
+
+        }
+    }
+
+    public string[] GetServerFiles()
+    {
+        using (WebClient client = new WebClient())
+        {
+            var result = client.DownloadString($"{_hostingUrl}/listallfiles?key={WebUtility.UrlEncode(_key)}");
+            var receivedFilesList = JsonSerializer.Deserialize<string[]>(result);
+            return receivedFilesList ?? Array.Empty<string>();
+        }
+
+    }
+
+    public async Task DownloadFile(string filename, string targetPath)
+    {
+        HttpClientHandler handler = new HttpClientHandler();
+        if (_ignoreSslErrors)
+        {
+            handler.ServerCertificateCustomValidationCallback = (reqMessage, cert, chain, errors) => true;
+        }
+
+        var uri = new Uri($"{_hostingUrl}/download?key={WebUtility.UrlEncode(_key)}&filename={filename}");
+        using (HttpClient client = new HttpClient(handler))
+        {
+            var response = await client.GetAsync(uri);
+            var targetFilename = Path.Combine(targetPath, filename);
+            using (var fs = new FileStream(targetFilename, FileMode.CreateNew))
+            {
+                await response.Content.CopyToAsync(fs);
+            }
+
+        }
+    }
+
+    public async Task DeleteFile(string filename)
+    {
+        HttpClientHandler handler = new HttpClientHandler();
+        if (_ignoreSslErrors)
+        {
+            handler.ServerCertificateCustomValidationCallback = (reqMessage, cert, chain, errors) => true;
+        }
+
+        using (HttpClient client = new HttpClient(handler))
+        {
+            var response = await client.PostAsync($"{_hostingUrl}/deletefile?key={WebUtility.UrlEncode(_key)}&filename={filename}", null);
+
+            var resultText = await response.Content.ReadAsStringAsync();
+
+            var resultStatus = resultText == "Ok";
+
+            if (resultStatus != true)
+            {
+                throw new Exception(resultText);
+            }
+
         }
     }
 }

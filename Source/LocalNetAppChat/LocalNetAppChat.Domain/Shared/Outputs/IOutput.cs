@@ -4,4 +4,5 @@ public interface IOutput
 {
     void WriteLine(string text);
     void WriteLine(ReceivedMessage receivedMessage);
+    void WriteLineUnformatted(string file);
 }

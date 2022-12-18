@@ -11,8 +11,8 @@ namespace LocalNetAppChat.ConsoleClient
         public static async Task Main(string[] args)
         {
             IOutput output = new ConsoleOutput();
-            IInput input = new ConsoleInput(); 
-            
+            IInput input = new ConsoleInput();
+
             var parser = new ClientSideCommandLineParser();
 
             var commandLineParametersResult = parser.Parse(args);
@@ -32,6 +32,10 @@ namespace LocalNetAppChat.ConsoleClient
             operatingModeCollection.Add(new SendMessageOperatingMode());
             operatingModeCollection.Add(new ListenerOperatingMode());
             operatingModeCollection.Add(new ChatOperatingMode());
+            operatingModeCollection.Add(new UploadFileOperatingMode());
+            operatingModeCollection.Add(new ListAllFilesOperatingMode());
+            operatingModeCollection.Add(new DownloadFileOperatingMode());
+            operatingModeCollection.Add(new DeleteFileOperatingMode());
 
             var operatingMode = operatingModeCollection.GetResponsibleOperatingMode(parameters);
             if (operatingMode == null)
@@ -40,7 +44,7 @@ namespace LocalNetAppChat.ConsoleClient
             }
             else
             {
-                await operatingMode?.Run(parameters, output, lnacServer, input)!;                    
+                await operatingMode?.Run(parameters, output, lnacServer, input)!;
             }
         }
     }
