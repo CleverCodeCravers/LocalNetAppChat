@@ -1,6 +1,7 @@
 using System.Text.Json;
 using CommandLineArguments;
 using LocalNetAppChat.Domain.Serverside;
+using LocalNetAppChat.Domain.Serverside.MessageProcessing;
 using LocalNetAppChat.Domain.Shared;
 
 
@@ -22,8 +23,11 @@ if (!parser.TryParse(args, true))
 var serverKey = parser.TryGetOptionWithValue<string>("--key");
 
 var messageList = new SynchronizedCollectionBasedMessageList(
-    TimeSpan.FromMinutes(10),
-    new StampService(new ThreadSafeCounter(), new DateTimeProvider()));
+    TimeSpan.FromMinutes(10));
+
+var messageProcessors = MessageProcessorFactory.Get(
+    new ThreadSafeCounter(),
+    new DateTimeProvider());
 
 var hostingUrl = HostingUrlGenerator.GenerateUrl(
     parser.GetOptionWithValue<string>("--listenOn") ?? "",
@@ -42,12 +46,6 @@ app.MapGet("/receive", (string key, string clientName) =>
         return "Access Denied";
     }
 
-    if (messageList.CheckIfUserHasDirectMessages(clientName))
-    {
-        var directMessages = messageList.GetMessagesForClient(clientName, true);
-        return JsonSerializer.Serialize(directMessages.Where(x => x.Receiver == clientName));
-    }
-
     var messages = messageList.GetMessagesForClient(clientName);
     return JsonSerializer.Serialize(messages);
 });
@@ -59,17 +57,10 @@ app.MapPost("/send", (string key, LnacMessage message) =>
         return "Access Denied";
     }
 
-    if (DirectMessageParser.CheckIfDirectMessage(message.Text))
-    {
-        DirectMessageResult directMessage = DirectMessageParser.ParseDirectMessage(message.Text);
-        LnacMessage tmpMessage = message;
-        tmpMessage = tmpMessage with { Text = directMessage.Message };
-        messageList.Add(tmpMessage, directMessage.Receiver);
-        return "Ok";
-    } 
+    var receivedMessage = messageProcessors.Process(message.ToReceivedMessage()); 
 
     Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] queue status {messageList.GetStatus()}");
-    messageList.Add(message);
+    messageList.Add(receivedMessage);
 
     return "Ok";
 });
