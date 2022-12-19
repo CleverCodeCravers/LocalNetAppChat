@@ -14,7 +14,6 @@ namespace LocalNetAppChat.Bot
 
         public void ExecuteCommand(string command)
         {
-
             foreach (var plugin in plugins)
             {
                plugin.ExecuteCommand(command);

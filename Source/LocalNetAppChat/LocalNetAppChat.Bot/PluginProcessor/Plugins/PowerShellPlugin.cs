@@ -7,6 +7,7 @@ namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
     public class PowerShellPlugin : IPlugin
     {
         private readonly string _pluginsFolder = Directory.GetCurrentDirectory() + "..\\..\\my_scripts";
+
         public PowerShellPlugin()
         {
 
@@ -27,7 +28,6 @@ namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
             }
 
             throw new Exception("Invalid command syntax");
-
         }
 
         private bool CheckIfScriptExists(string scriptName)
@@ -36,13 +36,11 @@ namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
             string[] fileNames = Directory.GetFiles(_pluginsFolder, searchPattern);
 
             return fileNames.Length > 0;
-
         }
 
         private string ExecutePowerShellCommand( string scriptName, string parameters)
         {
             string scriptPath = _pluginsFolder + scriptName + ".ps1";
-
             string[] scriptArgs = { parameters };
 
             PowerShell ps = PowerShell.Create();
@@ -59,7 +57,6 @@ namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
             }
 
             return outPutMessage;
-
         }
     }
 }
