@@ -1,4 +1,5 @@
 ﻿using LocalNetAppChat.Domain.Serverside;
+using LocalNetAppChat.Domain.Serverside.MessageProcessing;
 using LocalNetAppChat.Domain.Shared;
 using NUnit.Framework;
 
@@ -14,22 +15,24 @@ public class MessageListTests
         messageList.Add(GetTestMessage());
     }
 
-    private static IMessageList GetMessageList(DateTime? fakeTime = null)
+    private static IMessageList GetMessageList()
     {
-        fakeTime ??= DateTime.Now;
-
         return new SynchronizedCollectionBasedMessageList(
-            TimeSpan.FromHours(1),
-            new StampService(new ThreadSafeCounter(), new DateTimeProviderMock(fakeTime.Value))
-            );
+            TimeSpan.FromHours(1));
     }
     
-    private static LnacMessage GetTestMessage()
+    private static ReceivedMessage GetTestMessage(DateTime? explicitTime = null)
     {
-        return new LnacMessage(Guid.NewGuid().ToString(), "NaseifBigBoss", "HeyThere",
+        var processors = MessageProcessorFactory.Get(
+            new ThreadSafeCounter(),
+            new DateTimeProviderMock(explicitTime ?? DateTime.Now));
+
+        var message = new LnacMessage(Guid.NewGuid().ToString(), "NaseifBigBoss", "HeyThere",
             Array.Empty<string>(),
             true,
-            "Message");
+            "Message").ToReceivedMessage();
+
+        return processors.Process(message);
     }
 
     [Test]
@@ -60,8 +63,8 @@ public class MessageListTests
     {
         // Since we are moving the message two hours back in time it will
         // simply disappear from the list
-        var messageList = GetMessageList(DateTime.Now.AddHours(-2));
-        messageList.Add(GetTestMessage());
+        var messageList = GetMessageList();
+        messageList.Add(GetTestMessage(DateTime.Now.AddHours(-2)));
 
         var messagesForClient = messageList.GetMessagesForClient("Blubberbär");
         

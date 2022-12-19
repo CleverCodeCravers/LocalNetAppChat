@@ -6,14 +6,12 @@ namespace LocalNetAppChat.Domain.Serverside;
 public class SynchronizedCollectionBasedMessageList : IMessageList
 {
     private readonly TimeSpan _messageLifetime;
-    private readonly IStampService _stampService;
     private readonly SynchronizedCollection<ReceivedMessage> _messages = new();
     private readonly ConcurrentDictionary<string, long> _clientStates = new();
 
-    public SynchronizedCollectionBasedMessageList(TimeSpan messageLifetime, IStampService stampService)
+    public SynchronizedCollectionBasedMessageList(TimeSpan messageLifetime)
     {
         _messageLifetime = messageLifetime;
-        _stampService = stampService;
     }
 
     private void Cleanup()
@@ -30,43 +28,65 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
         }
     }
     
-    public void Add(LnacMessage message)
+
+    public void Add(ReceivedMessage receivedMessage)
     {
-        var stampedMessage = _stampService.StampMessage(message);
-        
-        _messages.Add(stampedMessage);
+        _messages.Add(receivedMessage);
         
         Cleanup();
     }
 
+
     public ReceivedMessage[] GetMessagesForClient(string clientId)
     {
-        if (!_clientStates.ContainsKey(clientId))
-        {
-            _clientStates.AddOrUpdate(clientId, -1, (_,_) => -1);
-        }
+        EnsureClientStateIsAvailable(clientId);
 
-        var currentEndOfLife = CurrentEndOfLife();
-        var messages = 
-            _messages
-                .Where(x => x.Timestamp > currentEndOfLife)
-                .OrderBy(x => x.Id)
-                .ToArray();
-        
-        if (_clientStates.TryGetValue(clientId, out long lastSubmittedIndex))
-        {
-            messages =
-                messages
-                    .Where(x => x.Id > lastSubmittedIndex)
-                    .OrderBy(x => x.Id)
-                    .ToArray();
-        }
+        var messages = GetMessagesThatAreYoungerThan(CurrentEndOfLife());
+
+        messages = FilterOutDirectMessagesToTheOtherClients(messages, clientId);
+
+        if (!_clientStates.TryGetValue(clientId, out long lastSubmittedIndex))
+            return messages;
+
+        messages = OnlyMessagesAfterIndex(messages, lastSubmittedIndex);
 
         var lastMessage = messages.LastOrDefault();
-        if (lastMessage != null) 
+        if (lastMessage != null)
             _clientStates.TryUpdate(clientId, lastMessage.Id, lastSubmittedIndex);
 
         return messages.ToArray();
+    }
+
+    private ReceivedMessage[] OnlyMessagesAfterIndex(ReceivedMessage[] messages, long lastSubmittedIndex)
+    {
+        return messages
+                .Where(x => x.Id > lastSubmittedIndex)
+                .OrderBy(x => x.Id)
+                .ToArray();
+    }
+
+    private ReceivedMessage[] FilterOutDirectMessagesToTheOtherClients(ReceivedMessage[] messages, string clientId)
+    {
+        return messages
+                .Where(x => string.IsNullOrEmpty(x.Receiver) || x.Receiver == clientId)
+                .OrderBy(x => x.Id)
+                .ToArray();
+    }
+
+    private ReceivedMessage[] GetMessagesThatAreYoungerThan(DateTime currentEndOfLife)
+    {
+        return _messages
+                        .Where(x => x.Timestamp > currentEndOfLife)
+                        .OrderBy(x => x.Id)
+                        .ToArray();
+    }
+
+    private void EnsureClientStateIsAvailable(string clientId)
+    {
+        if (!_clientStates.ContainsKey(clientId))
+        {
+            _clientStates.AddOrUpdate(clientId, -1, (_, _) => -1);
+        }
     }
 
     private DateTime CurrentEndOfLife()
