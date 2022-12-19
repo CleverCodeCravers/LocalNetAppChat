@@ -21,6 +21,8 @@ namespace LocalNetAppChat.Bot
                 return;
             }
 
+            var pluginsLoader = new PluginsProcessorCollection();
+
             var parameters = commandLineParametersResult.Value;
             ILnacServer lnacServer = new LnacServer(
                 parameters.Server, parameters.Port, parameters.Https, parameters.IgnoreSslErrors,
@@ -36,10 +38,11 @@ namespace LocalNetAppChat.Bot
                     {
                         output.WriteLine(message);
 
-                        if (message.Message.Text == "/ping")
-                        {
-                            await lnacServer.SendMessage($"responding to ping from {message.Message.Name} ==> a very dear pong from " + parameters.ClientName);
-                        }
+                        pluginsLoader.ExecuteCommand(message.Message.Text);
+                        //if (message.Message.Text == "/ping")
+                        //{
+                        //    await lnacServer.SendMessage($"responding to ping from {message.Message.Name} ==> a very dear pong from " + parameters.ClientName);
+                        //}
                     }
                 }
                 catch (Exception e)
