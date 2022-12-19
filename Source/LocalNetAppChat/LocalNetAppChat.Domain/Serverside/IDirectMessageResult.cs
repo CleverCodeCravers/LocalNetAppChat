@@ -1,2 +1,2 @@
 ﻿namespace LocalNetAppChat.Domain.Serverside;
-public record IDirectMessageResult(string Receiver, string Message);
+public record DirectMessageResult(string Receiver, string Message);

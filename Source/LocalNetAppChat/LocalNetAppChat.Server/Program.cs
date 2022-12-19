@@ -61,7 +61,7 @@ app.MapPost("/send", (string key, LnacMessage message) =>
 
     if (DirectMessageParser.CheckIfDirectMessage(message.Text))
     {
-        IDirectMessageResult directMessage = DirectMessageParser.ParseDirectMessage(message.Text);
+        DirectMessageResult directMessage = DirectMessageParser.ParseDirectMessage(message.Text);
         LnacMessage tmpMessage = message;
         tmpMessage = tmpMessage with { Text = directMessage.Message };
         messageList.Add(tmpMessage, directMessage.Receiver);

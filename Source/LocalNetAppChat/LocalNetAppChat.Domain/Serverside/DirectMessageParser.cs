@@ -8,7 +8,7 @@ public class DirectMessageParser
         return messageText.StartsWith("/msg") == true;
     }
 
-    public static IDirectMessageResult ParseDirectMessage(string messageText)
+    public static DirectMessageResult ParseDirectMessage(string messageText)
     {
         string directMessagePrefix = "/msg";
 
@@ -26,7 +26,7 @@ public class DirectMessageParser
             userMessage += arg + " ";
         }
 
-        return new IDirectMessageResult(Receiver, userMessage.TrimEnd());
+        return new DirectMessageResult(Receiver, userMessage.TrimEnd());
 
     }
 }
