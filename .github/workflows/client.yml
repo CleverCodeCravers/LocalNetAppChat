@@ -13,19 +13,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest, windows-latest]
         include:
-        - os: macos-latest
-          RUNTIMEID: osx-x64
-          OUTPUTDIR: lnac-client-osx-x64
+          - os: ubuntu-latest
+            RUNTIMEID: linux-x64
+            OUTPUTDIR: lnac-client-linux-x64
 
-        - os: ubuntu-latest
-          RUNTIMEID: linux-x64
-          OUTPUTDIR: lnac-client-linux-x64
-
-        - os: windows-latest
-          RUNTIMEID: win-x64
-          OUTPUTDIR: lnac-client-win-x64
+          - os: windows-latest
+            RUNTIMEID: win-x64
+            OUTPUTDIR: lnac-client-win-x64
 
     steps:
       - uses: actions/checkout@v2
@@ -65,4 +61,3 @@ jobs:
         with:
           files: |
             ${{ env.SOLUTION_DIR }}/${{matrix.OUTPUTDIR}}.zip
-
