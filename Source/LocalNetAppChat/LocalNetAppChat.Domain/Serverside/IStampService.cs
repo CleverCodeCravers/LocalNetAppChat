@@ -4,6 +4,5 @@ namespace LocalNetAppChat.Domain.Serverside;
 
 public interface IStampService
 {
-    ReceivedMessage StampMessage(LnacMessage message);
-    ReceivedDirectMessage StampDirectMessage(LnacMessage message, string receiver);
+    ReceivedMessage StampMessage(LnacMessage message, string receiver="");
 }

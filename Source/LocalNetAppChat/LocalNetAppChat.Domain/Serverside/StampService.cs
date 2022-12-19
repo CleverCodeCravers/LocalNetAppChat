@@ -12,14 +12,9 @@ public class StampService : IStampService
         _counter = counter;
         _dateTimeProvider = dateTimeProvider;
     }
-    public ReceivedMessage StampMessage(LnacMessage message)
+    public ReceivedMessage StampMessage(LnacMessage message, string receiver)
     {
-        return new ReceivedMessage(_counter.GetNext(), _dateTimeProvider.Now, message);
+        return new ReceivedMessage(_counter.GetNext(), _dateTimeProvider.Now, message, receiver);
     }
 
-    public ReceivedDirectMessage StampDirectMessage(LnacMessage message, string receiver)
-    {
-        return new ReceivedDirectMessage(_counter.GetNext(), _dateTimeProvider.Now, message, receiver);
-
-    }
 }

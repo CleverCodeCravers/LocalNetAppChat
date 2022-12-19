@@ -8,7 +8,6 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
     private readonly TimeSpan _messageLifetime;
     private readonly IStampService _stampService;
     private readonly SynchronizedCollection<ReceivedMessage> _messages = new();
-    private readonly SynchronizedCollection<ReceivedDirectMessage> _directMessages = new();
     private readonly ConcurrentDictionary<string, long> _clientStates = new();
 
 
@@ -32,18 +31,16 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
         }
     }
     
-    public void AddDirect(LnacMessage message, string receiver)
+    public bool CheckIfUserHasDirectMessages(string clientName)
     {
-        var stampedMessage = _stampService.StampDirectMessage(message, receiver);
+        var userDirectMessages = _messages.Where(x => x.Receiver == clientName).ToArray();
 
-        _directMessages.Add(stampedMessage);
-
-        Cleanup();
+        return userDirectMessages.Length > 0;
     }
 
-    public void Add(LnacMessage message)
+    public void Add(LnacMessage message, string receiver="")
     {
-        var stampedMessage = _stampService.StampMessage(message);
+        var stampedMessage = _stampService.StampMessage(message, receiver);
         
         _messages.Add(stampedMessage);
         
@@ -51,39 +48,7 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
     }
 
 
-    public bool CheckIfClientHasDirectMessages(string clientName)
-    {
-        bool direct = false;
-        foreach (ReceivedDirectMessage message in _directMessages)
-        {
-            if (message.Receiver == clientName)
-            {
-                direct = true;
-                break;
-            }
-        }
-        return direct;
-    }
-
-    public ReceivedDirectMessage[] GetDirectMessagesForClient(string clientId)
-    {
-
-        var messages = _directMessages.Where(x => x.Receiver == clientId).ToArray();
-
-        if (messages.Length > 0)
-        {
-            foreach (var message in messages)
-            {
-                _directMessages.Remove(message);
-            }
-            return messages.ToArray();
-        }
-
-        return messages.ToArray();
-
-    }
-
-    public ReceivedMessage[] GetMessagesForClient(string clientId)
+    public ReceivedMessage[] GetMessagesForClient(string clientId, bool direct= false)
     {
         if (!_clientStates.ContainsKey(clientId))
         {

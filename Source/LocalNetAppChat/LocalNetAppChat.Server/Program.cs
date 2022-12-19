@@ -42,10 +42,10 @@ app.MapGet("/receive", (string key, string clientName) =>
         return "Access Denied";
     }
 
-    if (messageList.CheckIfClientHasDirectMessages(clientName))
+    if (messageList.CheckIfUserHasDirectMessages(clientName))
     {
-        var directMessages = messageList.GetDirectMessagesForClient(clientName);
-        return JsonSerializer.Serialize(directMessages);
+        var directMessages = messageList.GetMessagesForClient(clientName, true);
+        return JsonSerializer.Serialize(directMessages.Where(x => x.Receiver == clientName));
     }
 
     var messages = messageList.GetMessagesForClient(clientName);
@@ -59,18 +59,14 @@ app.MapPost("/send", (string key, LnacMessage message) =>
         return "Access Denied";
     }
 
-    if (message.Text.StartsWith("/msg"))
+    if (DirectMessageParser.CheckIfDirectMessage(message.Text))
     {
-        string directMessagePrefix = "/msg";
-
-        string slicePrefix = message.Text.Substring(directMessagePrefix.Length).Trim();
-
-        string[] messageArgs = slicePrefix.Split(new string[] { " " }, StringSplitOptions.None);
-
-        messageList.AddDirect(message, messageArgs[0]);
-
+        IDirectMessageResult directMessage = DirectMessageParser.ParseDirectMessage(message.Text);
+        LnacMessage tmpMessage = message;
+        tmpMessage = tmpMessage with { Text = directMessage.Message };
+        messageList.Add(tmpMessage, directMessage.Receiver);
         return "Ok";
-    }
+    } 
 
     Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] queue status {messageList.GetStatus()}");
     messageList.Add(message);
