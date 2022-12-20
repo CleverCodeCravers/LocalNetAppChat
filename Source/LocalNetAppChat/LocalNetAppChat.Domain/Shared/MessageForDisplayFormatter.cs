@@ -10,4 +10,11 @@ public static class MessageForDisplayFormatter
         }
         return ($" - [{message.Timestamp:yyyy-MM-dd HH:mm:ss}] {message.Message.Name}: {message.Message.Text}");
     }
+
+    public static string PrintScriptExecutionOutput(string scriptName, string scriptOutput)
+    {
+        return $"\nOutput of the Execution of Script {scriptName}\n" +
+            $"================================================\n" + $"{scriptOutput}\n" + 
+            $"================================================";
+    }
 }

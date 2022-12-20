@@ -5,6 +5,9 @@ namespace LocalNetAppChat.Bot.PluginProcessor
 {
     public class PluginsProcessor : IPlugin
     {
+        private PowerShellPlugin _powershellProcessor = new(Directory.GetCurrentDirectory() + "my_scripts");
+        private PythonPlugin _pythonProcessor = new(Directory.GetCurrentDirectory() + "my_scripts");
+
         public string ExecuteCommand(string command)
         {
             if (!CommandMessageTokenizer.IsCommandMessage(command)) return "Invalid Command!";
@@ -15,9 +18,13 @@ namespace LocalNetAppChat.Bot.PluginProcessor
             switch (token)
             {
                 case "execps":
-                    return new PowerShellPlugin().ExecutePowerShellCommand(CommandMessageTokenizer.GetToken(ref rest), rest);
+                    return _powershellProcessor.ExecutePowerShellCommand(CommandMessageTokenizer.GetToken(ref rest), rest);
                 case "execpy":
-                    return new PythonPlugin().ExecutePythonCommand(CommandMessageTokenizer.GetToken(ref rest), rest);
+                    return _pythonProcessor.ExecutePythonCommand(CommandMessageTokenizer.GetToken(ref rest), rest);
+                case "listpscommands":
+                    return _powershellProcessor.GetAllAvailablePowerShellScripts();
+                case "listpycommands":
+                    return _pythonProcessor.GetAllAvailablePythonScripts();
                 default:
                     return "Unknown Command!";
 

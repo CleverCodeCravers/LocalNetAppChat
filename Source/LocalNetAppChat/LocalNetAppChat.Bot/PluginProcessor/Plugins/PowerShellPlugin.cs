@@ -1,40 +1,56 @@
-﻿using System.Diagnostics;
+﻿using LocalNetAppChat.Domain.Shared;
+using LocalNetAppChat.Domain.Shared.Outputs;
+using System;
+using System.Diagnostics;
 
 namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
 {
     public class PowerShellPlugin
     {
-        private readonly string _pluginsFolder = "";
+        private readonly string _scriptsPath = "";
 
-        public PowerShellPlugin()
+        public PowerShellPlugin(string scriptsPath)
         {
-
+            this._scriptsPath = scriptsPath;
         }
 
         public string ExecutePowerShellCommand( string scriptName, string parameters)
         {
 
-            if (!CheckScriptPathProcessor.CheckIfScriptExists(".ps1", scriptName, _pluginsFolder)) return $"Script {scriptName} does not exist";
+            if (!ScriptsProcessor.CheckIfScriptExists(".ps1", scriptName, _scriptsPath)) return $"Script {scriptName} does not exist";
 
-            string scriptPath = _pluginsFolder + scriptName + ".ps1";
+            string scriptPath = _scriptsPath + scriptName + ".ps1";
 
             var startInfo = new ProcessStartInfo()
             {
                 FileName = "powershell.exe",
                 Arguments = $"-NoProfile -ExecutionPolicy ByPass -File \"{scriptPath}\" {parameters}",
-                UseShellExecute = false
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
             };
             
-            var output = Process.Start(startInfo);
+            var process = Process.Start(startInfo);
 
-            var outPutMessage = "";
+            var outPutMessage = process.StandardOutput.ReadToEnd();
 
-            foreach (var result in output.ToString())
+            process.WaitForExit();
+
+            return MessageForDisplayFormatter.PrintScriptExecutionOutput(scriptName, outPutMessage.Trim());
+                
+        }
+
+        public string GetAllAvailablePowerShellScripts()
+        {
+            string[] files = ScriptsProcessor.GetScripts(_scriptsPath, "*.ps1");
+
+            var result = "\n";
+
+            foreach (var file in files)
             {
-                outPutMessage += result;
+                result += file;
             }
 
-            return outPutMessage;
+            return result.Trim();
         }
     }
 }

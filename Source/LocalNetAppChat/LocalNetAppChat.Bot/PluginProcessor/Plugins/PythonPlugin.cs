@@ -1,41 +1,55 @@
 ﻿using LocalNetAppChat.Domain.Serverside;
+using LocalNetAppChat.Domain.Shared;
 using System.Diagnostics;
 
 namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
 {
     public class PythonPlugin
     {
-        private readonly string _pluginsFolder = "";
+        private readonly string _scriptsPath = "";
 
-        public PythonPlugin()
+        public PythonPlugin(string scriptsPath)
         {
-
+            this._scriptsPath = scriptsPath;
         }
 
         public string ExecutePythonCommand(string scriptName, string parameters)
         {
 
-            if (!CheckScriptPathProcessor.CheckIfScriptExists(".py", scriptName, _pluginsFolder)) return $"Script {scriptName} does not exist";
+            if (!ScriptsProcessor.CheckIfScriptExists(".py", scriptName, _scriptsPath)) return $"Script {scriptName} does not exist";
 
-            string scriptPath = _pluginsFolder + scriptName + ".py";
+            string scriptPath = _scriptsPath + scriptName + ".py";
 
             var startInfo = new ProcessStartInfo()
             {
                 FileName = "python.exe",
                 Arguments = string.Format("{0} {1}", scriptPath, parameters),
-                UseShellExecute = false
+                UseShellExecute = false,
+                RedirectStandardOutput = true
             };
 
-            var output = Process.Start(startInfo);
+            var process = Process.Start(startInfo);
 
-            var outPutMessage = "";
+            var outPutMessage = process.StandardOutput.ReadToEnd();
 
-            foreach (var result in output.ToString())
+            process.WaitForExit();
+
+            return MessageForDisplayFormatter.PrintScriptExecutionOutput(scriptName, outPutMessage.Trim());
+
+        }
+
+        public string GetAllAvailablePythonScripts()
+        {
+            string[] files = ScriptsProcessor.GetScripts(_scriptsPath, "*.py");
+
+            var result = "";
+
+            foreach (var file in files)
             {
-                outPutMessage += result;
+                result += "\n" + file;
             }
 
-            return outPutMessage;
+            return result.Trim();
         }
     }
 }

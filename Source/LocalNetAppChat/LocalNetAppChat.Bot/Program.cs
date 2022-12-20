@@ -39,7 +39,7 @@ namespace LocalNetAppChat.Bot
                     {
                         output.WriteLine(message);
                         var scriptOutput = pluginsProcessor.ExecuteCommand(message.Message.Text);
-                        output.WriteLine(scriptOutput);
+                        await lnacServer.SendMessage($"/msg {message.Message.Name} {scriptOutput}");
                     }
                 }
                 catch (Exception e)
