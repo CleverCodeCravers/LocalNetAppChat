@@ -23,7 +23,7 @@ LocalNetAppChat (LNAC) is a server/client C# command line interface that gives y
 
 LNAC is focusing on giving you a central service with which you can easily group computers together.
 
-Without the need of programming skills, it gives you a server that supports text messaging and a central file storage, as well as a standard client and a bot that will enable a bunch of scripts to come to life over the net. A bit like a remote shell. But since all clients are connected to the server it enables the computers to also communicate around network borders.
+Without the need of programming skills, it gives you a server that supports text messaging and a central file storage, as well as a standard client and a bot that will enable a bunch of scripts to come to life over the net. A bit like a remote shell. But since all clients are connected to the server it enables the computers to also communicate around network borders. You, as a person, can take part in this chat using the client in chat mode, so you can see and debug and issue commands as you like.
 
 The focus usage points at the moment are:
 - Collecting execution log information (sending messages that can be reviewed by a human)
