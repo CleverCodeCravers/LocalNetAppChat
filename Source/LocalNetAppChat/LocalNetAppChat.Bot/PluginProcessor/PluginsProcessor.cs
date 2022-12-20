@@ -3,6 +3,41 @@ using LocalNetAppChat.Domain.Serverside;
 
 namespace LocalNetAppChat.Bot.PluginProcessor
 {
+    public interface IClientCommand {
+        bool IsReponsibleFor(string keyword);
+
+        string Execute(string command);
+    }
+
+    public class ClientCommandCollection {
+        private List<IClientCommand> _clientCommands = new();
+
+        public void Add(IClientCommand command) {
+            _clientCommands.Add(command);
+        }
+
+        public string Execute(string command) {
+            foreach (var clientCommand in _clientCommands) {
+                if (clientCommand.IsReponsibleFor(command)) {
+                    return clientCommand.Execute(command);
+                }
+            }
+
+            return "Invalid commmand.";
+        }
+    }
+
+
+    public class ExecutePowershellScriptClientCommand : IClientCommand {
+        public bool IsReponsibleFor(string keyword) {
+            return 
+        }
+
+        string Execute(string command);
+    }
+
+
+
     public class PluginsProcessor : IPlugin
     {
         private PowerShellPlugin _powershellProcessor = new(Directory.GetCurrentDirectory() + "my_scripts");
