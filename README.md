@@ -4,6 +4,7 @@ LocalNetAppChat (LNAC) is a server/client C# command line interface that gives y
 
 <!-- TOC -->
 
+- [Vision](#vision)
 - [Features](#features)
 - [Installation](#installation)
   - [Server](#server)
@@ -17,6 +18,31 @@ LocalNetAppChat (LNAC) is a server/client C# command line interface that gives y
 - [Questions?](#questions?)
 
 <!-- /TOC -->
+
+## Vision
+
+LNAC is focusing on giving you a central service with which you can easily group computers together.
+
+Without the need of programming skills, it gives you a server that supports text messaging and a central file storage, as well as a standard client and a bot that will enable a bunch of scripts to come to life over the net. A bit like a remote shell. But since all clients are connected to the server it enables the computers to also communicate around network borders.
+
+The focus usage points at the moment are:
+- Collecting execution log information (sending messages that can be reviewed by a human)
+- Sending commands to bots either direct or as a broadcast and receiving their results
+- Exchanging files between the computers that take part.
+
+It should be reasonably secure to use in a trusted local network.
+
+Usage scenario CI/CD-Pipeline: 
+- a bot watches a repository server and when a change is seen, it send a change notification for the repository into the chat. It will send the message until a build-bot claims it. Lets call that message #fuehaks223
+- in the chat 1..n bots look out for such a message and try to claim it.
+- A build-bot on a build machine claims the notification. 
+  - It clones the repository, builds it and exports artifacts, which it will upload to the central storage. 
+  - It will then send a commit message for #fuehaks223 saying that the build has been completed successfully.
+  - It will possibly, as a result, send a "deploy now" message for some of the artifacts
+- A registry bot will update his registry for the deployment-bots assigned to it (e.g. one of the artifacts
+- The deployment-bots send the registry bot their list of applications that they are hosting right now receiving an update notification for all artifacts that they need to change.
+  - The deployment-bots stop the running app process, download and install the update and then restart the app process again.
+  
 
 ## Features
 
