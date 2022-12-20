@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LocalNetAppChat.Bot": {
+      "commandName": "Project",
+      "commandLineArgs": "--server localhost --port 5000 --key 1234"
+    }
+  }
+}

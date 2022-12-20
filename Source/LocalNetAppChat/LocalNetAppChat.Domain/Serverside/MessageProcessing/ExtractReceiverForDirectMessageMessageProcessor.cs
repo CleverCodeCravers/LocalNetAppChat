@@ -33,7 +33,7 @@ namespace LocalNetAppChat.Domain.Serverside.MessageProcessing
                 };
             }
 
-            throw new Exception("Invalid command syntax");
+            return inputMessage;
         }
     }
 }

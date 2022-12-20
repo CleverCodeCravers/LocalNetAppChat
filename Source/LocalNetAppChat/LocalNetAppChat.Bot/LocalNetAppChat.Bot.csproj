@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Cake.Powershell" Version="2.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\LocalNetAppChat.Domain\LocalNetAppChat.Domain.csproj" />
     </ItemGroup>
 

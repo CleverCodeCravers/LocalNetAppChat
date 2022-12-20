@@ -1,4 +1,6 @@
-﻿using LocalNetAppChat.Domain.Clientside;
+﻿using LocalNetAppChat.Bot.PluginProcessor;
+using LocalNetAppChat.Bot.PluginProcessor.Plugins;
+using LocalNetAppChat.Domain.Clientside;
 using LocalNetAppChat.Domain.Clientside.ServerApis;
 using LocalNetAppChat.Domain.Shared.Inputs;
 using LocalNetAppChat.Domain.Shared.Outputs;
@@ -21,8 +23,7 @@ namespace LocalNetAppChat.Bot
                 return;
             }
 
-            var pluginsLoader = new PluginsProcessorCollection();
-
+            var pluginsProcessor = new PluginsProcessor();
             var parameters = commandLineParametersResult.Value;
             ILnacServer lnacServer = new LnacServer(
                 parameters.Server, parameters.Port, parameters.Https, parameters.IgnoreSslErrors,
@@ -37,12 +38,8 @@ namespace LocalNetAppChat.Bot
                     foreach (var message in messages)
                     {
                         output.WriteLine(message);
-
-                        pluginsLoader.ExecuteCommand(message.Message.Text);
-                        //if (message.Message.Text == "/ping")
-                        //{
-                        //    await lnacServer.SendMessage($"responding to ping from {message.Message.Name} ==> a very dear pong from " + parameters.ClientName);
-                        //}
+                        var scriptOutput = pluginsProcessor.ExecuteCommand(message.Message.Text);
+                        output.WriteLine(scriptOutput);
                     }
                 }
                 catch (Exception e)
