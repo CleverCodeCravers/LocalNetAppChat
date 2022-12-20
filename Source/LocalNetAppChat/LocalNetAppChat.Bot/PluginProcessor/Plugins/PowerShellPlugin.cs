@@ -1,6 +1,4 @@
 ﻿using LocalNetAppChat.Domain.Shared;
-using LocalNetAppChat.Domain.Shared.Outputs;
-using System;
 using System.Diagnostics;
 
 namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
