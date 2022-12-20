@@ -23,11 +23,20 @@ namespace LocalNetAppChat.Bot
                 return;
             }
 
-            var pluginsProcessor = new PluginsProcessor();
+            var scriptsPathParameter = "";
+            var executors = new ScriptExecutorCollection();
+            if (!string.IsNullOrEmpty(scriptsPathParameter))
+            {
+                executors = ScriptExecutorFactory.Get(scriptsPathParameter);
+            }
+            // TODO: Wenn die über die kommandozeile Parameter ein ScriptsPath angegeben wurde, dann über die Factory die echten Interpreter holen
             var parameters = commandLineParametersResult.Value;
             ILnacServer lnacServer = new LnacServer(
                 parameters.Server, parameters.Port, parameters.Https, parameters.IgnoreSslErrors,
                 parameters.ClientName, parameters.Key);
+
+            var clientCommands = new ClientCommandCollection();
+            clientCommands.Add(new ExecuteScriptClientCommand(executors));
 
             while (true)
             {
@@ -38,8 +47,8 @@ namespace LocalNetAppChat.Bot
                     foreach (var message in messages)
                     {
                         output.WriteLine(message);
-                        var scriptOutput = pluginsProcessor.ExecuteCommand(message.Message.Text);
-                        await lnacServer.SendMessage($"/msg {message.Message.Name} {scriptOutput}");
+                        var result = clientCommands.Execute(message.Message.Text);
+                        await lnacServer.SendMessage($"/msg {message.Message.Name} {result}");
                     }
                 }
                 catch (Exception e)
