@@ -23,7 +23,7 @@ namespace LocalNetAppChat.Bot
                 return;
             }
 
-            var scriptsPathParameter = "C:\\Users\\Kane\\Documents\\Github\\LocalNetAppChat\\Source\\LocalNetAppChat\\LocalNetAppChat.Bot\\my_scripts\\";
+            var scriptsPathParameter = "";
             var executors = new ScriptExecutorCollection();
             if (!string.IsNullOrEmpty(scriptsPathParameter))
             {
