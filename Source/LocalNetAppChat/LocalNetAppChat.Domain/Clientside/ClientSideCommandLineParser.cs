@@ -48,7 +48,7 @@ public class ClientSideCommandLineParser
                 parser.GetBoolOption("chat"),
                 parser.GetOptionWithValue<string>("--server") ?? "localhost",
                 parser.GetOptionWithValue<int>("--port"),
-                parser.GetOptionWithValue<string>("--file"),
+                parser.GetOptionWithValue<string>("--file") ?? string.Empty,
                 parser.GetBoolOption("--https"),
                 parser.GetOptionWithValue<string>("--text") ?? "",
                 parser.GetOptionWithValue<string>("--clientName") ?? Environment.MachineName,

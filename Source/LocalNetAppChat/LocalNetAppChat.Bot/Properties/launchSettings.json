@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LocalNetAppChat.Bot": {
+      "commandName": "Project",
+      "commandLineArgs": "--server localhost --port 5000 --key 1234 --scriptspath \"C:\\Users\\Kane\\Documents\\Github\\LocalNetAppChat\\Source\\LocalNetAppChat\\LocalNetAppChat.Bot\\my_scripts\""
+    }
+  }
+}

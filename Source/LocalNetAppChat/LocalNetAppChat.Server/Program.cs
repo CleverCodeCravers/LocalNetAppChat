@@ -1,5 +1,6 @@
 using System.Text.Json;
 using CommandLineArguments;
+using LocalNetAppChat.Domain;
 using LocalNetAppChat.Domain.Serverside;
 using LocalNetAppChat.Domain.Serverside.MessageProcessing;
 using LocalNetAppChat.Domain.Shared;
@@ -140,18 +141,6 @@ app.MapGet("/download", async (HttpRequest request, string key, string filename)
     return Results.File(fileContent, fileDownloadName: filename);
 });
 
-string SanatizeFilename(string filename)
-{
-    string result = filename;
-
-    string invalidChars = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-    foreach (char c in invalidChars)
-    {
-        result = result.Replace(c.ToString(), "");
-    }
-
-    return result;
-}
 
 app.MapPost("/deletefile", (HttpRequest request, string filename, string key) =>
 {
@@ -160,7 +149,7 @@ app.MapPost("/deletefile", (HttpRequest request, string filename, string key) =>
         return Results.BadRequest("Access Denied");
     }
 
-    filename = SanatizeFilename(filename);
+    filename = Util.SanatizeFilename(filename);
 
     string currentPath = Directory.GetCurrentDirectory();
     var dataPath = Path.Combine(currentPath, $"data\\{filename}");
