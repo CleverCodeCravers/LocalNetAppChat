@@ -55,7 +55,7 @@ namespace LocalNetAppChat.Bot
                 }
                 catch (Exception e)
                 {
-                    output.WriteLine(e.ToString());
+                    output.WriteLine(e.Message + ": Retry...");
                 }
             }
         }
