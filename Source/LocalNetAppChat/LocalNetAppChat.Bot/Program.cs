@@ -1,4 +1,4 @@
-﻿using LocalNetAppChat.Bot.PluginProcessor;
+﻿using LocalNetAppChat.Bot.PluginProcessor.ClientCommands;
 using LocalNetAppChat.Bot.PluginProcessor.Plugins;
 using LocalNetAppChat.Domain.Clientside;
 using LocalNetAppChat.Domain.Clientside.ServerApis;
@@ -23,7 +23,7 @@ namespace LocalNetAppChat.Bot
                 return;
             }
 
-            var scriptsPathParameter = "";
+            var scriptsPathParameter = "C:\\Users\\Kane\\Documents\\Github\\LocalNetAppChat\\Source\\LocalNetAppChat\\LocalNetAppChat.Bot\\my_scripts\\";
             var executors = new ScriptExecutorCollection();
             if (!string.IsNullOrEmpty(scriptsPathParameter))
             {
@@ -37,6 +37,8 @@ namespace LocalNetAppChat.Bot
 
             var clientCommands = new ClientCommandCollection();
             clientCommands.Add(new ExecuteScriptClientCommand(executors));
+            clientCommands.Add(new ExecuteHelpClientCommand(scriptsPathParameter));
+            clientCommands.Add(new ExecuteListCommandsClientCommand(scriptsPathParameter));
 
             while (true)
             {

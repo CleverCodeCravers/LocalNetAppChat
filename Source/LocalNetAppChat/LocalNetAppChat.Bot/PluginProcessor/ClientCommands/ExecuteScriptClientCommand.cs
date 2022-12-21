@@ -1,19 +1,21 @@
 ﻿using LocalNetAppChat.Bot.PluginProcessor.Plugins;
 using LocalNetAppChat.Domain.Serverside;
 
-namespace LocalNetAppChat.Bot.PluginProcessor
+namespace LocalNetAppChat.Bot.PluginProcessor.ClientCommands
 {
 
 
-    public class ExecuteScriptClientCommand : IClientCommand {
+    public class ExecuteScriptClientCommand : IClientCommand
+    {
 
         private ScriptExecutorCollection _executors = new();
         public ExecuteScriptClientCommand(ScriptExecutorCollection executors)
         {
-            this._executors = executors;
+            _executors = executors;
         }
 
-        public bool IsReponsibleFor(string keyword) {
+        public bool IsReponsibleFor(string keyword)
+        {
             return keyword == "exec";
         }
 
@@ -22,7 +24,7 @@ namespace LocalNetAppChat.Bot.PluginProcessor
         {
             var rest = arguments;
             var scriptName = CommandMessageTokenizer.GetToken(ref rest);
-            return  _executors.Execute(scriptName, rest);
+            return _executors.Execute(scriptName, rest);
         }
     }
 

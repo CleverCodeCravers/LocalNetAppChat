@@ -1,4 +1,6 @@
-﻿namespace LocalNetAppChat.Bot.PluginProcessor
+﻿using System.Text.RegularExpressions;
+
+namespace LocalNetAppChat.Bot.PluginProcessor
 {
     public static class ScriptsProcessor
     {
@@ -19,5 +21,32 @@
             return fileNames;
 
         }
+
+        public static List<Tuple<string, string>> ParsePowerShellScriptParameters(string scriptText)
+        {
+            var result = new List<Tuple<string, string>>();
+            var matches = Regex.Matches(scriptText, "\\[(?<type>\\w+)\\]\\$(?<name>\\w+)").OfType<Match>()
+                   .Select(m => new
+                   {
+                       name = m.Groups["name"].Value,
+                       type = m.Groups["type"].Value
+                   });
+
+            foreach (var m in matches)
+            {
+                result.Add(new Tuple<string, string>(m.name, m.type));
+            }
+
+            return result;
+        }
+
+        public static string GetScriptContent(string scriptPath)
+        {
+            using (var reader = new StreamReader(scriptPath))
+            {
+                return reader.ReadToEnd().Trim();
+            }
+        }
     }
 }
+
