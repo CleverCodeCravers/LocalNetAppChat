@@ -11,10 +11,10 @@ namespace LocalNetAppChat.Domain.Bots.ClientCommands
             _clientCommands.Add(command);
         }
 
-        public string Execute(string command)
+        public Result<string> Execute(string command)
         {
-
-            if (!CommandMessageTokenizer.IsCommandMessage(command)) return "Invalid Command!";
+            if (!CommandMessageTokenizer.IsCommandMessage(command)) 
+                return "Invalid Command!";
 
             var rest = CommandMessageTokenizer.MessageWithoutCommandSignal(command);
             var keyWord = CommandMessageTokenizer.GetToken(ref rest);
@@ -28,6 +28,25 @@ namespace LocalNetAppChat.Domain.Bots.ClientCommands
             }
 
             return "Invalid commmand.";
+        }
+
+        public bool IsAKnownCommand(string command)
+        {
+            if (!CommandMessageTokenizer.IsCommandMessage(command))
+                return false;
+
+            var rest = CommandMessageTokenizer.MessageWithoutCommandSignal(command);
+            var keyWord = CommandMessageTokenizer.GetToken(ref rest);
+
+            foreach (var clientCommand in _clientCommands)
+            {
+                if (clientCommand.IsReponsibleFor(keyWord))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
