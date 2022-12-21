@@ -1,4 +1,5 @@
-﻿using LocalNetAppChat.Domain.Shared;
+﻿using LocalNetAppChat.Domain;
+using LocalNetAppChat.Domain.Shared;
 using System.Diagnostics;
 
 namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
@@ -25,7 +26,13 @@ namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
 
             if (!ScriptsProcessor.CheckIfScriptExists(scriptName, _scriptsPath)) return $"Script {scriptName} does not exist";
 
-            string scriptPath = _scriptsPath + scriptName;
+            var scriptNameSanitized = Util.SanatizeFilename(scriptName);
+            string scriptPath = _scriptsPath + scriptNameSanitized;
+
+            if (parameters.Contains(';'))
+            {
+                parameters = parameters.Replace(";", "");
+            }
 
             var startInfo = new ProcessStartInfo()
             {
