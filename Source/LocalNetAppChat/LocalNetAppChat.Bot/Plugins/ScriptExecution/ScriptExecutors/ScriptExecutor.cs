@@ -2,7 +2,7 @@
 using LocalNetAppChat.Domain.Shared;
 using System.Diagnostics;
 
-namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
+namespace LocalNetAppChat.Bot.Plugins.ScriptExecution.ScriptExecutors
 {
     public class ScriptExecutor : IScriptExecutor
     {
@@ -15,10 +15,10 @@ namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
 
         protected ScriptExecutor(string interpreter, string argsTemplate, string scriptsPath, string ext)
         {
-            this._scriptsPath = scriptsPath;
-            this._interpreter = interpreter;
-            this._argsTemplate = argsTemplate;
-            this._ext = ext;
+            _scriptsPath = scriptsPath;
+            _interpreter = interpreter;
+            _argsTemplate = argsTemplate;
+            _ext = ext;
         }
 
         public string ExecuteCommand(string scriptName, string parameters)
@@ -27,7 +27,7 @@ namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
             if (!ScriptsProcessor.CheckIfScriptExists(scriptName, _scriptsPath)) return $"Script {scriptName} does not exist";
 
             var scriptNameSanitized = Util.SanatizeFilename(scriptName);
-            string scriptPath = _scriptsPath + scriptNameSanitized;
+            string scriptPath = Path.Combine(_scriptsPath, scriptNameSanitized);
 
             if (parameters.Contains(';'))
             {
@@ -44,12 +44,11 @@ namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
 
             var process = Process.Start(startInfo);
 
-            var outPutMessage = process.StandardOutput.ReadToEnd();
+            var outputMessage = process!.StandardOutput.ReadToEnd();
 
             process.WaitForExit();
 
-            return MessageForDisplayFormatter.PrintScriptExecutionOutput(scriptName, outPutMessage.Trim());
-
+            return outputMessage.Trim();
         }
 
         public bool IsResponsibleFor(string scriptName)

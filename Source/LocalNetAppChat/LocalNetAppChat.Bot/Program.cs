@@ -1,5 +1,5 @@
-﻿using LocalNetAppChat.Bot.PluginProcessor.ClientCommands;
-using LocalNetAppChat.Bot.PluginProcessor.Plugins;
+﻿using LocalNetAppChat.Bot.Plugins.ScriptExecution;
+using LocalNetAppChat.Domain.Bots.ClientCommands;
 using LocalNetAppChat.Domain.Clientside;
 using LocalNetAppChat.Domain.Clientside.ServerApis;
 using LocalNetAppChat.Domain.Shared.Inputs;
@@ -23,22 +23,23 @@ namespace LocalNetAppChat.Bot
                 return;
             }
 
-            var scriptsPathParameter = "";
-            var executors = new ScriptExecutorCollection();
-            if (!string.IsNullOrEmpty(scriptsPathParameter))
-            {
-                executors = ScriptExecutorFactory.Get(scriptsPathParameter);
-            }
-            // TODO: Wenn die über die kommandozeile Parameter ein ScriptsPath angegeben wurde, dann über die Factory die echten Interpreter holen
             var parameters = commandLineParametersResult.Value;
+
             ILnacServer lnacServer = new LnacServer(
                 parameters.Server, parameters.Port, parameters.Https, parameters.IgnoreSslErrors,
                 parameters.ClientName, parameters.Key);
 
             var clientCommands = new ClientCommandCollection();
-            clientCommands.Add(new ExecuteScriptClientCommand(executors));
-            clientCommands.Add(new ExecuteHelpClientCommand(scriptsPathParameter));
-            clientCommands.Add(new ExecuteListCommandsClientCommand(scriptsPathParameter));
+
+            if (!Plugins.DefaultFunctionality.DefaultPlugin.AddCommands(clientCommands, args))
+            {
+                output.WriteLine("Unfortunately there have been problems with the command line arguments.");
+            }
+
+            if (!ScriptExecutionPlugin.AddCommands(clientCommands, args))
+            {
+                output.WriteLine("Unfortunately there have been problems with the command line arguments.");
+            }
 
             while (true)
             {

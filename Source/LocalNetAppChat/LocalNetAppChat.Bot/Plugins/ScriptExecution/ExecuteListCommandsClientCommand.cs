@@ -1,10 +1,7 @@
-﻿using LocalNetAppChat.Bot.PluginProcessor.Plugins;
-using LocalNetAppChat.Domain.Serverside;
+﻿using LocalNetAppChat.Domain.Bots.ClientCommands;
 
-namespace LocalNetAppChat.Bot.PluginProcessor.ClientCommands
+namespace LocalNetAppChat.Bot.Plugins.ScriptExecution
 {
-
-
     public class ExecuteListCommandsClientCommand : IClientCommand
     {
         private readonly string _scriptsPath = "";

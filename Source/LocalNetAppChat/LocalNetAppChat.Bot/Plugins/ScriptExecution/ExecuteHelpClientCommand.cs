@@ -1,10 +1,8 @@
-﻿using LocalNetAppChat.Bot.PluginProcessor.Plugins;
-using LocalNetAppChat.Domain.Serverside;
+﻿using LocalNetAppChat.Domain.Bots.ClientCommands;
+using LocalNetAppChat.Domain.Shared;
 
-namespace LocalNetAppChat.Bot.PluginProcessor.ClientCommands
+namespace LocalNetAppChat.Bot.Plugins.ScriptExecution
 {
-
-
     public class ExecuteHelpClientCommand : IClientCommand
     {
         private readonly string _scriptsPath = "";
@@ -23,7 +21,7 @@ namespace LocalNetAppChat.Bot.PluginProcessor.ClientCommands
         {
             var rest = arguments;
             var scriptName = CommandMessageTokenizer.GetToken(ref rest);
-            var scriptText = ScriptsProcessor.GetScriptContent(_scriptsPath + scriptName);
+            var scriptText = ScriptsProcessor.GetScriptContent(Path.Combine(_scriptsPath, scriptName));
             var scriptParams = ScriptsProcessor.ParsePowerShellScriptParameters(scriptText);
 
             var result = $"Script {scriptName} has {scriptParams.Count} Params: \n";

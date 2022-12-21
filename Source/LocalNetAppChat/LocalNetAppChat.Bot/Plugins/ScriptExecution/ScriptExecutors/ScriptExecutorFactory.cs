@@ -1,5 +1,4 @@
-﻿
-namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
+﻿namespace LocalNetAppChat.Bot.Plugins.ScriptExecution.ScriptExecutors
 {
     public static class ScriptExecutorFactory
     {
@@ -11,6 +10,6 @@ namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
             result.Add(new PythonScriptExecutor(scriptsPath));
 
             return result;
-        }   
+        }
     }
 }

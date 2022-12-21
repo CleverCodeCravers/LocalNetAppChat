@@ -1,7 +1,8 @@
-﻿using LocalNetAppChat.Bot.PluginProcessor.Plugins;
-using LocalNetAppChat.Domain.Serverside;
+﻿using LocalNetAppChat.Bot.Plugins.ScriptExecution.ScriptExecutors;
+using LocalNetAppChat.Domain.Bots.ClientCommands;
+using LocalNetAppChat.Domain.Shared;
 
-namespace LocalNetAppChat.Bot.PluginProcessor.ClientCommands
+namespace LocalNetAppChat.Bot.Plugins.ScriptExecution
 {
 
 

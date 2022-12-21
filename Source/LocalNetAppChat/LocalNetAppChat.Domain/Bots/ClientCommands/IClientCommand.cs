@@ -1,4 +1,4 @@
-﻿namespace LocalNetAppChat.Bot.PluginProcessor.ClientCommands
+﻿namespace LocalNetAppChat.Domain.Bots.ClientCommands
 {
     public interface IClientCommand
     {

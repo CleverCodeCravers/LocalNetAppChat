@@ -1,4 +1,4 @@
-﻿namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
+﻿namespace LocalNetAppChat.Bot.Plugins.ScriptExecution.ScriptExecutors
 {
     public interface IScriptExecutor
     {

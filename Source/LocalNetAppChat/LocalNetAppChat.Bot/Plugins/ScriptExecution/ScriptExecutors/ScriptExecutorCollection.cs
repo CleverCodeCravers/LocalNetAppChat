@@ -1,9 +1,8 @@
-﻿
-namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
+﻿namespace LocalNetAppChat.Bot.Plugins.ScriptExecution.ScriptExecutors
 {
     public class ScriptExecutorCollection
     {
-        private List<IScriptExecutor> _scriptExecutors= new();
+        private List<IScriptExecutor> _scriptExecutors = new();
 
         public void Add(IScriptExecutor scriptExecutor)
         {
@@ -12,12 +11,12 @@ namespace LocalNetAppChat.Bot.PluginProcessor.Plugins
 
         public string Execute(string scriptName, string parameters)
         {
-            
+
             foreach (var executor in _scriptExecutors)
             {
                 if (executor.IsResponsibleFor(scriptName))
                 {
-                   return executor.ExecuteCommand(scriptName, parameters);
+                    return executor.ExecuteCommand(scriptName, parameters);
                 }
             }
 

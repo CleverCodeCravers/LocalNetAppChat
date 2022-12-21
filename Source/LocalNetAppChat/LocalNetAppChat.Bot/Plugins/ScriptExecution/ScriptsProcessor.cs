@@ -1,10 +1,10 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace LocalNetAppChat.Bot.PluginProcessor
+namespace LocalNetAppChat.Bot.Plugins.ScriptExecution
 {
     public static class ScriptsProcessor
     {
-        public static bool CheckIfScriptExists( string scriptName, string scriptsPath)
+        public static bool CheckIfScriptExists(string scriptName, string scriptsPath)
         {
             string searchPattern = scriptName;
             string[] fileNames = Directory.GetFiles(scriptsPath);

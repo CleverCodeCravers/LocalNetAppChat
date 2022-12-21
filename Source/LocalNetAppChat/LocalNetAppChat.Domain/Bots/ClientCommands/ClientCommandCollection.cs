@@ -1,6 +1,6 @@
-﻿using LocalNetAppChat.Domain.Serverside;
+﻿using LocalNetAppChat.Domain.Shared;
 
-namespace LocalNetAppChat.Bot.PluginProcessor.ClientCommands
+namespace LocalNetAppChat.Domain.Bots.ClientCommands
 {
     public class ClientCommandCollection
     {

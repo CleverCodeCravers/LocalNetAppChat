@@ -1,4 +1,4 @@
-﻿namespace LocalNetAppChat.Domain.Serverside;
+﻿namespace LocalNetAppChat.Domain.Shared;
 
 public class CommandMessageTokenizer
 {
