@@ -5,7 +5,6 @@ using LocalNetAppChat.Domain.Clientside.ServerApis;
 using LocalNetAppChat.Domain.Shared;
 using LocalNetAppChat.Domain.Shared.Inputs;
 using LocalNetAppChat.Domain.Shared.Outputs;
-using System.ServiceModel.Channels;
 
 namespace LocalNetAppChat.Bot
 {
