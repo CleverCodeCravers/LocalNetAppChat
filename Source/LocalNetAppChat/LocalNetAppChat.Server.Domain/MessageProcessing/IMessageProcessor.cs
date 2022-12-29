@@ -1,6 +1,6 @@
 ﻿using LocalNetAppChat.Domain.Shared;
 
-namespace LocalNetAppChat.Domain.Serverside.MessageProcessing
+namespace LocalNetAppChat.Server.Domain.MessageProcessing
 {
     public interface IMessageProcessor
     {

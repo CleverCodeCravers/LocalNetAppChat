@@ -1,6 +1,6 @@
 using LocalNetAppChat.Domain.Shared;
 
-namespace LocalNetAppChat.Domain.Serverside;
+namespace LocalNetAppChat.Server.Domain;
 
 public interface IMessageList
 {

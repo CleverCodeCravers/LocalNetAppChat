@@ -1,3 +1,5 @@
+namespace LocalNetAppChat.Domain.Clientside;
+
 public class MimeMapping
 {
     private static Dictionary<string, string> ExtensionMap = new Dictionary<string, string>();

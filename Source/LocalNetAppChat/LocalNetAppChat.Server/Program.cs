@@ -1,9 +1,8 @@
 using System.Text.Json;
 using CommandLineArguments;
-using LocalNetAppChat.Domain;
-using LocalNetAppChat.Domain.Serverside;
-using LocalNetAppChat.Domain.Serverside.MessageProcessing;
 using LocalNetAppChat.Domain.Shared;
+using LocalNetAppChat.Server.Domain;
+using LocalNetAppChat.Server.Domain.MessageProcessing;
 
 
 var parser = new Parser(

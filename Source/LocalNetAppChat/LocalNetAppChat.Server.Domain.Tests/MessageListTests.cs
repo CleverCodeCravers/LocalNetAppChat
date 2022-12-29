@@ -1,9 +1,8 @@
-﻿using LocalNetAppChat.Domain.Serverside;
-using LocalNetAppChat.Domain.Serverside.MessageProcessing;
-using LocalNetAppChat.Domain.Shared;
+﻿using LocalNetAppChat.Domain.Shared;
+using LocalNetAppChat.Server.Domain.MessageProcessing;
 using NUnit.Framework;
 
-namespace LocalNetAppChat.Domain.Tests;
+namespace LocalNetAppChat.Server.Domain.Tests;
 
 [TestFixture]
 public class MessageListTests

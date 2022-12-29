@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using LocalNetAppChat.Domain.Shared;
 
-namespace LocalNetAppChat.Domain.Serverside;
+namespace LocalNetAppChat.Server.Domain;
 
 public class SynchronizedCollectionBasedMessageList : IMessageList
 {

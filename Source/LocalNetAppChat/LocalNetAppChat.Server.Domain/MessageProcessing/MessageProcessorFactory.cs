@@ -1,4 +1,4 @@
-﻿namespace LocalNetAppChat.Domain.Serverside.MessageProcessing
+﻿namespace LocalNetAppChat.Server.Domain.MessageProcessing
 {
     public static class MessageProcessorFactory
     {

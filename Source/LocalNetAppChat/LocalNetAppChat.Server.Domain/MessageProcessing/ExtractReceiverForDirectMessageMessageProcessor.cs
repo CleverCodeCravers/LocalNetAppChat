@@ -1,7 +1,6 @@
 ﻿using LocalNetAppChat.Domain.Shared;
-using Microsoft.AspNetCore.Http.Features;
 
-namespace LocalNetAppChat.Domain.Serverside.MessageProcessing
+namespace LocalNetAppChat.Server.Domain.MessageProcessing
 {
     public class ExtractReceiverForDirectMessageMessageProcessor : IMessageProcessor
     {

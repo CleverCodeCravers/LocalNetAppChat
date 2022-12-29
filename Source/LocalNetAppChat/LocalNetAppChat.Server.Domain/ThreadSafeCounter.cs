@@ -1,4 +1,4 @@
-namespace LocalNetAppChat.Domain.Serverside;
+namespace LocalNetAppChat.Server.Domain;
 
 public class ThreadSafeCounter
 {
