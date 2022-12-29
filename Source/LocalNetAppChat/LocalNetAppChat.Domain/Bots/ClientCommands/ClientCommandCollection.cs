@@ -14,7 +14,7 @@ namespace LocalNetAppChat.Domain.Bots.ClientCommands
         public Result<string> Execute(string command)
         {
             if (!CommandMessageTokenizer.IsCommandMessage(command)) 
-                return "Invalid Command!";
+                return Result<string>.Failure("Invalid Command!");
 
             var rest = CommandMessageTokenizer.MessageWithoutCommandSignal(command);
             var keyWord = CommandMessageTokenizer.GetToken(ref rest);
@@ -23,11 +23,11 @@ namespace LocalNetAppChat.Domain.Bots.ClientCommands
             {
                 if (clientCommand.IsReponsibleFor(keyWord))
                 {
-                    return clientCommand.Execute(rest);
+                    return Result<string>.Success(clientCommand.Execute(rest));
                 }
             }
 
-            return "Invalid commmand.";
+            return Result<string>.Failure("Invalid commmand.");
         }
 
         public bool IsAKnownCommand(string command)

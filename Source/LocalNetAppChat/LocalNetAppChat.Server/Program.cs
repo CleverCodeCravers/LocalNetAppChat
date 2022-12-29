@@ -2,8 +2,8 @@ using System.Text.Json;
 using CommandLineArguments;
 using LocalNetAppChat.Domain.Shared;
 using LocalNetAppChat.Server.Domain;
-using LocalNetAppChat.Server.Domain.MessageProcessing;
-
+using LocalNetAppChat.Server.Domain.Messaging;
+using LocalNetAppChat.Server.Domain.StoringFiles;
 
 var parser = new Parser(
     new ICommandLineOption[] {
@@ -22,12 +22,10 @@ if (!parser.TryParse(args, true))
 
 var serverKey = parser.TryGetOptionWithValue<string>("--key");
 
-var messageList = new SynchronizedCollectionBasedMessageList(
-    TimeSpan.FromMinutes(10));
-
-var messageProcessors = MessageProcessorFactory.Get(
-    new ThreadSafeCounter(),
-    new DateTimeProvider());
+var messagingServiceProvider = new MessagingServiceProvider(serverKey!);
+var storageServiceProvider = new StorageServiceProvider(
+    serverKey!,
+    Path.Combine(Directory.GetCurrentDirectory(), "data"));
 
 var hostingUrl = HostingUrlGenerator.GenerateUrl(
     parser.GetOptionWithValue<string>("--listenOn") ?? "",
@@ -41,121 +39,81 @@ app.MapGet("/", () => "LocalNetAppChat Server!");
 
 app.MapGet("/receive", (string key, string clientName) =>
 {
-    if (key != serverKey)
+    var result = messagingServiceProvider.GetMessages(key, clientName);
+
+    if (!result.IsSuccess)
     {
-        return "Access Denied";
+        return result.Error;        
     }
 
-    var messages = messageList.GetMessagesForClient(clientName);
-    return JsonSerializer.Serialize(messages);
+    return JsonSerializer.Serialize(result.Value);
 });
 
 app.MapPost("/send", (string key, LnacMessage message) =>
 {
-    if (key != serverKey)
+    var result = messagingServiceProvider.SendMessage(key, message);
+
+    if (!result.IsSuccess)
     {
-        return "Access Denied";
+        return result.Error;
     }
 
-    var receivedMessage = messageProcessors.Process(message.ToReceivedMessage()); 
-
-    Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] queue status {messageList.GetStatus()}");
-    messageList.Add(receivedMessage);
-
-    return "Ok";
+    return result.Value;
 });
 
+app.MapPost("/upload", async (HttpRequest request, string key) =>
+{
+    if (!request.HasFormContentType)
+        return Results.BadRequest();
 
-app.MapPost("/upload",
-    async (HttpRequest request, string key) =>
-    {
-        if (key != serverKey)
-            return Results.Text("Access Denied");
+    var form = await request.ReadFormAsync();
 
-        if (!request.HasFormContentType)
-            return Results.BadRequest();
+    if (form.Files.Any() == false)
+        return Results.BadRequest("There are no files");
 
-        var form = await request.ReadFormAsync();
+    var file = form.Files.FirstOrDefault();
 
-        if (form.Files.Any() == false)
-            return Results.BadRequest("There are no files");
+    if (file is null || file.Length == 0)
+        return Results.BadRequest("File cannot be empty");
 
-        var file = form.Files.FirstOrDefault();
+    var result = await storageServiceProvider.Upload(key,
+        file.FileName, file.OpenReadStream());
 
-        if (file is null || file.Length == 0)
-            return Results.BadRequest("File cannot be empty");
+    if (!result.IsSuccess)
+        return Results.BadRequest(result.Error);
 
-
-        string currentPath = Directory.GetCurrentDirectory();
-
-        if (!Directory.Exists(Path.Combine(currentPath, "data")))
-            Directory.CreateDirectory(Path.Combine(currentPath, "data"));
-
-
-        var dataPath = Path.Combine(currentPath, $"data\\{file.FileName}");
-
-        using (var fileStream = new FileStream(dataPath, FileMode.Create))
-        {
-            await file.CopyToAsync(fileStream);
-        }
-
-        return Results.Text("Ok");
-    });
+    return Results.Ok(result.Value);
+});
 
 
 app.MapGet("/listallfiles", (string key) =>
 {
-
-    if (key != serverKey)
-    {
-        return "Access Denied";
-    }
-
-    string currentPath = Directory.GetCurrentDirectory();
-    var dataPath = Path.Combine(currentPath, "data");
-
-    string[] files = Directory.GetFiles(dataPath);
-
-    files = files.Select(x => x.Remove(0, dataPath.Length + 1)).ToArray();
-
-    return JsonSerializer.Serialize(files);
+    var result = storageServiceProvider.ListAllFiles(key);
+    
+    if (!result.IsSuccess)
+        return Results.BadRequest(result.Error);
+    
+    return Results.Ok(JsonSerializer.Serialize(result.Value));
 });
 
-
-app.MapGet("/download", async (HttpRequest request, string key, string filename) =>
+app.MapGet("/download", async (HttpRequest _, string key, string filename) =>
 {
-
-    if (key != serverKey)
-    {
-        return Results.BadRequest("Access Denied");
-    }
-
-    string currentPath = Directory.GetCurrentDirectory();
-    var dataPath = Path.Combine(currentPath, $"data\\{filename}");
-
-    if (!File.Exists(dataPath)) return Results.BadRequest("File does not exist!");
-
-    var fileContent = await File.ReadAllBytesAsync(dataPath);
-
-    return Results.File(fileContent, fileDownloadName: filename);
+    var result = await storageServiceProvider.Download(key, filename);
+    
+    if (!result.IsSuccess)
+        return Results.BadRequest(result.Error);
+    
+    return Results.File(result.Value, fileDownloadName: filename);
 });
 
-
-app.MapPost("/deletefile", (HttpRequest request, string filename, string key) =>
+app.MapPost("/deletefile", (HttpRequest _, string filename, string key) =>
 {
-    if (key != serverKey)
-    {
-        return Results.BadRequest("Access Denied");
-    }
-
-    filename = Util.SanatizeFilename(filename);
-
-    string currentPath = Directory.GetCurrentDirectory();
-    var dataPath = Path.Combine(currentPath, $"data\\{filename}");
-
-    if (!File.Exists(dataPath)) return Results.BadRequest("File does not exist!");
-
-    return Results.Text("Ok");
+    var result = storageServiceProvider.Delete(key, filename);
+    
+    if (!result.IsSuccess)
+        return Results.BadRequest(result.Error);
+    
+    return Results.Ok(result.Value);
 });
 
 app.Run();

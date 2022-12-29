@@ -1,6 +1,6 @@
 ﻿using LocalNetAppChat.Domain.Shared;
 
-namespace LocalNetAppChat.Server.Domain.MessageProcessing
+namespace LocalNetAppChat.Server.Domain.Messaging.MessageProcessing
 {
     public class ExtractReceiverForDirectMessageMessageProcessor : IMessageProcessor
     {

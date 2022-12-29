@@ -1,5 +1,6 @@
 ﻿using LocalNetAppChat.Domain.Shared;
-using LocalNetAppChat.Server.Domain.MessageProcessing;
+using LocalNetAppChat.Server.Domain.Messaging;
+using LocalNetAppChat.Server.Domain.Messaging.MessageProcessing;
 using NUnit.Framework;
 
 namespace LocalNetAppChat.Server.Domain.Tests;

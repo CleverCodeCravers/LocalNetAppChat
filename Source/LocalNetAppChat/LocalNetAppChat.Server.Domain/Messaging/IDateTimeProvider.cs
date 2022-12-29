@@ -1,4 +1,4 @@
-namespace LocalNetAppChat.Server.Domain;
+namespace LocalNetAppChat.Server.Domain.Messaging;
 
 public interface IDateTimeProvider
 {

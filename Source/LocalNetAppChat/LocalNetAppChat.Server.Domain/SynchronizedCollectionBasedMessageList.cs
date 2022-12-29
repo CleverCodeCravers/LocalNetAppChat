@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using LocalNetAppChat.Domain.Shared;
+using LocalNetAppChat.Server.Domain.Messaging;
 
 namespace LocalNetAppChat.Server.Domain;
 

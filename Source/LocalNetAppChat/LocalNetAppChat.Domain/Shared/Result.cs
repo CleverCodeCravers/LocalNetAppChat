@@ -6,7 +6,7 @@ public class Result<T>
     public bool IsSuccess { get; }
     public string Error { get; }
 
-    protected Result(T value, bool isSuccess, string error)
+    public Result(T value, bool isSuccess, string error)
     {
         if (isSuccess && value == null)
             throw new ArgumentNullException(nameof(value), "Value cannot be null in a success result.");
@@ -22,6 +22,4 @@ public class Result<T>
     public static Result<T> Success(T value) => new Result<T>(value, true, string.Empty);
 
     public static Result<T> Failure(string error) => new Result<T>(default!, false, error);
-
-    public static implicit operator Result<T>(T value) => Success(value);
 }

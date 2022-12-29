@@ -1,3 +1,5 @@
+using LocalNetAppChat.Server.Domain.Messaging;
+
 namespace LocalNetAppChat.Server.Domain.Tests;
 
 internal class DateTimeProviderMock : IDateTimeProvider
