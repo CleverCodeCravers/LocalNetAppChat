@@ -1,25 +1,27 @@
 # LocalNetAppChat
 
-[![.github/workflows/bot.yml](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/bot.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/bot.yml) 
-[![.github/workflows/client.yml](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/client.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/client.yml) 
+[![.github/workflows/bot.yml](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/bot.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/bot.yml)
+[![.github/workflows/client.yml](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/client.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/client.yml)
 [![.github/workflows/server.yml](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/server.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/server.yml)
+
+[![Experimental Coverage Status](https://coveralls.io/repos/github/CleverCodeCravers/LocalNetAppChat/badge.svg?branch=main)](https://coveralls.io/github/CleverCodeCravers/LocalNetAppChat?branch=main)
 
 LocalNetAppChat (LNAC) is a server/client C# command line interface that gives your apps a way to communicate with each other over the local network.
 
 <!-- TOC -->
 
-- [Vision](#vision)
-- [Features](#features)
-- [Usage](#usage)
-  - [Server CLI](./docs/Server/README.md)
-  - [Client CLI](./docs/Client/README.md)
-  - [Bot CLI](./docs/Bot/README.md)
-- [Installation](#installation)
-  - [Server](#server)
-  - [Client](#client)
-  - [Bot](#bot)
-- [Contributions](#contributions)
-- [Questions?](#questions?)
+-   [Vision](#vision)
+-   [Features](#features)
+-   [Usage](#usage)
+    -   [Server CLI](./docs/Server/README.md)
+    -   [Client CLI](./docs/Client/README.md)
+    -   [Bot CLI](./docs/Bot/README.md)
+-   [Installation](#installation)
+    -   [Server](#server)
+    -   [Client](#client)
+    -   [Bot](#bot)
+-   [Contributions](#contributions)
+-   [Questions?](#questions?)
 
 <!-- /TOC -->
 
@@ -31,25 +33,25 @@ Without the need of programming skills, it gives you a server that supports text
 
 The focus usage points at the moment are:
 
-- Collecting execution log information (sending messages that can be reviewed by a human)
-- Sending commands to bots either direct or as a broadcast and receiving their results
-- Exchanging files between the computers that take part.
+-   Collecting execution log information (sending messages that can be reviewed by a human)
+-   Sending commands to bots either direct or as a broadcast and receiving their results
+-   Exchanging files between the computers that take part.
 
 It should be reasonably secure to use in a trusted local network.
 
 Usage Scenarios include:
 
-- [CI/CD-Pipeline](./docs/usage-cicd-pipeline.md)
-- [Central Log](./docs/usage-central-log.md)
+-   [CI/CD-Pipeline](./docs/usage-cicd-pipeline.md)
+-   [Central Log](./docs/usage-central-log.md)
 
 ## Features
 
-- Available for Windows, Linux and macOS
-- Easy to use
-- Adds a few simple entry points / command line tools that enable network communication between a group of hosts and sub applications.
-- Ability to execute and run tasks between your local apps through command line over the network
-- Encrypted communication
-- and more
+-   Available for Windows, Linux and macOS
+-   Easy to use
+-   Adds a few simple entry points / command line tools that enable network communication between a group of hosts and sub applications.
+-   Ability to execute and run tasks between your local apps through command line over the network
+-   Encrypted communication
+-   and more
 
 ## Showcase
 
