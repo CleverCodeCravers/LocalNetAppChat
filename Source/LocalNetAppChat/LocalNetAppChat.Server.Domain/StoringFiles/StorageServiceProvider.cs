@@ -15,7 +15,7 @@ public class StorageServiceProvider
         _dataPath = dataPath;
 
         if (!Directory.Exists(Path.Combine(dataPath)))
-            Directory.CreateDirectory(Path.Combine(dataPath));
+            Directory.CreateDirectory(dataPath);
     }
 
     public async Task<Result<string>> Upload(
@@ -37,18 +37,15 @@ public class StorageServiceProvider
         return Result<string>.Success("Ok");
     }
 
-    public Result<string[]> ListAllFiles(
+    public Result<string[]> GetFiles(
         string key)
     {
         if (key != _key)
             return Result<string[]>.Failure("Access Denied");
 
-        string currentPath = Directory.GetCurrentDirectory();
-        var dataPath = Path.Combine(currentPath, "data");
+        string[] files = Directory.GetFiles(_dataPath);
 
-        string[] files = Directory.GetFiles(dataPath);
-
-        files = files.Select(x => x.Remove(0, dataPath.Length + 1)).ToArray();
+        files = files.Select(x => x.Remove(0, _dataPath.Length + 1)).ToArray();
 
         return Result<string[]>.Success(files);
     }
@@ -60,9 +57,10 @@ public class StorageServiceProvider
         if (key != _key)
             return Result<byte[]>.Failure("Access Denied");
 
-        var filePath = Path.Combine(_dataPath, filename);
+        var sanatizedFilename = Util.SanatizeFilename(filename);
+        var filePath = Path.Combine(_dataPath, sanatizedFilename);
 
-        if (!File.Exists(_dataPath))
+        if (!File.Exists(filePath))
             return Result<byte[]>.Failure("File does not exist!");
 
         var fileContent = await File.ReadAllBytesAsync(filePath);

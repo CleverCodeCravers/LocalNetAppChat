@@ -3,7 +3,7 @@ using LocalNetAppChat.Server.Domain.Messaging;
 using LocalNetAppChat.Server.Domain.Messaging.MessageProcessing;
 using NUnit.Framework;
 
-namespace LocalNetAppChat.Server.Domain.Tests;
+namespace LocalNetAppChat.Server.Domain.Tests.Messaging;
 
 [TestFixture]
 public class MessageListTests

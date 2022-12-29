@@ -88,7 +88,7 @@ app.MapPost("/upload", async (HttpRequest request, string key) =>
 
 app.MapGet("/listallfiles", (string key) =>
 {
-    var result = storageServiceProvider.ListAllFiles(key);
+    var result = storageServiceProvider.GetFiles(key);
     
     if (!result.IsSuccess)
         return Results.BadRequest(result.Error);
