@@ -2,9 +2,8 @@
 
 [![.github/workflows/bot.yml](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/bot.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/bot.yml)
 [![.github/workflows/client.yml](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/client.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/client.yml)
-[![.github/workflows/server.yml](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/server.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/server.yml)
 
-[![Experimental Coverage Status](https://coveralls.io/repos/github/CleverCodeCravers/LocalNetAppChat/badge.svg?branch=main)](https://coveralls.io/github/CleverCodeCravers/LocalNetAppChat?branch=main)
+Server : [![.github/workflows/server.yml](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/server.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/server.yml) [![Coverage Status](https://coveralls.io/repos/github/CleverCodeCravers/LocalNetAppChat/badge.svg?branch=main)](https://coveralls.io/github/CleverCodeCravers/LocalNetAppChat?branch=main)
 
 LocalNetAppChat (LNAC) is a server/client C# command line interface that gives your apps a way to communicate with each other over the local network.
 
