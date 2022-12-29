@@ -9,7 +9,7 @@
     <PropertyGroup Condition="$(MSBuildProjectName.Contains('.Tests'))">
         <CollectCoverage>true</CollectCoverage>
         <ExcludeByAttribute>GeneratedCodeAttribute</ExcludeByAttribute>
-        <Exclude>[CommandLineArguments]*</Exclude>
+        <Exclude>[CommandLineArguments]*,[LocalNetAppChat.Domain]*</Exclude>
         <CoverletOutputFormat>lcov</CoverletOutputFormat>
     </PropertyGroup>
 
