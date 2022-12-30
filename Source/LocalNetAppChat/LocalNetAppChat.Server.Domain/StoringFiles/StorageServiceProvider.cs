@@ -1,17 +1,18 @@
 using LocalNetAppChat.Domain.Shared;
+using LocalNetAppChat.Server.Domain.Security;
 
 namespace LocalNetAppChat.Server.Domain.StoringFiles;
 
 public class StorageServiceProvider
 {
-    private readonly string _key;
+    private readonly IAccessControl _accessControl;
     private readonly string _dataPath;
 
     public StorageServiceProvider(
-        string key,
+        IAccessControl accessControl,
         string dataPath)
     {
-        _key = key;
+        _accessControl = accessControl;
         _dataPath = dataPath;
 
         if (!Directory.Exists(Path.Combine(dataPath)))
@@ -23,8 +24,8 @@ public class StorageServiceProvider
         string filename,
         Stream dataStream)
     {
-        if (key != _key)
-            return Result<string>.Failure("Access Denied");
+        if (!_accessControl.IsAllowed(key))
+            return Result<string>.Failure("Access denied");
 
         var sanatizedFilename = Util.SanatizeFilename(filename);
         var filePath = Path.Combine(_dataPath, sanatizedFilename);
@@ -37,11 +38,10 @@ public class StorageServiceProvider
         return Result<string>.Success("Ok");
     }
 
-    public Result<string[]> GetFiles(
-        string key)
+    public Result<string[]> GetFiles(string key)
     {
-        if (key != _key)
-            return Result<string[]>.Failure("Access Denied");
+        if (!_accessControl.IsAllowed(key))
+            return Result<string[]>.Failure("Access denied");
 
         string[] files = Directory.GetFiles(_dataPath);
 
@@ -54,8 +54,8 @@ public class StorageServiceProvider
         string key,
         string filename)
     {
-        if (key != _key)
-            return Result<byte[]>.Failure("Access Denied");
+        if (!_accessControl.IsAllowed(key))
+            return Result<byte[]>.Failure("Access denied");
 
         var sanatizedFilename = Util.SanatizeFilename(filename);
         var filePath = Path.Combine(_dataPath, sanatizedFilename);
@@ -71,8 +71,8 @@ public class StorageServiceProvider
         string key,
         string filename)
     {
-        if (key != _key)
-            return Result<string>.Failure("Access Denied");
+        if (!_accessControl.IsAllowed(key))
+            return Result<string>.Failure("Access denied");
         
         var sanatizedFilename = Util.SanatizeFilename(filename);
         var filePath = Path.Combine(_dataPath, sanatizedFilename);

@@ -70,4 +70,11 @@ public class MessageListTests
         
         Assert.IsEmpty(messagesForClient);
     }
+
+    [Test]
+    public void We_can_get_a_little_status_report_from_it()
+    {
+        var messageList = GetMessageList();
+        Assert.IsNotEmpty(messageList.GetStatus());
+    }
 }

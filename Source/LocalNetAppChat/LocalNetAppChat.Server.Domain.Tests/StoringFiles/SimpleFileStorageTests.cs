@@ -1,4 +1,5 @@
 using LocalNetAppChat.Server.Domain.StoringFiles;
+using LocalNetAppChat.Server.Domain.Tests.Security;
 using NUnit.Framework;
 
 namespace LocalNetAppChat.Server.Domain.Tests.StoringFiles;
@@ -10,6 +11,8 @@ public class SimpleFileStorageTests
 
     private StorageServiceProvider GetTestStorage()
     {
+        var accessControl = new AccessControlMock(true);
+        
         var storageTestDirectory =
             Path.Combine(
                 Directory.GetCurrentDirectory(),
@@ -19,7 +22,7 @@ public class SimpleFileStorageTests
         if (Directory.Exists(storageTestDirectory))
             Directory.Delete(storageTestDirectory, true);
 
-        var storage = new StorageServiceProvider(Key, storageTestDirectory);
+        var storage = new StorageServiceProvider(accessControl, storageTestDirectory);
         
         return storage;
     }
@@ -80,5 +83,25 @@ public class SimpleFileStorageTests
         Assert.IsTrue(downloadResult.IsSuccess, "download should work");
         
         CollectionAssert.AreEqual(fileContent, downloadResult.Value);
+    }
+    
+    [Test]
+    public async Task Downloading_a_non_existing_file_should_fail()
+    {
+        var storage = GetTestStorage();
+        
+        var downloadResult = await storage.Download(Key, "test.txt");
+        Assert.IsFalse(downloadResult.IsSuccess, "download should fail");
+        Assert.AreEqual(downloadResult.Error, "File does not exist!");
+    }
+    
+    [Test]
+    public void Deleting_a_non_existing_file_should_fail()
+    {
+        var storage = GetTestStorage();
+        
+        var deleteResult = storage.Delete(Key, "test.txt");
+        Assert.IsFalse(deleteResult.IsSuccess, "delete should fail");
+        Assert.AreEqual(deleteResult.Error, "File does not exist!");
     }
 }

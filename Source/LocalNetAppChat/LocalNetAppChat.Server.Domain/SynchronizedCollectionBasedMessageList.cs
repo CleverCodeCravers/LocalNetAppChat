@@ -40,14 +40,11 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
 
     public ReceivedMessage[] GetMessagesForClient(string clientId)
     {
-        EnsureClientStateIsAvailable(clientId);
-
         var messages = GetMessagesThatAreYoungerThan(CurrentEndOfLife());
 
         messages = FilterOutDirectMessagesToTheOtherClients(messages, clientId);
 
-        if (!_clientStates.TryGetValue(clientId, out long lastSubmittedIndex))
-            return messages;
+        var lastSubmittedIndex = _clientStates.GetOrAdd(clientId, -1);
 
         messages = OnlyMessagesAfterIndex(messages, lastSubmittedIndex);
 
@@ -80,14 +77,6 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
                         .Where(x => x.Timestamp > currentEndOfLife)
                         .OrderBy(x => x.Id)
                         .ToArray();
-    }
-
-    private void EnsureClientStateIsAvailable(string clientId)
-    {
-        if (!_clientStates.ContainsKey(clientId))
-        {
-            _clientStates.AddOrUpdate(clientId, -1, (_, _) => -1);
-        }
     }
 
     private DateTime CurrentEndOfLife()
