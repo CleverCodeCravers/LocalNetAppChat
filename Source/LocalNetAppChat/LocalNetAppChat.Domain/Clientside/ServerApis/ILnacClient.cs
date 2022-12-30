@@ -2,13 +2,13 @@ using LocalNetAppChat.Domain.Shared;
 
 namespace LocalNetAppChat.Domain.Clientside.ServerApis;
 
-public interface ILnacServer
+public interface ILnacClient
 {
-    ReceivedMessage[] GetMessages();
+    Task<ReceivedMessage[]> GetMessages();
 
     Task SendMessage(string message, string[]? tags = null, string type = "Message");
-    Task SendFile(string filePath, string type = "Task");
-    string[] GetServerFiles();
+    Task SendFile(string filePath);
+    Task<string[]> GetServerFiles();
     Task DownloadFile(string filename, string targetPath);
     Task DeleteFile(string filename);
 }

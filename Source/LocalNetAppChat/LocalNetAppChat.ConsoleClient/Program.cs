@@ -24,9 +24,14 @@ namespace LocalNetAppChat.ConsoleClient
             }
 
             var parameters = commandLineParametersResult.Value;
-            ILnacServer lnacServer = new LnacServer(
+
+            var apiAccessor = new WebApiServerApiAccessor(
                 parameters.Server, parameters.Port, parameters.Https, parameters.IgnoreSslErrors,
-                parameters.ClientName, parameters.Key);
+                parameters.Key,
+                parameters.ClientName
+            );
+            
+            ILnacClient lnacClient = new LnacClient(apiAccessor, parameters.ClientName);
 
             var operatingModeCollection = new OperatingModeCollection();
             operatingModeCollection.Add(new SendMessageOperatingMode());
@@ -44,7 +49,7 @@ namespace LocalNetAppChat.ConsoleClient
             }
             else
             {
-                await operatingMode?.Run(parameters, output, lnacServer, input)!;
+                await operatingMode?.Run(parameters, output, lnacClient, input)!;
             }
         }
     }

@@ -11,13 +11,12 @@ public class ListAllFilesOperatingMode : IOperatingMode
         return parameters.ListServerFiles;
     }
 
-    public Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
+    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacClient lnacClient, IInput input)
     {
-        var files = lnacServer.GetServerFiles();
+        var files = await lnacClient.GetServerFiles();
         foreach (var file in files)
         {
             output.WriteLineUnformatted(file);
         }
-        return Task.CompletedTask;
     }
 }

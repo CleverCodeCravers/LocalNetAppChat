@@ -11,12 +11,12 @@ public class ChatOperatingMode : IOperatingMode
         return parameters.Chat;
     }
 
-    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
+    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacClient lnacClient, IInput input)
     {
-        output.WriteLine($"Connecting to server {lnacServer}...");
+        output.WriteLine($"Connecting to server {lnacClient}...");
         while (true)
         {
-            var receivedMessages = lnacServer.GetMessages();
+            var receivedMessages = await lnacClient.GetMessages();
             
             foreach (var receivedMessage in receivedMessages)
             {
@@ -26,7 +26,7 @@ public class ChatOperatingMode : IOperatingMode
             if (input.IsInputWaiting())
             {
                 var message = input.GetInput();
-                await lnacServer.SendMessage(message);
+                await lnacClient.SendMessage(message);
             }
 
             Thread.Sleep(1000);
