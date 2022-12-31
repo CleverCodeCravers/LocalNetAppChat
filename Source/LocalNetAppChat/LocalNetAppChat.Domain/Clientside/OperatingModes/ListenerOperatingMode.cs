@@ -11,14 +11,14 @@ public class ListenerOperatingMode : IOperatingMode
         return parameters.Listener;
     }
 
-    public Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
+    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacClient lnacClient, IInput input)
     {
-        output.WriteLine($"Listening to server {lnacServer}...");
+        output.WriteLine($"Listening to server {lnacClient}...");
         while (true)
         {
             try
             {
-                var receivedMessages = lnacServer.GetMessages();
+                var receivedMessages = await lnacClient.GetMessages();
 
                 foreach (var receivedMessage in receivedMessages)
                 {

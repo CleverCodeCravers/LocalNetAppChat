@@ -26,9 +26,15 @@ namespace LocalNetAppChat.Bot
 
             var parameters = commandLineParametersResult.Value;
 
-            ILnacServer lnacServer = new LnacServer(
+            var apiAccessor = new WebApiServerApiAccessor(
                 parameters.Server, parameters.Port, parameters.Https, parameters.IgnoreSslErrors,
-                parameters.ClientName, parameters.Key);
+                parameters.Key,
+                parameters.ClientName
+            );
+            
+            ILnacClient lnacClient = new LnacClient(
+                apiAccessor,
+                parameters.ClientName);
 
             var publicClientCommands = new ClientCommandCollection();
             if (!Plugins.DefaultFunctionality.DefaultPlugin.AddCommands(publicClientCommands, args))
@@ -47,7 +53,7 @@ namespace LocalNetAppChat.Bot
             {
                 try
                 {
-                    var messages = lnacServer.GetMessages();
+                    var messages = await lnacClient.GetMessages();
                     
                     foreach (var message in messages)
                     {
@@ -58,14 +64,14 @@ namespace LocalNetAppChat.Bot
                             if (IsAPrivateMessage(message))
                             {
                                 Result<string> result = privateClientCommands.Execute(message.Message.Text);
-                                await SendResultBack(lnacServer, message.Message.Name, result);
+                                await SendResultBack(lnacClient, message.Message.Name, result);
                                 continue;
                             }
 
                             if (publicClientCommands.IsAKnownCommand(message.Message.Text))
                             {
                                 await SendResultBack(
-                                    lnacServer,
+                                    lnacClient,
                                     message.Message.Name,
                                     publicClientCommands.Execute(message.Message.Text));
                             }
@@ -79,15 +85,15 @@ namespace LocalNetAppChat.Bot
             }
         }
 
-        private async static Task SendResultBack(ILnacServer lnacServer, string sender, Result<string> result)
+        private async static Task SendResultBack(ILnacClient lnacClient, string sender, Result<string> result)
         {
             if (result.IsSuccess)
             {
-                await lnacServer.SendMessage($"/msg {sender} {result.Value}");
+                await lnacClient.SendMessage($"/msg {sender} {result.Value}");
                 return;
             }
 
-            await lnacServer.SendMessage($"/msg {sender} {result.Error}");
+            await lnacClient.SendMessage($"/msg {sender} {result.Error}");
         }
 
         private static bool IsAPrivateMessage(ReceivedMessage message)

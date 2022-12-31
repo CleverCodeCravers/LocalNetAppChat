@@ -3,6 +3,8 @@ using CommandLineArguments;
 using LocalNetAppChat.Domain.Shared;
 using LocalNetAppChat.Server.Domain;
 using LocalNetAppChat.Server.Domain.Messaging;
+using LocalNetAppChat.Server.Domain.Messaging.MessageProcessing;
+using LocalNetAppChat.Server.Domain.Security;
 using LocalNetAppChat.Server.Domain.StoringFiles;
 
 var parser = new Parser(
@@ -21,10 +23,17 @@ if (!parser.TryParse(args, true))
 }
 
 var serverKey = parser.TryGetOptionWithValue<string>("--key");
+var accessControl = new KeyBasedAccessControl(serverKey);
 
-var messagingServiceProvider = new MessagingServiceProvider(serverKey!);
+var messagingServiceProvider = new MessagingServiceProvider(
+    accessControl,
+    MessageProcessorFactory.Get(
+        new ThreadSafeCounter(),
+        new DateTimeProvider())
+    );
+
 var storageServiceProvider = new StorageServiceProvider(
-    serverKey!,
+    accessControl,
     Path.Combine(Directory.GetCurrentDirectory(), "data"));
 
 var hostingUrl = HostingUrlGenerator.GenerateUrl(

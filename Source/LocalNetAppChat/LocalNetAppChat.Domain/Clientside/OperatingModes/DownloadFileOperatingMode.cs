@@ -11,8 +11,8 @@ public class DownloadFileOperatingMode : IOperatingMode
         return parameters.FileDownload;
     }
 
-    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
+    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacClient lnacClient, IInput input)
     {
-        await lnacServer.DownloadFile(parameters.File, parameters.TargetPath);
+        await lnacClient.DownloadFile(parameters.File, parameters.TargetPath);
     }
 }

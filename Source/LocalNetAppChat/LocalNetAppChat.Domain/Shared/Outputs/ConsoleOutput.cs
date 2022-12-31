@@ -1,5 +1,8 @@
-﻿namespace LocalNetAppChat.Domain.Shared.Outputs;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace LocalNetAppChat.Domain.Shared.Outputs;
+
+[ExcludeFromCodeCoverage]
 public class ConsoleOutput : IOutput
 {
     public void WriteLine(string text)

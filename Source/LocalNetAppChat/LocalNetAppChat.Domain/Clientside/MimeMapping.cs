@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace LocalNetAppChat.Domain.Clientside;
 
+[ExcludeFromCodeCoverage]
 public class MimeMapping
 {
-    private static Dictionary<string, string> ExtensionMap = new Dictionary<string, string>();
+    private static Dictionary<string, string> ExtensionMap = new();
 
     static MimeMapping()
     {
@@ -207,7 +210,7 @@ public class MimeMapping
     {
         if (ExtensionMap.ContainsKey(fileExtension))
             return ExtensionMap[fileExtension];
-        else
-            return ExtensionMap[".*"];
+
+        return ExtensionMap[".*"];
     }
 }

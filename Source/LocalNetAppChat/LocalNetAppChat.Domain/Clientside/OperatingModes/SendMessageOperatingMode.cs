@@ -11,8 +11,8 @@ public class SendMessageOperatingMode : IOperatingMode
         return parameters.Message;
     }
 
-    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
+    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacClient lnacClient, IInput input)
     {
-        await lnacServer.SendMessage(parameters.Text);
+        await lnacClient.SendMessage(parameters.Text);
     }
 }

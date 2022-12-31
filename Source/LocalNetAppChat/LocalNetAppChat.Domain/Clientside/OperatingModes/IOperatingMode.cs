@@ -8,5 +8,5 @@ public interface IOperatingMode
 {
     bool IsResponsibleFor(ClientSideCommandLineParameters parameters);
 
-    Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input);
+    Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacClient lnacClient, IInput input);
 }

@@ -11,8 +11,8 @@ public class DeleteFileOperatingMode : IOperatingMode
         return parameters.FileDelete;
     }
 
-    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacServer lnacServer, IInput input)
+    public async Task Run(ClientSideCommandLineParameters parameters, IOutput output, ILnacClient lnacClient, IInput input)
     {
-        await lnacServer.DeleteFile(parameters.File);
+        await lnacClient.DeleteFile(parameters.File);
     }
 }

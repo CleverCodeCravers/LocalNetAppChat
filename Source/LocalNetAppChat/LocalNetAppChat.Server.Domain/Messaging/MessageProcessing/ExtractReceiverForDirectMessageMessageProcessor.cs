@@ -4,10 +4,6 @@ namespace LocalNetAppChat.Server.Domain.Messaging.MessageProcessing
 {
     public class ExtractReceiverForDirectMessageMessageProcessor : IMessageProcessor
     {
-        public ExtractReceiverForDirectMessageMessageProcessor()
-        {
-        }
-
         public ReceivedMessage Process(ReceivedMessage inputMessage)
         {
             if (!CommandMessageTokenizer.IsCommandMessage(inputMessage.Message.Text))
