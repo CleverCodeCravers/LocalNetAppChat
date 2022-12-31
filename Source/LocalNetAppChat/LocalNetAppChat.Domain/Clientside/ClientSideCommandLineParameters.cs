@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace LocalNetAppChat.Domain.Clientside;
 
+[ExcludeFromCodeCoverage]
 public record ClientSideCommandLineParameters(
     bool Message,
     bool Listener,

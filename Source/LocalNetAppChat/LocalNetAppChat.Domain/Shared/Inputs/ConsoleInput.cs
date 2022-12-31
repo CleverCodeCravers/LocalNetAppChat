@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace LocalNetAppChat.Domain.Shared.Inputs;
 
+[ExcludeFromCodeCoverage]
 public class ConsoleInput : IInput
 {
     public bool IsInputWaiting()
