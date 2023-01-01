@@ -76,8 +76,19 @@ public class LnacClient : ILnacClient
     public async Task<string[]> GetServerFiles()
     {
         var result = await _apiAccessor.GetAsync("listallfiles");
-        var receivedFilesList = JsonSerializer.Deserialize<string[]>(result);
-        return receivedFilesList ?? Array.Empty<string>();
+        
+        try
+        {
+            var receivedFilesList = JsonSerializer.Deserialize<string[]>(result);
+            return receivedFilesList ?? Array.Empty<string>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Received {result}, which is not valid JSON");
+            Console.WriteLine(ex.Message);
+        }
+
+        return Array.Empty<string>();
     }
 
     public async Task DownloadFile(string filename, string targetPath)

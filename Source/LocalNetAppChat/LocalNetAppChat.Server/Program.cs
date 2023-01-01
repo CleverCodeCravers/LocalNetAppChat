@@ -23,7 +23,7 @@ if (!parser.TryParse(args, true))
 }
 
 var serverKey = parser.TryGetOptionWithValue<string>("--key");
-var accessControl = new KeyBasedAccessControl(serverKey);
+var accessControl = new KeyBasedAccessControl(serverKey??string.Empty);
 
 var messagingServiceProvider = new MessagingServiceProvider(
     accessControl,
