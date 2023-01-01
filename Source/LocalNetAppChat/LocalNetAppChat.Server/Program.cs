@@ -102,7 +102,7 @@ app.MapGet("/listallfiles", (string key) =>
     if (!result.IsSuccess)
         return Results.BadRequest(result.Error);
     
-    return Results.Ok(JsonSerializer.Serialize(result.Value));
+    return Results.Json(result.Value);
 });
 
 app.MapGet("/download", async (HttpRequest _, string key, string filename) =>
