@@ -91,7 +91,7 @@ app.MapPost("/upload", async (HttpRequest request, string key) =>
     if (!result.IsSuccess)
         return Results.BadRequest(result.Error);
 
-    return Results.Ok(result.Value);
+    return Results.Content(result.Value);
 });
 
 
@@ -122,7 +122,7 @@ app.MapPost("/deletefile", (HttpRequest _, string filename, string key) =>
     if (!result.IsSuccess)
         return Results.BadRequest(result.Error);
     
-    return Results.Ok(result.Value);
+    return Results.Content(result.Value);
 });
 
 app.Run();
