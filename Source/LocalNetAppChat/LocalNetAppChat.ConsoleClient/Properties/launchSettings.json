@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "LocalNetAppChat.Bot": {
+    "LocalNetAppChat.ConsoleClient": {
       "commandName": "Project",
       "commandLineArgs": "--help"
     }
