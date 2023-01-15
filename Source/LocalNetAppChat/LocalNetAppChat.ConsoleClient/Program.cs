@@ -46,9 +46,9 @@ namespace LocalNetAppChat.ConsoleClient
                     "The text message to send to the server. (only when in message mode!)",
                     "The name of your client. If not specified, your machine name will be sent as clientName to the server",
                     "An Authentication password that the server requires to allow incoming requests from the client!",
-                    "Whether to ignore SSL Erros in console",
+                    "Whether to ignore SSL Errors in console",
                     "Path where you want the requested File to be saved at after downloading it",
-                    "Prints out the commands and their corresponding descriptioon"
+                    "Prints out the commands and their corresponding description"
 
                 };
 
@@ -63,7 +63,25 @@ namespace LocalNetAppChat.ConsoleClient
                     $"\n\n [Usage]\n\n" +
                     $"\n{string.Join("\n", commandsWithDescription)}");
 
-                Console.WriteLine("\n\nExamples:\r\n\r\n  – Start the client in listening mode\r\n    $ LocalNetAppChat.ConsoleClient listener --server \"localhost\" --port 54214 --key 1234 --clientName \"GithubReadMe\"\r\n  - Start the client in message mode\r\n    $ LocalNetAppChat.ConsoleClient message --server \"localhost\" --port 51234 --key 1234 --text \"Hey there, I am client GithubReadMe\"\r\n  - Start the client in chat mode\r\n    LocalNetAppChat.ConsoleClient chat --server \"localhost\" --port 54214 --key 1234 --clientName \"GithubReadMe\"\r\n  - Upload a file to the server\r\n    $ LocalNetAppChat.ConsoleClient fileupload --server \"localhost\" --port 51234 --key 1234 --file \"./README.md\"\r\n  - Download a file from the server\r\n    $ LocalNetAppChat.ConsoleClient filedownload --server \"localhost\" --port 51234 --key 1234 --file \"./README.md\" --targetPath \"/home/github/Projects\"\r\n  - Deletes a file from the server\r\n    $ LocalNetAppChat.ConsoleClient filedelete --server \"localhost\" --port 51234 --key 1234 --file \"README.md\"\r\n  - List all files existing on the server\r\n    $ LocalNetAppChat.ConsoleClient listfiles --server \"localhost\" --port 51234 --key 1234");
+                Console.WriteLine(@"
+
+Examples:
+
+  – Start the client in listening mode
+    $ LocalNetAppChat.ConsoleClient listener --server ""localhost"" --port 54214 --key 1234 --clientName ""GithubReadMe""
+  - Start the client in message mode
+    $ LocalNetAppChat.ConsoleClient message --server ""localhost"" --port 51234 --key 1234 --text ""Hey there, I am client GithubReadMe""
+  - Start the client in chat mode
+    LocalNetAppChat.ConsoleClient chat --server ""localhost"" --port 54214 --key 1234 --clientName ""GithubReadMe""
+  - Upload a file to the server
+    $ LocalNetAppChat.ConsoleClient fileupload --server ""localhost"" --port 51234 --key 1234 --file ""./README.md""
+  - Download a file from the server
+    $ LocalNetAppChat.ConsoleClient filedownload --server ""localhost"" --port 51234 --key 1234 --file ""./README.md"" --targetPath ""/home/github/Projects""
+  - Deletes a file from the server
+    $ LocalNetAppChat.ConsoleClient filedelete --server ""localhost"" --port 51234 --key 1234 --file ""README.md""
+  - List all files existing on the server
+    $ LocalNetAppChat.ConsoleClient listfiles --server ""localhost"" --port 51234 --key 1234
+");
                 
                 return;
             }

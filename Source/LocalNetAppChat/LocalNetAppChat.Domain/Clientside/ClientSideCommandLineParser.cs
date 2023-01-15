@@ -18,7 +18,8 @@ public class ClientSideCommandLineParser
     private Parser ParseArgs()
     {
         var parser = new Parser(
-    new ICommandLineOption[] {
+            new ICommandLineOption[]
+            {
                 new BoolCommandLineOption("message"),
                 new BoolCommandLineOption("listener"),
                 new BoolCommandLineOption("fileupload"),
@@ -37,9 +38,10 @@ public class ClientSideCommandLineParser
                 new BoolCommandLineOption("--ignoresslerrors"),
                 new StringCommandLineOption("--targetPath"),
                 new BoolCommandLineOption("--help")
-    });
+            });
         return parser;
     }
+
     public Result<ClientSideCommandLineParameters> Parse(string[] args)
     {
         var parser = this.ParseArgs();
