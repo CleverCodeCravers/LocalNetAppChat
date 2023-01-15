@@ -1,4 +1,5 @@
-﻿using LocalNetAppChat.Bot.Plugins.ScriptExecution;
+﻿using CommandLineArguments;
+using LocalNetAppChat.Bot.Plugins.ScriptExecution;
 using LocalNetAppChat.Domain.Bots.ClientCommands;
 using LocalNetAppChat.Domain.Clientside;
 using LocalNetAppChat.Domain.Clientside.ServerApis;
@@ -25,6 +26,37 @@ namespace LocalNetAppChat.Bot
             }
 
             var parameters = commandLineParametersResult.Value;
+
+            if (parameters.Help)
+            {
+                ICommandLineOption[] commands = parser.GetCommandsList();
+                string[] commandsDescription =
+                {
+                    "The IP Address the bot should connect to (e.g localhost)",
+                    "The port that the bot should connect to (default: 5000)",
+                    "Whether to connect per HTTP or HTTPs",
+                    "Specifies the bot name, otherwise the name of the machine will be used\", \"Whether to ignore SSL Erros in console.",
+                    "An Authentication password that the bot should send along the requests to be able to perform tasks. (default: 1234)",
+                    "Whether to ignore SSL Erros in console.",
+                    "Prints out the commands and their corresponding descriptioon"
+                };
+
+                List<string> commandsWithDescription = new();
+                
+                for (int i = 0; i < commands.Length; i++)
+                {
+                    commandsWithDescription.Add($"{commands[i].Name}\r\n\t{commandsDescription[i]}");
+                }
+
+                Console.WriteLine($"\nThe LNAC Bot. It's main purpose for now is to execute special commands on the machine it is running on and send the result of the execution to the client who requested it" +
+                    $"\n\n [Usage]\n\n" +
+                    $"\n{string.Join("\r\n", commandsWithDescription)}");
+
+                Console.WriteLine("\n\nExamples:\r\n\r\n  – Start the bot\r\n    $ LocalNetAppChat.Bot --server \"localhost\" --port 54214 --key 1234 --clientName \"TheBestBot\" --scriptspath \"./home/ScriptsFolder\"");
+
+                return;   
+            }
+
 
             var apiAccessor = new WebApiServerApiAccessor(
                 parameters.Server, parameters.Port, parameters.Https, parameters.IgnoreSslErrors,

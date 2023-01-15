@@ -1,4 +1,5 @@
-﻿using LocalNetAppChat.Domain.Clientside;
+﻿using CommandLineArguments;
+using LocalNetAppChat.Domain.Clientside;
 using LocalNetAppChat.Domain.Clientside.OperatingModes;
 using LocalNetAppChat.Domain.Clientside.ServerApis;
 using LocalNetAppChat.Domain.Shared.Inputs;
@@ -24,6 +25,48 @@ namespace LocalNetAppChat.ConsoleClient
             }
 
             var parameters = commandLineParametersResult.Value;
+
+            if (parameters.Help)
+            {
+
+                ICommandLineOption[] commands = parser.GetCommandsList();
+                string[] commandsDescription =
+                {
+                    "Run the client in message mode",
+                    "Run the client in listener mode",
+                    "Uploads a given file to the server",
+                    "Returns a list of all existing files on the server",
+                    "Downloads an existing file from the server",
+                    "Deletes an existing file from the server",
+                    "Runs the client essentially in a listener mode, but when you start typing you are delivered a prompt and with enter you will send the message",
+                    "The IP Address the bot should connect to (e.g localhost)",
+                    "The port that the bot should connect to (default: 5000)",
+                    "Path of the file you want to delete, download or upload from/to the server",
+                    "Whether to connect per HTTP or HTTPs",
+                    "The text message to send to the server. (only when in message mode!)",
+                    "The name of your client. If not specified, your machine name will be sent as clientName to the server",
+                    "An Authentication password that the server requires to allow incoming requests from the client!",
+                    "Whether to ignore SSL Erros in console",
+                    "Path where you want the requested File to be saved at after downloading it",
+                    "Prints out the commands and their corresponding descriptioon"
+
+                };
+
+                List<string> commandsWithDescription = new();
+
+                for (int i = 0; i < commands.Length; i++)
+                {
+                    commandsWithDescription.Add($"{commands[i].Name}\r\n\t{commandsDescription[i]}");
+                }
+
+                Console.WriteLine($"\nThe LNAC Client allows you to communicate with the server as well as with other sub applications." +
+                    $"\n\n [Usage]\n\n" +
+                    $"\n{string.Join("\n", commandsWithDescription)}");
+
+                Console.WriteLine("\n\nExamples:\r\n\r\n  – Start the client in listening mode\r\n    $ LocalNetAppChat.ConsoleClient listener --server \"localhost\" --port 54214 --key 1234 --clientName \"GithubReadMe\"\r\n  - Start the client in message mode\r\n    $ LocalNetAppChat.ConsoleClient message --server \"localhost\" --port 51234 --key 1234 --text \"Hey there, I am client GithubReadMe\"\r\n  - Start the client in chat mode\r\n    LocalNetAppChat.ConsoleClient chat --server \"localhost\" --port 54214 --key 1234 --clientName \"GithubReadMe\"\r\n  - Upload a file to the server\r\n    $ LocalNetAppChat.ConsoleClient fileupload --server \"localhost\" --port 51234 --key 1234 --file \"./README.md\"\r\n  - Download a file from the server\r\n    $ LocalNetAppChat.ConsoleClient filedownload --server \"localhost\" --port 51234 --key 1234 --file \"./README.md\" --targetPath \"/home/github/Projects\"\r\n  - Deletes a file from the server\r\n    $ LocalNetAppChat.ConsoleClient filedelete --server \"localhost\" --port 51234 --key 1234 --file \"README.md\"\r\n  - List all files existing on the server\r\n    $ LocalNetAppChat.ConsoleClient listfiles --server \"localhost\" --port 51234 --key 1234");
+                
+                return;
+            }
 
             var apiAccessor = new WebApiServerApiAccessor(
                 parameters.Server, parameters.Port, parameters.Https, parameters.IgnoreSslErrors,

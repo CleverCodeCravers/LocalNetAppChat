@@ -6,4 +6,5 @@ public record ServerConnectionCommandLineParameters(
     bool Https,
     string ClientName,
     string Key,
-    bool IgnoreSslErrors);
+    bool IgnoreSslErrors,
+    bool Help);

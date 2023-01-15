@@ -19,4 +19,5 @@ public record ClientSideCommandLineParameters(
     string ClientName,
     string Key,
     bool IgnoreSslErrors,
-    string TargetPath);
+    string TargetPath,
+    bool Help);

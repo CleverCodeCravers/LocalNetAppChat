@@ -12,13 +12,43 @@ var parser = new Parser(
         new StringCommandLineOption("--listenOn", "localhost"),
         new Int32CommandLineOption("--port", 5000),
         new BoolCommandLineOption("--https"),
-        new StringCommandLineOption("--key", "1234")
+        new StringCommandLineOption("--key", "1234"),
+        new BoolCommandLineOption("--help")
     });
+
 
 if (!parser.TryParse(args, true))
 {
     Console.WriteLine("Unfortunately there have been problems with the command line arguments.");
     Console.WriteLine("");
+    return;
+}
+
+if (parser.GetBoolOption("--help"))
+{
+    ICommandLineOption[] commands = parser.GetCommandsList();
+    string[] commandsDescription =
+                {
+                    "The IP Address the server should start litening on (e.g localhost)",
+                    "The port the server should connect to (default: 5000)",
+                    "Whether to start the server as HTTPS or HTTP server",
+                    "An Authentication password that the client should send along the requests to be able to perform tasks. (default: 1234)",
+                    "Prints out the commands and their corresponding descriptioon"
+                };
+
+    List<string> commandsWithDescription = new();
+
+    for (int i = 0; i < commands.Length; i++)
+    {
+        commandsWithDescription.Add($"{commands[i].Name}\r\n\t{commandsDescription[i]}");
+    }
+
+    Console.WriteLine($"\nThe LNAC Server is responsible for handling communication and incoming requests from the clients. It is the main core of the application and has a lot of features." +
+        $"\n\n [Usage]\n\n" +
+        $"\n{string.Join("\n", commandsWithDescription)}");
+
+    Console.WriteLine("\n\nExamples:\r\n\r\n  – Start the server with the default settings\r\n    $ LocalNetAppChat.Server\r\n  - Start the server in HTTPS mode\r\n    $ LocalNetAppChat.Server --https\r\n  - Start the server with different ip and port and custom key\r\n    $ LocalNetAppChat.Server --listenOn \"54.15.12.1\" --port \"54822\" --https --key \"HeythereGithubExample\"");
+
     return;
 }
 

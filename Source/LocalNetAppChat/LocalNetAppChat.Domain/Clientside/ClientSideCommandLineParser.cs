@@ -9,10 +9,16 @@ public class ClientSideCommandLineParser
     {
     }
 
-    public Result<ClientSideCommandLineParameters> Parse(string[] args)
+    public ICommandLineOption[] GetCommandsList()
+    {
+        var parser = this.ParseArgs();
+        return parser.GetCommandsList();
+    }
+
+    private Parser ParseArgs()
     {
         var parser = new Parser(
-            new ICommandLineOption[] {
+    new ICommandLineOption[] {
                 new BoolCommandLineOption("message"),
                 new BoolCommandLineOption("listener"),
                 new BoolCommandLineOption("fileupload"),
@@ -29,8 +35,14 @@ public class ClientSideCommandLineParser
                 new StringCommandLineOption("--clientName", Environment.MachineName),
                 new StringCommandLineOption("--key", "1234"),
                 new BoolCommandLineOption("--ignoresslerrors"),
-                new StringCommandLineOption("--targetPath")
-            });
+                new StringCommandLineOption("--targetPath"),
+                new BoolCommandLineOption("--help")
+    });
+        return parser;
+    }
+    public Result<ClientSideCommandLineParameters> Parse(string[] args)
+    {
+        var parser = this.ParseArgs();
 
         if (!parser.TryParse(args, true) || args.Length == 0)
         {
@@ -54,8 +66,8 @@ public class ClientSideCommandLineParser
                 parser.GetOptionWithValue<string>("--clientName") ?? Environment.MachineName,
                 parser.GetOptionWithValue<string>("--key") ?? "1234",
                 parser.GetBoolOption("--ignoresslerrors"),
-                parser.GetOptionWithValue<string>("--targetPath") ?? Directory.GetCurrentDirectory()
-
+                parser.GetOptionWithValue<string>("--targetPath") ?? Directory.GetCurrentDirectory(),
+                parser.GetBoolOption("--help")
             ));
     }
 }
