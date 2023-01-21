@@ -30,33 +30,12 @@ namespace LocalNetAppChat.ConsoleClient
             {
 
                 ICommandLineOption[] commands = parser.GetCommandsList();
-                string[] commandsDescription =
-                {
-                    "Run the client in message mode",
-                    "Run the client in listener mode",
-                    "Uploads a given file to the server",
-                    "Returns a list of all existing files on the server",
-                    "Downloads an existing file from the server",
-                    "Deletes an existing file from the server",
-                    "Runs the client essentially in a listener mode, but when you start typing you are delivered a prompt and with enter you will send the message",
-                    "The IP Address the bot should connect to (e.g localhost)",
-                    "The port that the bot should connect to (default: 5000)",
-                    "Path of the file you want to delete, download or upload from/to the server",
-                    "Whether to connect per HTTP or HTTPs",
-                    "The text message to send to the server. (only when in message mode!)",
-                    "The name of your client. If not specified, your machine name will be sent as clientName to the server",
-                    "An Authentication password that the server requires to allow incoming requests from the client!",
-                    "Whether to ignore SSL Errors in console",
-                    "Path where you want the requested File to be saved at after downloading it",
-                    "Prints out the commands and their corresponding description"
-
-                };
 
                 List<string> commandsWithDescription = new();
 
-                for (int i = 0; i < commands.Length; i++)
+                foreach (var command in commands)
                 {
-                    commandsWithDescription.Add($"{commands[i].Name}\r\n\t{commandsDescription[i]}");
+                    commandsWithDescription.Add($"{command.Name}\r\n\t{command.Description}");
                 }
 
                 Console.WriteLine($"\nThe LNAC Client allows you to communicate with the server as well as with other sub applications." +
@@ -70,13 +49,13 @@ Examples:
   – Start the client in listening mode
     $ LocalNetAppChat.ConsoleClient listener --server ""localhost"" --port 54214 --key 1234 --clientName ""GithubReadMe""
   - Start the client in message mode
-    $ LocalNetAppChat.ConsoleClient message --server ""localhost"" --port 51234 --key 1234 --text ""Hey there, I am client GithubReadMe""
+    $ LocalNetAppChat.ConsoleClient message --server ""localhost"" --port 51234 --key 1234 --text ""Hey I am client Github""
   - Start the client in chat mode
     LocalNetAppChat.ConsoleClient chat --server ""localhost"" --port 54214 --key 1234 --clientName ""GithubReadMe""
   - Upload a file to the server
     $ LocalNetAppChat.ConsoleClient fileupload --server ""localhost"" --port 51234 --key 1234 --file ""./README.md""
   - Download a file from the server
-    $ LocalNetAppChat.ConsoleClient filedownload --server ""localhost"" --port 51234 --key 1234 --file ""./README.md"" --targetPath ""/home/github/Projects""
+    $ LocalNetAppChat.ConsoleClient filedownload --server ""localhost"" --port 51234 --key 1234 --file ""./README.md"" --targetPath ""github/Projects""
   - Deletes a file from the server
     $ LocalNetAppChat.ConsoleClient filedelete --server ""localhost"" --port 51234 --key 1234 --file ""README.md""
   - List all files existing on the server

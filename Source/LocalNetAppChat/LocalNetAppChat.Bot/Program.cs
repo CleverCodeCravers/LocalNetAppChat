@@ -30,22 +30,12 @@ namespace LocalNetAppChat.Bot
             if (parameters.Help)
             {
                 ICommandLineOption[] commands = parser.GetCommandsList();
-                string[] commandsDescription =
-                {
-                    "The IP Address the bot should connect to (e.g localhost)",
-                    "The port that the bot should connect to (default: 5000)",
-                    "Whether to connect per HTTP or HTTPs",
-                    "Specifies the bot name, otherwise the name of the machine will be used\", \"Whether to ignore SSL Erros in console.",
-                    "An Authentication password that the bot should send along the requests to be able to perform tasks. (default: 1234)",
-                    "Whether to ignore SSL Erros in console.",
-                    "Prints out the commands and their corresponding descriptioon"
-                };
 
                 List<string> commandsWithDescription = new();
-                
-                for (int i = 0; i < commands.Length; i++)
+
+                foreach (var command in commands)
                 {
-                    commandsWithDescription.Add($"{commands[i].Name}\r\n\t{commandsDescription[i]}");
+                    commandsWithDescription.Add($"{command.Name}\r\n\t{command.Description}");
                 }
 
                 Console.WriteLine($"\nThe LNAC Bot. It's main purpose for now is to execute special commands on the machine it is running on and send the result of the execution to the client who requested it" +

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Text.RegularExpressions;
 using LocalNetAppChat.Domain.Shared;
 using LocalNetAppChat.Server.Domain.Messaging;
 
@@ -33,7 +34,7 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
     public void Add(ReceivedMessage receivedMessage)
     {
         _messages.Add(receivedMessage);
-        
+
         Cleanup();
     }
 
@@ -66,7 +67,7 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
     private ReceivedMessage[] FilterOutDirectMessagesToTheOtherClients(ReceivedMessage[] messages, string clientId)
     {
         return messages
-                .Where(x => string.IsNullOrEmpty(x.Receiver) || x.Receiver == clientId)
+                .Where(x => string.IsNullOrEmpty(x.Receiver) || x.Receiver == clientId || ReceiverPatternMatcher.DoesMatch(clientId, x.Receiver))
                 .OrderBy(x => x.Id)
                 .ToArray();
     }

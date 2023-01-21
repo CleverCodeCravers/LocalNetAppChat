@@ -14,15 +14,15 @@ public class ServerConnectionCommandLineParser
     {
         var parser = new Parser(
                new ICommandLineOption[] {
-                new StringCommandLineOption("--server", "localhost"),
-                new Int32CommandLineOption("--port", 5000),
-                new BoolCommandLineOption("--https"),
+                new StringCommandLineOption("--server", "The IP Address the bot should connect to (e.g localhost)","localhost"),
+                new Int32CommandLineOption("--port", "The port the server should connect to (default: 5000)", 5000),
+                new BoolCommandLineOption("--https", "Whether to connect per HTTP or HTTPs"),
 
-                new StringCommandLineOption("--clientName", Environment.MachineName),
-                new StringCommandLineOption("--key", "1234"),
+                new StringCommandLineOption("--clientName","Specifies the bot name, otherwise the name of the machine will be used\", \"Whether to ignore SSL Erros in console.", Environment.MachineName),
+                new StringCommandLineOption("--key", "An Authentication password that the bot should send along the requests to be able to perform tasks. (default: 1234)","1234"),
 
-                new BoolCommandLineOption("--ignoresslerrors"),
-                new BoolCommandLineOption("--help")
+                new BoolCommandLineOption("--ignoresslerrors","Whether to ignore SSL Erros in console."),
+                new BoolCommandLineOption("--help", "Prints out the commands and their corresponding description")
              });
 
         return parser;
