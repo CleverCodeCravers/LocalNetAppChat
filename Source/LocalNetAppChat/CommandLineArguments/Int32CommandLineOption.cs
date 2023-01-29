@@ -7,9 +7,10 @@ public class Int32CommandLineOption : WithValueCommandLineOption<int>
 
     public Int32CommandLineOption(
         string name, 
+        string description,
         int defaultValue = 0, 
         int min = Int32.MinValue, 
-        int max = Int32.MaxValue) : base(name, defaultValue)
+        int max = Int32.MaxValue) : base(name, description, defaultValue)
     {
         _min = min;
         _max = max;

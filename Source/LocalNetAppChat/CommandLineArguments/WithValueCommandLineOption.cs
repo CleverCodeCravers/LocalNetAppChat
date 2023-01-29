@@ -3,7 +3,7 @@
 public abstract class WithValueCommandLineOption<T> : IWithValueCommandLineOption<T>
 {
     public string Name { get; }
-
+    public string Description { get; }
     public bool IsTypeWithSeparateValue => true;
 
     private T? _value;
@@ -11,10 +11,12 @@ public abstract class WithValueCommandLineOption<T> : IWithValueCommandLineOptio
 
     public WithValueCommandLineOption(
         string name,
+        string description,
         T? defaultValue)
     {
         Name = name;
         _value = defaultValue;
+        Description= description;
     }
 
     public T? GetValue()

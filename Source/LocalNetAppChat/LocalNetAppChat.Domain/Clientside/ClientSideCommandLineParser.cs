@@ -20,24 +20,23 @@ public class ClientSideCommandLineParser
         var parser = new Parser(
             new ICommandLineOption[]
             {
-                new BoolCommandLineOption("message"),
-                new BoolCommandLineOption("listener"),
-                new BoolCommandLineOption("fileupload"),
-                new BoolCommandLineOption("listfiles"),
-                new BoolCommandLineOption("filedownload"),
-                new BoolCommandLineOption("filedelete"),
-                new BoolCommandLineOption("chat"),
-                new StringCommandLineOption("--file"),
-                new StringCommandLineOption("--server", "localhost"),
-                new Int32CommandLineOption("--port", 5000),
-                new BoolCommandLineOption("--https"),
-
-                new StringCommandLineOption("--text"),
-                new StringCommandLineOption("--clientName", Environment.MachineName),
-                new StringCommandLineOption("--key", "1234"),
-                new BoolCommandLineOption("--ignoresslerrors"),
-                new StringCommandLineOption("--targetPath"),
-                new BoolCommandLineOption("--help")
+                new BoolCommandLineOption("message", "Run the client in message mode"),
+                new BoolCommandLineOption("listener", "Run the client in listener mode"),
+                new BoolCommandLineOption("fileupload", "Uploads a given file to the server"),
+                new BoolCommandLineOption("listfiles", "Returns a list of all existing files on the server"),
+                new BoolCommandLineOption("filedownload", "Downloads an existing file from the server"),
+                new BoolCommandLineOption("filedelete", "Deletes an existing file from the server"),
+                new BoolCommandLineOption("chat", "Runs the client essentially in a listener mode, but when you start typing you are delivered a prompt and with enter you will send the message"),
+                new StringCommandLineOption("--file", "Path of the file you want to delete, download or upload from/to the server"),
+                new StringCommandLineOption("--server","The IP Address the bot should connect to (e.g localhost)" ,"localhost"),
+                new Int32CommandLineOption("--port","The port that the bot should connect to (default: 5000)", 5000),
+                new BoolCommandLineOption("--https", "\"Whether to connect per HTTP or HTTPs\""),
+                new StringCommandLineOption("--text", "The text message to send to the server. (only when in message mode!)"),
+                new StringCommandLineOption("--clientName", "The name of your client. If not specified, your machine name will be sent as clientName to the server",Environment.MachineName),
+                new StringCommandLineOption("--key","An Authentication password that the server requires to allow incoming requests from the client!" ,"1234"),
+                new BoolCommandLineOption("--ignoresslerrors", "Whether to ignore SSL Errors in console"),
+                new StringCommandLineOption("--targetPath", "Path where you want the requested File to be saved at after downloading it"),
+                new BoolCommandLineOption("--help", "Prints out the commands and their corresponding description")
             });
         return parser;
     }

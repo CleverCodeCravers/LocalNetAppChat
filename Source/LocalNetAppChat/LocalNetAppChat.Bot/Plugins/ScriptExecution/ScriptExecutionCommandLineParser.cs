@@ -9,7 +9,7 @@ namespace LocalNetAppChat.Bot.Plugins.ScriptExecution
         {
             var parser = new Parser(
                 new ICommandLineOption[] {
-                new StringCommandLineOption("--scriptspath")
+                new StringCommandLineOption("--scriptspath", "Path to the folder where the scripts are located")
                 });
 
             if (!parser.TryParse(args, true))

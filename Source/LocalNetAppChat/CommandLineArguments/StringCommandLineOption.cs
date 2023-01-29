@@ -3,9 +3,10 @@
 public class StringCommandLineOption : WithValueCommandLineOption<string>
 {
     public StringCommandLineOption(
-        string name, 
+        string name,
+        string description,
         string defaultValue = "") 
-        : base(name, defaultValue)
+        : base(name, description,defaultValue)
     {
     }
 

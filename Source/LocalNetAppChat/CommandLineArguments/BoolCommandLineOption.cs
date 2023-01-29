@@ -5,13 +5,14 @@ public class BoolCommandLineOption : IBoolCommandLineOption
     private bool _value = false;
     private bool _hasValue = false;
 
-    public BoolCommandLineOption(string name)
+    public BoolCommandLineOption(string name, string description)
     {
         Name = name;
+        Description = description;
     }
 
     public string Name { get; }
-
+    public string Description { get; }
     public bool IsTypeWithSeparateValue => false;
 
     public bool GetValue()
