@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using LocalNetAppChat.Server.Domain.Messaging;
+using NUnit.Framework;
 
 namespace LocalNetAppChat.Server.Domain.Tests.Messaging;
 

@@ -1,13 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-public class PatternConverter
-{
-    public static string ConvertToRegex(string pattern)
-    {
-        string regexPattern = "^" + Regex.Escape(pattern).Replace(@"\*", ".*") + "$";
-        return regexPattern;
-    }
-}
+namespace LocalNetAppChat.Server.Domain.Messaging;
 
 public static class ReceiverPatternMatcher
 {

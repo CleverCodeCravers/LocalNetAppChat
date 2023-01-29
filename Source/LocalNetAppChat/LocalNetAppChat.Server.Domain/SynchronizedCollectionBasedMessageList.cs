@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Text.RegularExpressions;
 using LocalNetAppChat.Domain.Shared;
 using LocalNetAppChat.Server.Domain.Messaging;
 
@@ -9,6 +8,7 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
 {
     private readonly TimeSpan _messageLifetime;
     private readonly SynchronizedCollection<ReceivedMessage> _messages = new();
+    private readonly ConcurrentDictionary<long, long> _redirectedPatternMessages = new();
     private readonly ConcurrentDictionary<string, long> _clientStates = new();
 
     public SynchronizedCollectionBasedMessageList(TimeSpan messageLifetime)
@@ -26,6 +26,9 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
             if (message.Timestamp < currentEndOfLife)
             {
                 _messages.Remove(message);
+
+                if (_redirectedPatternMessages.ContainsKey(message.Id))
+                    _redirectedPatternMessages.TryRemove(message.Id, out _);
             }
         }
     }
@@ -66,10 +69,33 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
 
     private ReceivedMessage[] FilterOutDirectMessagesToTheOtherClients(ReceivedMessage[] messages, string clientId)
     {
-        return messages
-                .Where(x => string.IsNullOrEmpty(x.Receiver) || x.Receiver == clientId || ReceiverPatternMatcher.DoesMatch(clientId, x.Receiver))
-                .OrderBy(x => x.Id)
-                .ToArray();
+        var result = new List<ReceivedMessage>();
+
+        foreach (var message in messages)
+        {
+            if (string.IsNullOrEmpty(message.Receiver))
+            {
+                result.Add(message);
+                continue;
+            }
+
+            if (message.Receiver == clientId)
+            {
+                result.Add(message);
+                continue;
+            }
+            
+            if (ReceiverPatternMatcher.DoesMatch(clientId, message.Receiver))
+            {
+                if (_redirectedPatternMessages.ContainsKey(message.Id))
+                    continue;
+
+                _redirectedPatternMessages.AddOrUpdate(message.Id, message.Id, (_, _) => message.Id);
+                result.Add(message);
+            }
+        }
+
+        return result.ToArray();
     }
 
     private ReceivedMessage[] GetMessagesThatAreYoungerThan(DateTime currentEndOfLife)
