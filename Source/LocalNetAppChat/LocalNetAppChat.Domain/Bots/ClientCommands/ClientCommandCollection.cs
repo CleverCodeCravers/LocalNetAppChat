@@ -30,6 +30,22 @@ namespace LocalNetAppChat.Domain.Bots.ClientCommands
             return Result<string>.Failure("Invalid commmand.");
         }
 
+        public Result<string> ExecuteWithoutPrefix(string command)
+        {
+            var rest = command;
+            var keyWord = CommandMessageTokenizer.GetToken(ref rest);
+
+            foreach (var clientCommand in _clientCommands)
+            {
+                if (clientCommand.IsReponsibleFor(keyWord))
+                {
+                    return Result<string>.Success(clientCommand.Execute(rest));
+                }
+            }
+
+            return Result<string>.Failure($"Unknown command: {keyWord}");
+        }
+
         public bool IsAKnownCommand(string command)
         {
             if (!CommandMessageTokenizer.IsCommandMessage(command))

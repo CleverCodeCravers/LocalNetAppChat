@@ -88,15 +88,16 @@ namespace LocalNetAppChat.Bot
                     {
                         output.WriteLine(message);
 
+                        if (IsAPrivateMessage(message))
+                        {
+                            // Private messages don't need the "/" prefix
+                            Result<string> result = privateClientCommands.ExecuteWithoutPrefix(message.Message.Text);
+                            await SendResultBack(lnacClient, message.Message.Name, result);
+                            continue;
+                        }
+
                         if (CommandMessageTokenizer.IsCommandMessage(message.Message.Text)) 
                         {
-                            if (IsAPrivateMessage(message))
-                            {
-                                Result<string> result = privateClientCommands.Execute(message.Message.Text);
-                                await SendResultBack(lnacClient, message.Message.Name, result);
-                                continue;
-                            }
-
                             if (publicClientCommands.IsAKnownCommand(message.Message.Text))
                             {
                                 await SendResultBack(

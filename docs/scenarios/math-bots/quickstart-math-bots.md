@@ -21,19 +21,14 @@ LocalNetAppChat.Server --port 5000 --key "demo"
 
 **Terminal 2 - Emitter (Generator):**
 ```bash
-LocalNetAppChat.ConsoleClient emitter \
-  --server localhost --port 5000 --key "demo" \
-  --clientName "MathGenerator" \
-  --command "python -u python/generator-simple.py"
+LocalNetAppChat.ConsoleClient emitter --server localhost --port 5000 --key "demo" --clientName "MathGenerator" --command "python -u python/generator-simple.py"
 ```
 
 **Wichtig**: Das `-u` Flag ist essentiell! Ohne dieses Flag puffert Python die Ausgabe und der Emitter sendet nichts.
 
 **Terminal 3 - Beobachter:**
 ```bash
-LocalNetAppChat.ConsoleClient listener \
-  --server localhost --port 5000 --key "demo" \
-  --clientName "Observer"
+LocalNetAppChat.ConsoleClient listener --server localhost --port 5000 --key "demo" --clientName "Observer"
 ```
 
 ### Was Sie sehen werden
@@ -66,20 +61,17 @@ LocalNetAppChat.Server --port 5000 --key "demo"
 
 **Terminal 2 - Calculator Bot:**
 ```bash
-LocalNetAppChat.Bot --server localhost --port 5000 --key "demo" \
-  --clientName "CalculatorBot" --scriptspath "./scripts"
+LocalNetAppChat.Bot --server localhost --port 5000 --key "demo" --clientName "CalculatorBot" --scriptspath "./scripts"
 ```
 
 **Terminal 3 - Observer:**
 ```bash
-LocalNetAppChat.ConsoleClient listener --server localhost --port 5000 --key "demo" \
-  --clientName "Observer"
+LocalNetAppChat.ConsoleClient listener --server localhost --port 5000 --key "demo" --clientName "Observer"
 ```
 
 **Terminal 4 - Chat (Controller):**
 ```bash
-LocalNetAppChat.ConsoleClient chat --server localhost --port 5000 --key "demo" \
-  --clientName "Teacher"
+LocalNetAppChat.ConsoleClient chat --server localhost --port 5000 --key "demo" --clientName "Teacher"
 ```
 
 ### Bots verwenden
