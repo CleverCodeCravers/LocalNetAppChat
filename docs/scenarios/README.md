@@ -1,146 +1,106 @@
 # LocalNetAppChat Szenarien
 
-Diese Sammlung zeigt praktische Anwendungsbeispiele für LocalNetAppChat. Jedes Szenario demonstriert, wie Sie die verschiedenen Features des Systems nutzen können, um verteilte Anwendungen zu bauen.
+Diese Sammlung zeigt praktische Anwendungsfälle für LocalNetAppChat. Jedes Szenario hat seinen eigenen Ordner mit allen benötigten Dateien.
 
-## 📚 Verfügbare Szenarien
+## Verfügbare Szenarien
 
-### 1. [Mathe-Berechnungen mit mehreren Bots](math-calculation-bots.md)
-Ein spielerisches Beispiel mit drei Bots:
-- Bot 1 generiert zufällige Additionsaufgaben
-- Bot 2 berechnet die Ergebnisse
-- Bot 3 jubelt bei Ergebnissen > 10
+### 1. [Math Calculation Bots](math-bots/README.md)
+Ein System mit mehreren Bots, die mathematische Aufgaben generieren, lösen und feiern.
+- **Schwierigkeit**: Einfach
+- **Komponenten**: Emitter, Bot, Listener
+- **Besonderheit**: Vollständige Beispiel-Dateien vorhanden
 
-**Lerninhalte**: Bot-zu-Bot-Kommunikation, Nachrichtenverarbeitung, Scripting
+### 2. [Distributed Build System](distributed-build/README.md)
+Verteiltes Kompilieren von Projekten über mehrere Maschinen.
+- **Schwierigkeit**: Mittel
+- **Komponenten**: Task-System, Worker-Pool
+- **Besonderheit**: Skalierbar auf viele Worker
 
-### 2. [Verteiltes Build-System](distributed-build-system.md)
-Ein produktionsnahes Build-System mit Task-Verteilung:
-- Build Master erstellt Build-Tasks
-- Multiple Worker führen Builds parallel aus
-- Notification System für Build-Status
+### 3. [Monitoring & Alerting](monitoring-alerting/README.md)
+Überwachung von Servern mit automatischen Benachrichtigungen.
+- **Schwierigkeit**: Mittel
+- **Komponenten**: Emitter, Bot, Alert-Manager
+- **Besonderheit**: Echtzeit-Metriken
 
-**Lerninhalte**: Task-System, Worker-Pools, Parallelverarbeitung
+### 4. [File Sync & Backup](file-sync/README.md)
+Automatische Dateisynchronisation und Backup-System.
+- **Schwierigkeit**: Fortgeschritten
+- **Komponenten**: File-API, Watcher, Bot
+- **Besonderheit**: Nutzt File-Storage-API
 
-### 3. [Monitoring und Alerting System](monitoring-alerting-system.md)
-Ein umfassendes Monitoring-System:
-- Website-Monitoring
-- System-Metriken (CPU, RAM, Disk)
-- Alert-Management mit Eskalation
-- Dashboard und Reporting
+## Struktur
 
-**Lerninhalte**: Kontinuierliche Überwachung, Metriken-Aggregation, Alert-Handling
-
-### 4. [Dateisynchronisation und Backup](file-sync-backup.md)
-Ein automatisches Backup-System:
-- Automatische Datei-Backups
-- Versionsverwaltung
-- Ordner-Synchronisation zwischen Clients
-- Wiederherstellung mit Versionsauswahl
-
-**Lerninhalte**: File Storage API, Automatisierung, Versionierung
-
-## 🚀 Schnellstart
-
-### Voraussetzungen
-- LocalNetAppChat Server, Client und Bot installiert
-- PowerShell (Windows) oder Bash (Linux/Mac) für Skripte
-- Basis-Kenntnisse in Scripting
-
-### Grundlegende Schritte
-
-1. **Server starten**:
-```bash
-LocalNetAppChat.Server --port 5000 --key "YourSecretKey"
+Jedes Szenario hat folgende Struktur:
+```
+szenario-name/
+├── README.md          # Übersicht und Anleitung
+├── scripts/           # PowerShell-Scripts für Bots
+├── python/           # Python-Scripts für Emitter
+└── config/           # Konfigurationsdateien (optional)
 ```
 
-2. **Bots einrichten**:
+## Schnellstart
+
+1. **Wählen Sie ein Szenario** - Empfehlung: [Math-Bots](math-bots/README.md) für Einsteiger
+
+2. **Kopieren Sie den Szenario-Ordner** in Ihr Arbeitsverzeichnis
+
+3. **Folgen Sie der README** im jeweiligen Szenario-Ordner
+
+## Eigene Szenarien erstellen
+
+### Vorlage für neues Szenario
+
+1. Erstellen Sie einen neuen Ordner unter `scenarios/`
+2. Fügen Sie eine `README.md` mit folgender Struktur hinzu:
+   - Übersicht
+   - Komponenten
+   - Schnellstart
+   - Dateibeschreibungen
+   - Erweiterungsmöglichkeiten
+
+3. Organisieren Sie Scripts in Unterordnern:
+   - `scripts/` für PowerShell
+   - `python/` für Python
+   - `config/` für Konfiguration
+
+### Best Practices
+
+1. **Keine Unicode-Zeichen** in Scripts verwenden
+2. **Python mit `-u` Flag** für unbuffered Output
+3. **Klare Bot-Namen** verwenden
+4. **Fehlerbehandlung** in allen Scripts
+5. **Dokumentation** für jedes Script
+
+## Tipps
+
+### Python Emitter
 ```bash
-LocalNetAppChat.Bot --server localhost --port 5000 --key "YourSecretKey" --clientName "Bot1" --scriptspath "./scripts"
+# Wichtig: -u für unbuffered output!
+LocalNetAppChat.ConsoleClient emitter --command "python -u script.py"
 ```
 
-3. **Client für Interaktion**:
-```bash
-LocalNetAppChat.ConsoleClient chat --server localhost --port 5000 --key "YourSecretKey" --clientName "Admin"
+### Bot-Kommunikation
+```python
+# Bot-Name muss exakt übereinstimmen
+print(f'/msg BotName exec script.ps1 "parameter"', flush=True)
 ```
 
-## 💡 Tipps für eigene Szenarien
-
-### 1. Modularität
-- Teilen Sie komplexe Aufgaben auf mehrere spezialisierte Bots auf
-- Jeder Bot sollte eine klar definierte Aufgabe haben
-
-### 2. Fehlerbehandlung
+### PowerShell Scripts
 ```powershell
-try {
-    # Ihre Logik
-} catch {
-    Write-Output "/msg AdminBot error: $_ at $(Get-Date)"
+param([string]$parameter)
+# Immer Parameter validieren
+if ([string]::IsNullOrEmpty($parameter)) {
+    Write-Output "Fehler: Parameter fehlt"
+    exit 1
 }
 ```
 
-### 3. Logging
-- Nutzen Sie strukturierte Nachrichten für einfaches Parsing
-- Beispiel: `metric: type=cpu value=45.2 host=server1`
+## Beitragen
 
-### 4. Skalierung
-- Verwenden Sie Tags für Task-Routing
-- Starten Sie mehrere Worker für Parallelverarbeitung
-
-### 5. Sicherheit
-- Verwenden Sie starke Keys
-- Begrenzen Sie Bot-Berechtigungen auf notwendige Skripte
-- Validieren Sie alle Eingaben in Ihren Skripten
-
-## 🛠️ Erweiterte Konzepte
-
-### Message Patterns
-
-1. **Request-Response**:
-```
-Client: /msg ServiceBot process: data123
-ServiceBot: /msg Client result: processed_data123
-```
-
-2. **Publish-Subscribe**:
-```
-MonitorBot: CPU Alert: 95% usage on Server1
-(Alle Listener erhalten die Nachricht)
-```
-
-3. **Task-Queue**:
-```
-Master: /task "Process file" tags:processing
-Worker1: (claims task)
-Worker1: (processes and completes task)
-```
-
-### Integration mit externen Systemen
-
-LocalNetAppChat kann als Brücke zwischen verschiedenen Systemen dienen:
-- Webhook-Empfänger für GitHub/GitLab
-- Slack/Teams Integration
-- Datenbank-Monitoring
-- Cloud-Service-Integration
-
-## 📝 Eigene Szenarien entwickeln
-
-1. **Identifizieren Sie wiederkehrende Aufgaben** in Ihrer Infrastruktur
-2. **Definieren Sie klare Schnittstellen** zwischen Komponenten
-3. **Implementieren Sie schrittweise** - beginnen Sie einfach
-4. **Testen Sie in isolierter Umgebung** bevor Sie produktiv gehen
-5. **Dokumentieren Sie Ihre Lösung** für andere Team-Mitglieder
-
-## 🤝 Beitragen
-
-Haben Sie ein interessantes Szenario entwickelt? Wir freuen uns über Beiträge!
-
-1. Erstellen Sie eine neue Markdown-Datei in diesem Verzeichnis
-2. Folgen Sie der Struktur der bestehenden Szenarien
-3. Fügen Sie funktionierende Code-Beispiele hinzu
-4. Erstellen Sie einen Pull Request
-
-## 📚 Weiterführende Ressourcen
-
-- [Server API Dokumentation](../Server/README.md)
-- [Client Dokumentation](../Client/README.md)
-- [Bot Dokumentation](../Bot/README.md)
-- [GitHub Repository](https://github.com/stho32/LocalNetAppChat)
+Neue Szenarien sind willkommen! Bitte:
+1. Erstellen Sie einen eigenen Ordner
+2. Fügen Sie funktionierende Beispiele hinzu
+3. Dokumentieren Sie alle Schritte
+4. Testen Sie auf Windows und Linux
+5. Erstellen Sie einen Pull Request

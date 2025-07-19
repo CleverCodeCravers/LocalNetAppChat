@@ -12,7 +12,7 @@ Erstellen Sie `math-generator.py`:
 import random
 import time
 
-print("🧮 Math Generator startet...")
+print("Math Generator startet...")
 while True:
     a = random.randint(1, 10)
     b = random.randint(1, 10)
@@ -32,8 +32,10 @@ LocalNetAppChat.Server --port 5000 --key "demo"
 LocalNetAppChat.ConsoleClient emitter \
   --server localhost --port 5000 --key "demo" \
   --clientName "MathGenerator" \
-  --command "python math-generator.py"
+  --command "python -u math-generator.py"
 ```
+
+**Wichtig**: Das `-u` Flag ist essentiell! Ohne dieses Flag puffert Python die Ausgabe und der Emitter sendet nichts.
 
 **Terminal 3 - Beobachter:**
 ```bash

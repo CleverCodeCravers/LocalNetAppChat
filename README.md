@@ -42,10 +42,10 @@ Usage Scenarios include:
 
 -   [CI/CD-Pipeline](./docs/usage-cicd-pipeline.md)
 -   [Central Log](./docs/usage-central-log.md)
--   [Math Calculation Bots](./docs/scenarios/math-calculation-bots.md)
--   [Distributed Build System](./docs/scenarios/distributed-build-system.md)
--   [Monitoring & Alerting](./docs/scenarios/monitoring-alerting-system.md)
--   [File Sync & Backup](./docs/scenarios/file-sync-backup.md)
+-   [Math Calculation Bots](./docs/scenarios/math-bots/README.md)
+-   [Distributed Build System](./docs/scenarios/distributed-build/README.md)
+-   [Monitoring & Alerting](./docs/scenarios/monitoring-alerting/README.md)
+-   [File Sync & Backup](./docs/scenarios/file-sync/README.md)
 -   [More Scenarios...](./docs/scenarios/README.md)
 
 ## Features

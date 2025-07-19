@@ -58,6 +58,9 @@ Statt eines Bots mit Script kann ein einfacher Emitter verwendet werden:
 ```bash
 # generator.exe gibt alle 3 Sekunden eine Aufgabe aus
 client.exe emitter --server localhost --port 8080 --command "generator.exe"
+
+# Für Python-Scripts: Wichtig ist das -u Flag für unbuffered output!
+client.exe emitter --server localhost --port 8080 --command "python -u generator.py"
 ```
 
 generator.exe:
