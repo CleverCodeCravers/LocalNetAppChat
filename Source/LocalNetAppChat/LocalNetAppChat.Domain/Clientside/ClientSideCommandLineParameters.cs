@@ -11,6 +11,7 @@ public record ClientSideCommandLineParameters(
     bool FileDownload,
     bool FileDelete,
     bool Chat,
+    bool TaskReceiver,
     string Server,
     int Port,
     string File,
@@ -20,4 +21,23 @@ public record ClientSideCommandLineParameters(
     string Key,
     bool IgnoreSslErrors,
     string TargetPath,
-    bool Help);
+    string[]? Tags,
+    string? Processor,
+    bool Help)
+{
+    public string Mode
+    {
+        get
+        {
+            if (Message) return "message";
+            if (Listener) return "listener";
+            if (FileUpload) return "fileupload";
+            if (ListServerFiles) return "listfiles";
+            if (FileDownload) return "filedownload";
+            if (FileDelete) return "filedelete";
+            if (Chat) return "chat";
+            if (TaskReceiver) return "task-receiver";
+            return "none";
+        }
+    }
+}

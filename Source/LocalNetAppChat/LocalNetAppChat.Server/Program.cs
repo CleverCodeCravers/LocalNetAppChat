@@ -6,6 +6,7 @@ using LocalNetAppChat.Server.Domain.Messaging;
 using LocalNetAppChat.Server.Domain.Messaging.MessageProcessing;
 using LocalNetAppChat.Server.Domain.Security;
 using LocalNetAppChat.Server.Domain.StoringFiles;
+using LocalNetAppChat.Server.Domain.Tasks;
 using Serilog;
 using Serilog.Events;
 
@@ -79,6 +80,8 @@ try
     var storageServiceProvider = new StorageServiceProvider(
         accessControl,
         Path.Combine(Directory.GetCurrentDirectory(), "data"));
+
+    var taskManager = new TaskManager(accessControl);
 
     var hostingUrl = HostingUrlGenerator.GenerateUrl(
         parser.GetOptionWithValue<string>("--listenOn") ?? "",
@@ -211,6 +214,86 @@ app.MapPost("/deletefile", (HttpRequest _, string filename, string key) =>
     
     Log.Information("Successfully deleted file {FileName}", filename);
     return Results.Content(result.Value);
+});
+
+// Task endpoints
+app.MapPost("/tasks/create", (string key, TaskMessage task) =>
+{
+    Log.Information("Creating task {TaskId} from {ClientName}", task.Id, task.Name);
+    var result = taskManager.CreateTask(key, task);
+    
+    if (!result.IsSuccess)
+    {
+        Log.Warning("Failed to create task: {Error}", result.Error);
+        return Results.BadRequest(result.Error);
+    }
+    
+    // Also send the task as a message so clients can be notified
+    var taskNotification = task.ToLnacMessage();
+    messagingServiceProvider.SendMessage(key, taskNotification);
+    
+    Log.Information("Successfully created task {TaskId}", result.Value);
+    return Results.Json(new { taskId = result.Value });
+});
+
+app.MapGet("/tasks/pending", (string key, string? tags) =>
+{
+    Log.Debug("Getting pending tasks with tags: {Tags}", tags);
+    var tagArray = string.IsNullOrEmpty(tags) ? null : tags.Split(',');
+    var result = taskManager.GetPendingTasks(key, tagArray);
+    
+    if (!result.IsSuccess)
+    {
+        Log.Warning("Failed to get pending tasks: {Error}", result.Error);
+        return Results.BadRequest(result.Error);
+    }
+    
+    Log.Information("Found {TaskCount} pending tasks", result.Value.Length);
+    return Results.Json(result.Value);
+});
+
+app.MapPost("/tasks/claim", (string key, string taskId, string clientName) =>
+{
+    Log.Information("Client {ClientName} claiming task {TaskId}", clientName, taskId);
+    var result = taskManager.ClaimTask(key, taskId, clientName);
+    
+    if (!result.IsSuccess)
+    {
+        Log.Warning("Failed to claim task {TaskId}: {Error}", taskId, result.Error);
+        return Results.BadRequest(result.Error);
+    }
+    
+    Log.Information("Task {TaskId} successfully claimed by {ClientName}", taskId, clientName);
+    return Results.Json(result.Value);
+});
+
+app.MapPost("/tasks/complete", (string key, string taskId, string clientName, bool success, string result) =>
+{
+    Log.Information("Client {ClientName} completing task {TaskId} with success={Success}", clientName, taskId, success);
+    var completeResult = taskManager.CompleteTask(key, taskId, clientName, success, result);
+    
+    if (!completeResult.IsSuccess)
+    {
+        Log.Warning("Failed to complete task {TaskId}: {Error}", taskId, completeResult.Error);
+        return Results.BadRequest(completeResult.Error);
+    }
+    
+    Log.Information("Task {TaskId} completed successfully", taskId);
+    return Results.Ok(completeResult.Value);
+});
+
+app.MapGet("/tasks/status", (string key, string taskId) =>
+{
+    Log.Debug("Getting status for task {TaskId}", taskId);
+    var result = taskManager.GetTaskStatus(key, taskId);
+    
+    if (!result.IsSuccess)
+    {
+        Log.Warning("Failed to get task status: {Error}", result.Error);
+        return Results.BadRequest(result.Error);
+    }
+    
+    return Results.Json(result.Value);
 });
 
     Log.Information("Server started successfully");

@@ -27,6 +27,7 @@ public class ClientSideCommandLineParser
                 new BoolCommandLineOption("filedownload", "Downloads an existing file from the server"),
                 new BoolCommandLineOption("filedelete", "Deletes an existing file from the server"),
                 new BoolCommandLineOption("chat", "Runs the client essentially in a listener mode, but when you start typing you are delivered a prompt and with enter you will send the message"),
+                new BoolCommandLineOption("taskreceiver", "Run the client in task receiver mode to process tasks"),
                 new StringCommandLineOption("--file", "Path of the file you want to delete, download or upload from/to the server"),
                 new StringCommandLineOption("--server","The IP Address the bot should connect to (e.g localhost)" ,"localhost"),
                 new Int32CommandLineOption("--port","The port that the bot should connect to (default: 5000)", 5000),
@@ -36,6 +37,8 @@ public class ClientSideCommandLineParser
                 new StringCommandLineOption("--key","An Authentication password that the server requires to allow incoming requests from the client!" ,"1234"),
                 new BoolCommandLineOption("--ignoresslerrors", "Whether to ignore SSL Errors in console"),
                 new StringCommandLineOption("--targetPath", "Path where you want the requested File to be saved at after downloading it"),
+                new StringCommandLineOption("--tags", "Comma-separated list of tags for task filtering in task receiver mode"),
+                new StringCommandLineOption("--processor", "Path to the script/executable to process tasks in task receiver mode"),
                 new BoolCommandLineOption("--help", "Prints out the commands and their corresponding description")
             });
         return parser;
@@ -50,6 +53,9 @@ public class ClientSideCommandLineParser
             return Result<ClientSideCommandLineParameters>.Failure("Invalid command line arguments");
         }
 
+        var tagsString = parser.GetOptionWithValue<string>("--tags");
+        var tags = string.IsNullOrEmpty(tagsString) ? null : tagsString.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
         return Result<ClientSideCommandLineParameters>.Success(
             new ClientSideCommandLineParameters(
                 parser.GetBoolOption("message"),
@@ -59,6 +65,7 @@ public class ClientSideCommandLineParser
                 parser.GetBoolOption("filedownload"),
                 parser.GetBoolOption("filedelete"),
                 parser.GetBoolOption("chat"),
+                parser.GetBoolOption("taskreceiver"),
                 parser.GetOptionWithValue<string>("--server") ?? "localhost",
                 parser.GetOptionWithValue<int>("--port"),
                 parser.GetOptionWithValue<string>("--file") ?? string.Empty,
@@ -68,6 +75,8 @@ public class ClientSideCommandLineParser
                 parser.GetOptionWithValue<string>("--key") ?? "1234",
                 parser.GetBoolOption("--ignoresslerrors"),
                 parser.GetOptionWithValue<string>("--targetPath") ?? Directory.GetCurrentDirectory(),
+                tags,
+                parser.GetOptionWithValue<string>("--processor"),
                 parser.GetBoolOption("--help")
             ));
     }

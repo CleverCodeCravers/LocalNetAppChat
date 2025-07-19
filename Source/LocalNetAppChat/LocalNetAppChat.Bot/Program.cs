@@ -1,5 +1,6 @@
 ﻿using CommandLineArguments;
 using LocalNetAppChat.Bot.Plugins.ScriptExecution;
+using LocalNetAppChat.Bot.Plugins.TaskExecution;
 using LocalNetAppChat.Domain.Bots.ClientCommands;
 using LocalNetAppChat.Domain.Clientside;
 using LocalNetAppChat.Domain.Clientside.ServerApis;
@@ -60,6 +61,12 @@ namespace LocalNetAppChat.Bot
 
             var publicClientCommands = new ClientCommandCollection();
             if (!Plugins.DefaultFunctionality.DefaultPlugin.AddCommands(publicClientCommands, args))
+            {
+                output.WriteLine("Unfortunately there have been problems with the command line arguments.");
+            }
+
+            // Add task execution commands to public commands
+            if (!TaskExecutionPlugin.AddCommands(publicClientCommands, args))
             {
                 output.WriteLine("Unfortunately there have been problems with the command line arguments.");
             }

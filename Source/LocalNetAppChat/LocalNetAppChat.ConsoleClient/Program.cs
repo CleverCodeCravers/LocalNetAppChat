@@ -60,6 +60,8 @@ Examples:
     $ LocalNetAppChat.ConsoleClient filedelete --server ""localhost"" --port 51234 --key 1234 --file ""README.md""
   - List all files existing on the server
     $ LocalNetAppChat.ConsoleClient listfiles --server ""localhost"" --port 51234 --key 1234
+  - Run the client in task receiver mode
+    $ LocalNetAppChat.ConsoleClient taskreceiver --server ""localhost"" --port 51234 --key 1234 --tags ""build,test"" --processor ""./run-task.ps1""
 ");
                 
                 return;
@@ -81,6 +83,7 @@ Examples:
             operatingModeCollection.Add(new ListAllFilesOperatingMode());
             operatingModeCollection.Add(new DownloadFileOperatingMode());
             operatingModeCollection.Add(new DeleteFileOperatingMode());
+            operatingModeCollection.Add(new TaskReceiverOperatingMode());
 
             var operatingMode = operatingModeCollection.GetResponsibleOperatingMode(parameters);
             if (operatingMode == null)
