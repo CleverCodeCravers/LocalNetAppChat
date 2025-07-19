@@ -1,5 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalNetAppChat.Domain", "LocalNetAppChat.Domain\LocalNetAppChat.Domain.csproj", "{0A75F855-498D-481D-B79C-27904255C260}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalNetAppChat.Server", "LocalNetAppChat.Server\LocalNetAppChat.Server.csproj", "{AEE04F6A-0F14-4F9E-ACF8-699CC21A66FE}"
@@ -15,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalNetAppChat.Server.Domain", "LocalNetAppChat.Server.Domain\LocalNetAppChat.Server.Domain.csproj", "{33126055-D124-4EF3-8B5F-A04EAD1C8B37}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalNetAppChat.Server.Domain.Tests", "LocalNetAppChat.Server.Domain.Tests\LocalNetAppChat.Server.Domain.Tests.csproj", "{69751174-43AC-49EA-82D4-D1D7CA5ED7D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalNetAppChat.Bot.Tests", "LocalNetAppChat.Bot.Tests\LocalNetAppChat.Bot.Tests.csproj", "{D0B2D7EA-3C50-4DA2-A3D0-9EC6953749BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,5 +57,9 @@ Global
 		{69751174-43AC-49EA-82D4-D1D7CA5ED7D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69751174-43AC-49EA-82D4-D1D7CA5ED7D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69751174-43AC-49EA-82D4-D1D7CA5ED7D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0B2D7EA-3C50-4DA2-A3D0-9EC6953749BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0B2D7EA-3C50-4DA2-A3D0-9EC6953749BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0B2D7EA-3C50-4DA2-A3D0-9EC6953749BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0B2D7EA-3C50-4DA2-A3D0-9EC6953749BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
