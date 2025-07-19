@@ -95,10 +95,7 @@ Ausgabe im Observer:
 Das Script `python/generator-with-bot.py` sendet automatisch Befehle an den Bot:
 
 ```bash
-LocalNetAppChat.ConsoleClient emitter \
-  --server localhost --port 5000 --key "demo" \
-  --clientName "AutoMath" \
-  --command "python -u python/generator-with-bot.py"
+LocalNetAppChat.ConsoleClient emitter --server localhost --port 5000 --key "demo" --clientName "AutoMath"   --command "python -u python/generator-with-bot.py"
 ```
 
 **Wichtig**: Stellen Sie sicher, dass der Bot (aus Option 2) mit dem Namen "CalcBot" läuft!

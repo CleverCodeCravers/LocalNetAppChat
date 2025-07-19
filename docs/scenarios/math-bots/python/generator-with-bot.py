@@ -2,7 +2,7 @@ import random
 import time
 
 print("Math Generator mit Bot-Kommunikation startet...", flush=True)
-print("Sende Befehle an CalcBot", flush=True)
+print("Sende Befehle an CalculatorBot", flush=True)
 print("-" * 50, flush=True)
 
 while True:
@@ -10,6 +10,6 @@ while True:
     b = random.randint(1, 10)
     
     # WICHTIG: Bot-Name muss mit --clientName beim Bot-Start uebereinstimmen!
-    print(f'/msg CalcBot exec calculate.ps1 "{a} + {b}"', flush=True)
+    print(f'/msg CalculatorBot exec calculate.ps1 "{a} + {b}"', flush=True)
     
     time.sleep(5)
