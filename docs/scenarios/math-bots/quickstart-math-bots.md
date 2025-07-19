@@ -1,24 +1,16 @@
 # Schnellstart: Mathe-Bots in 5 Minuten
 
-Eine schnelle Anleitung, um das Mathe-Bot-System zum Laufen zu bringen.
+Eine schnelle Anleitung mit allen benötigten Dateien bereits vorhanden!
 
-## Option 1: Einfachste Variante mit Emitter (NEU!)
+## Option 1: Einfachste Variante mit Emitter
 
-### Schritt 1: Generator-Script erstellen
+### Schritt 1: In das Szenario-Verzeichnis wechseln
 
-Erstellen Sie `math-generator.py`:
-
-```python
-import random
-import time
-
-print("Math Generator startet...")
-while True:
-    a = random.randint(1, 10)
-    b = random.randint(1, 10)
-    print(f"{a} + {b} = ?")
-    time.sleep(3)
+```bash
+cd docs/scenarios/math-bots
 ```
+
+Die benötigten Python-Scripts sind bereits im `python/` Ordner vorhanden!
 
 ### Schritt 2: Server und Emitter starten
 
@@ -32,7 +24,7 @@ LocalNetAppChat.Server --port 5000 --key "demo"
 LocalNetAppChat.ConsoleClient emitter \
   --server localhost --port 5000 --key "demo" \
   --clientName "MathGenerator" \
-  --command "python -u math-generator.py"
+  --command "python -u python/generator-simple.py"
 ```
 
 **Wichtig**: Das `-u` Flag ist essentiell! Ohne dieses Flag puffert Python die Ausgabe und der Emitter sendet nichts.
@@ -49,7 +41,7 @@ LocalNetAppChat.ConsoleClient listener \
 Im Observer-Terminal erscheinen alle 3 Sekunden neue Aufgaben:
 
 ```
-[15:30:45] MathGenerator: 🧮 Math Generator startet...
+[15:30:45] MathGenerator: Math Generator startet...
 [15:30:48] MathGenerator: 7 + 4 = ?
 [15:30:51] MathGenerator: 3 + 8 = ?
 [15:30:54] MathGenerator: 9 + 2 = ?
@@ -57,30 +49,15 @@ Im Observer-Terminal erscheinen alle 3 Sekunden neue Aufgaben:
 
 ## Option 2: Interaktive Variante mit Bots
 
-### Schritt 1: Scripts vorbereiten
+Die PowerShell-Scripts sind bereits im `scripts/` Ordner vorhanden!
 
-Erstellen Sie einen Ordner `math-scripts` mit diesen Dateien:
+### Bereitgestellte Scripts
 
-**math-scripts/generate.ps1:**
-```powershell
-$a = Get-Random -Minimum 0 -Maximum 11
-$b = Get-Random -Minimum 0 -Maximum 11
-Write-Output "$a + $b = ?"
-```
+- **scripts/calculate.ps1** - Berechnet mathematische Ausdrücke
+- **scripts/celebrate.ps1** - Jubelt bei großen Zahlen
+- **scripts/generate-tasks.ps1** - PowerShell Aufgaben-Generator
 
-**math-scripts/calculate.ps1:**
-```powershell
-param([string]$input)
-if ($input -match "(\d+)\s*\+\s*(\d+)") {
-    $result = [int]$matches[1] + [int]$matches[2]
-    Write-Output "✅ Antwort: $result"
-    if ($result -gt 10) {
-        Write-Output "🎉 WOW! Das ist mehr als 10!"
-    }
-}
-```
-
-### Schritt 2: Alles starten
+### Bots starten
 
 **Terminal 1 - Server:**
 ```bash
@@ -90,7 +67,7 @@ LocalNetAppChat.Server --port 5000 --key "demo"
 **Terminal 2 - Calculator Bot:**
 ```bash
 LocalNetAppChat.Bot --server localhost --port 5000 --key "demo" \
-  --clientName "CalculatorBot" --scriptspath "./math-scripts"
+  --clientName "CalculatorBot" --scriptspath "./scripts"
 ```
 
 **Terminal 3 - Observer:**
@@ -105,7 +82,7 @@ LocalNetAppChat.ConsoleClient chat --server localhost --port 5000 --key "demo" \
   --clientName "Teacher"
 ```
 
-### Schritt 3: Bots verwenden
+### Bots verwenden
 
 Im Chat-Terminal eingeben:
 
@@ -115,37 +92,24 @@ Im Chat-Terminal eingeben:
 
 Ausgabe im Observer:
 ```
-[15:35:10] CalculatorBot: ✅ Antwort: 11
-[15:35:10] CalculatorBot: 🎉 WOW! Das ist mehr als 10!
+[15:35:10] CalculatorBot: Berechnung: 7 + 4 = 11
+[15:35:10] CalculatorBot: WOW! Das Ergebnis 11 ist groesser als 10!
 ```
 
 ## Option 3: Vollautomatisch mit Emitter + Bot
 
-### Generator mit Bot-Kommunikation
+### Verwenden Sie das bereitgestellte Script
 
-Erstellen Sie `auto-math.py`:
-
-```python
-import random
-import time
-
-print("🤖 Auto-Math System gestartet...")
-while True:
-    a = random.randint(1, 10)
-    b = random.randint(1, 10)
-    # Direkt an den Calculator-Bot senden
-    print(f'/msg CalculatorBot exec calculate.ps1 "{a} + {b}"')
-    time.sleep(5)
-```
-
-Starten Sie den Emitter:
+Das Script `python/generator-with-bot.py` sendet automatisch Befehle an den Bot:
 
 ```bash
 LocalNetAppChat.ConsoleClient emitter \
   --server localhost --port 5000 --key "demo" \
   --clientName "AutoMath" \
-  --command "python auto-math.py"
+  --command "python -u python/generator-with-bot.py"
 ```
+
+**Wichtig**: Stellen Sie sicher, dass der Bot (aus Option 2) mit dem Namen "CalcBot" läuft!
 
 Jetzt werden automatisch Aufgaben generiert UND gelöst!
 
@@ -156,63 +120,50 @@ Jetzt werden automatisch Aufgaben generiert UND gelöst!
 - Falscher Port → Port 5000 verwenden
 
 **Problem:** Bot reagiert nicht
-- Bot-Name falsch → Exakten Namen in `/msg` verwenden
+- Bot-Name falsch → Prüfen Sie ob der Name im Script mit dem Bot-Namen übereinstimmt
 - Bot läuft nicht → Bot-Terminal prüfen
 
 **Problem:** Keine Ausgabe vom Emitter
 - Python nicht gefunden → `python3` statt `python` versuchen
 - Script-Fehler → Script direkt testen
+- Python puffert → Stellen Sie sicher, dass `-u` verwendet wird
 
-## Coole Erweiterungen
+## Weitere bereitgestellte Scripts
 
-### 1. Multiplikations-Trainer
+### Debug-Version
+Wenn etwas nicht funktioniert, nutzen Sie die Debug-Version:
 
-```python
-# multiply.py
-import random
-import time
-
-while True:
-    a = random.randint(2, 9)
-    b = random.randint(2, 9)
-    print(f"{a} × {b} = ?")
-    time.sleep(4)
+```bash
+LocalNetAppChat.ConsoleClient emitter \
+  --server localhost --port 5000 --key "demo" \
+  --clientName "DebugGen" \
+  --command "python -u python/generator-debug.py"
 ```
 
-### 2. Countdown-Timer
+### PowerShell Alternative
+Statt Python können Sie auch PowerShell verwenden:
 
-```python
-# countdown.py
-import time
-
-for i in range(10, 0, -1):
-    print(f"⏰ Countdown: {i}")
-    time.sleep(1)
-print("🚀 START!")
-```
-
-### 3. Statistik-Sammler
-
-```python
-# stats.py
-count = 0
-while True:
-    count += 1
-    print(f"📊 Nachricht #{count} gesendet")
-    time.sleep(2)
+```bash
+LocalNetAppChat.ConsoleClient emitter \
+  --server localhost --port 5000 --key "demo" \
+  --clientName "PSGen" \
+  --command "powershell -File scripts/generate-tasks.ps1"
 ```
 
 ## Zusammenfassung
 
-Mit dem neuen Emitter-Modus brauchen Sie nur:
-1. Ein Python/PowerShell-Script das Ausgaben erzeugt
-2. Den Emitter-Client der diese streamt
-3. Einen Observer zum Anschauen
+Alle benötigten Dateien sind bereits vorhanden:
+- `python/generator-simple.py` - Einfacher Generator
+- `python/generator-with-bot.py` - Generator mit Bot-Kommunikation
+- `python/generator-debug.py` - Debug-Version
+- `scripts/calculate.ps1` - Rechner-Bot Script
+- `scripts/celebrate.ps1` - Jubel-Bot Script
+- `scripts/generate-tasks.ps1` - PowerShell Generator
 
-Das war's! In unter 5 Minuten haben Sie ein funktionierendes System. 🎉
+Sie müssen nichts erstellen - nur die Befehle ausführen!
 
 ## Nächste Schritte
 
-- Probieren Sie die Task-System-Variante aus dem [vollständigen Math-Bot-Tutorial](./scenarios/math-calculation-bots.md)
-- Erkunden Sie andere [Szenarien](./scenarios/README.md)
-- Bauen Sie eigene kreative Anwendungen!
+- Schauen Sie sich die Scripts an, um zu verstehen wie sie funktionieren
+- Modifizieren Sie die Scripts für eigene Experimente
+- Erkunden Sie andere [Szenarien](../README.md)
