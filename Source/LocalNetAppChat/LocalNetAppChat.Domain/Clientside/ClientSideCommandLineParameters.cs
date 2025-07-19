@@ -12,6 +12,7 @@ public record ClientSideCommandLineParameters(
     bool FileDelete,
     bool Chat,
     bool TaskReceiver,
+    bool Emitter,
     string Server,
     int Port,
     string File,
@@ -23,6 +24,7 @@ public record ClientSideCommandLineParameters(
     string TargetPath,
     string[]? Tags,
     string? Processor,
+    string? Command,
     bool Help)
 {
     public string Mode
@@ -37,6 +39,7 @@ public record ClientSideCommandLineParameters(
             if (FileDelete) return "filedelete";
             if (Chat) return "chat";
             if (TaskReceiver) return "task-receiver";
+            if (Emitter) return "emitter";
             return "none";
         }
     }

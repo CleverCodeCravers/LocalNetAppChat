@@ -11,6 +11,7 @@
 - [ ] [[R007 Sending and Receiving a Task that has to be performed by one client]]
 - [ ] [[R008 Sending and Receiving a Task that has to be performed by all clients]]
 - [ ] [[R010 Handling messages that are received multiple times]]
+- [ ] [[R011 Emitter Mode]]
 
 ## Nonfunctional Requirements
 

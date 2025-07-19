@@ -58,6 +58,7 @@ Usage Scenarios include:
 -   **Comprehensive Logging**: Daily rotating logs with Serilog integration
 -   **Direct Messaging**: Send messages to specific clients using `/msg ClientName`
 -   **File Storage**: Central file repository accessible by all clients
+-   **Emitter Mode**: Stream command output line-by-line in real-time
 -   Ability to execute and run tasks between your local apps through command line over the network
 -   Encrypted communication
 -   and more

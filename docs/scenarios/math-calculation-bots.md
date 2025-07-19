@@ -10,6 +10,33 @@ Dieses Beispiel zeigt, wie Sie ein System mit drei Bots aufbauen, bei dem:
 - LocalNetAppChat Server läuft
 - PowerShell auf allen Bot-Maschinen
 
+## Vereinfachte Variante mit Emitter-Modus
+
+Der neue Emitter-Modus macht Bot 1 noch einfacher. Statt einen Bot mit Script zu verwenden, können Sie ein einfaches Programm schreiben, das kontinuierlich Aufgaben ausgibt, und diese mit dem Emitter-Client streamen.
+
+### Emitter-Beispiel: Aufgabengenerator
+
+Erstellen Sie `generate-tasks.ps1`:
+
+```powershell
+while($true) {
+    $a = Get-Random -Minimum 0 -Maximum 11
+    $b = Get-Random -Minimum 0 -Maximum 11
+    Write-Host "$a + $b = ?"
+    Start-Sleep -Seconds 3
+}
+```
+
+Starten Sie den Emitter:
+
+```bash
+LocalNetAppChat.ConsoleClient emitter --server localhost --port 5000 --key "MathKey123" --clientName "TaskEmitter" --command "powershell -File generate-tasks.ps1"
+```
+
+Der Emitter sendet jede Ausgabezeile sofort als Nachricht an den Server. Alle anderen Clients sehen die Aufgaben in Echtzeit.
+
+## Standard-Variante mit Bots
+
 ## Schritt 1: Server starten
 
 ```bash

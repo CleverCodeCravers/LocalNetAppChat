@@ -4,7 +4,7 @@ The LNAC Client allows you to communicate with the server as well as with other 
 
 ## Features
 
-- 8 different modes which perform different tasks
+- 9 different modes which perform different tasks
 
 ### Client Modes
 
@@ -45,6 +45,14 @@ The task receiver mode allows the client to process tasks from the server. The c
 $ LocalNetAppChat.ConsoleClient taskreceiver --server "localhost" --port 51234 --key 1234 --tags "build,test" --processor "./run-task.ps1"
 ```
 
+#### Emitter
+
+The emitter mode allows the client to execute a command and stream its output line-by-line to the server in real-time. Each line of output is sent immediately as a message, making it perfect for log streaming, monitoring, or continuous data generation.
+
+```
+$ LocalNetAppChat.ConsoleClient emitter --server "localhost" --port 51234 --key 1234 --clientName "LogEmitter" --command "tail -f /var/log/app.log"
+```
+
 ## Client CLI
 
 ```console
@@ -60,6 +68,7 @@ LocalNetAppChat.ConsoleClient [options]
     listfiles            Returns a list of all existing files on the server
     chat                 Runs the client essentially in a listener mode, but when you start typing you are delivered a prompt and with    enter you will send the message
     taskreceiver         Run the client in task receiver mode to process tasks
+    emitter              Run the client in emitter mode to stream command output
     --file               Path of the file you want to delete, download or upload from/to the server
     --targetPath         Path where you want the requested File to be saved at after downloading it
     --text               The text message to send to the server. (only when in message mode!)
@@ -71,6 +80,7 @@ LocalNetAppChat.ConsoleClient [options]
     --key                An Authentication password that the server requires to allow incoming requests from the client!
     --tags               Comma-separated list of tags for task filtering in task receiver mode
     --processor          Path to the script/executable to process tasks in task receiver mode
+    --command            Command to execute in emitter mode (including arguments)
 
   Examples:
 
@@ -90,5 +100,7 @@ LocalNetAppChat.ConsoleClient [options]
     $ LocalNetAppChat.ConsoleClient listfiles --server "localhost" --port 51234 --key 1234
   - Run the client in task receiver mode
     $ LocalNetAppChat.ConsoleClient taskreceiver --server "localhost" --port 51234 --key 1234 --tags "build,test" --processor "./run-task.ps1"
+  - Run the client in emitter mode to stream command output
+    $ LocalNetAppChat.ConsoleClient emitter --server "localhost" --port 51234 --key 1234 --command "ping google.com"
 
 ```

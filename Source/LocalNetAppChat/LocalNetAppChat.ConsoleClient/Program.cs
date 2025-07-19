@@ -62,6 +62,8 @@ Examples:
     $ LocalNetAppChat.ConsoleClient listfiles --server ""localhost"" --port 51234 --key 1234
   - Run the client in task receiver mode
     $ LocalNetAppChat.ConsoleClient taskreceiver --server ""localhost"" --port 51234 --key 1234 --tags ""build,test"" --processor ""./run-task.ps1""
+  - Run the client in emitter mode to stream command output
+    $ LocalNetAppChat.ConsoleClient emitter --server ""localhost"" --port 51234 --key 1234 --command ""ping google.com""
 ");
                 
                 return;
@@ -84,6 +86,7 @@ Examples:
             operatingModeCollection.Add(new DownloadFileOperatingMode());
             operatingModeCollection.Add(new DeleteFileOperatingMode());
             operatingModeCollection.Add(new TaskReceiverOperatingMode());
+            operatingModeCollection.Add(new EmitterOperatingMode());
 
             var operatingMode = operatingModeCollection.GetResponsibleOperatingMode(parameters);
             if (operatingMode == null)
