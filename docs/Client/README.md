@@ -4,7 +4,7 @@ The LNAC Client allows you to communicate with the server as well as with other 
 
 ## Features
 
-- 7 different modes which perform different tasks
+- 8 different modes which perform different tasks
 
 ### Client Modes
 
@@ -37,6 +37,14 @@ The File operation mode allows the client to upload, download, delete and get a 
 - filedelete // Will delete the given file from the server.
 - listfiles // Will return a list of all existing files on the server.
 
+#### Task Receiver
+
+The task receiver mode allows the client to process tasks from the server. The client polls for new tasks with matching tags, claims them, executes a configured processor script, and reports results back to the server.
+
+```
+$ LocalNetAppChat.ConsoleClient taskreceiver --server "localhost" --port 51234 --key 1234 --tags "build,test" --processor "./run-task.ps1"
+```
+
 ## Client CLI
 
 ```console
@@ -51,6 +59,7 @@ LocalNetAppChat.ConsoleClient [options]
     filedelete           Deletes an existing file from the server
     listfiles            Returns a list of all existing files on the server
     chat                 Runs the client essentially in a listener mode, but when you start typing you are delivered a prompt and with    enter you will send the message
+    taskreceiver         Run the client in task receiver mode to process tasks
     --file               Path of the file you want to delete, download or upload from/to the server
     --targetPath         Path where you want the requested File to be saved at after downloading it
     --text               The text message to send to the server. (only when in message mode!)
@@ -60,6 +69,8 @@ LocalNetAppChat.ConsoleClient [options]
     --port               The port the server should connect to (default: 5000)
     --https              Whether to start the server as HTTPS or HTTP server
     --key                An Authentication password that the server requires to allow incoming requests from the client!
+    --tags               Comma-separated list of tags for task filtering in task receiver mode
+    --processor          Path to the script/executable to process tasks in task receiver mode
 
   Examples:
 
@@ -77,5 +88,7 @@ LocalNetAppChat.ConsoleClient [options]
     $ LocalNetAppChat.ConsoleClient filedelete --server "localhost" --port 51234 --key 1234 --file "README.md"
   - List all files existing on the server
     $ LocalNetAppChat.ConsoleClient listfiles --server "localhost" --port 51234 --key 1234
+  - Run the client in task receiver mode
+    $ LocalNetAppChat.ConsoleClient taskreceiver --server "localhost" --port 51234 --key 1234 --tags "build,test" --processor "./run-task.ps1"
 
 ```

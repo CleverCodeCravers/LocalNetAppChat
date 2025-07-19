@@ -9,10 +9,18 @@ The LNAC Bot only reacts to messages that are sent directly to it. It's main pur
 
 ## Commands
 
-- `exec filename parameter1 parameter2 parameter 3` will execute an existing script on the given path
-- `help filename` is a special command for powershell scripts only. It parses the Parameters that are defined at the top of the powershell script
-- `listcommands` will return a list of all existing scripts on the given path.
-- `/ping` well, just another ping pong command :)
+### Default Commands
+- `/ping` - Simple ping pong command to test bot connectivity
+
+### Script Execution Commands (Private Messages Only)
+- `exec filename parameter1 parameter2 parameter 3` - Execute an existing script on the given path
+- `help filename` - Special command for PowerShell scripts only. Parses the parameters defined at the top of the script
+- `listcommands` - Returns a list of all existing scripts on the given path
+
+### Task Commands
+- `/task "description" tags:tag1,tag2 params:{"key":"value"}` - Create a new task with optional tags and parameters
+- `/tasklist tags:tag1,tag2` - List pending tasks (optional tag filter)
+- `/taskstatus <task-id>` - Check the status of a specific task
 
 ## Bot CLI
 

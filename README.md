@@ -42,12 +42,22 @@ Usage Scenarios include:
 
 -   [CI/CD-Pipeline](./docs/usage-cicd-pipeline.md)
 -   [Central Log](./docs/usage-central-log.md)
+-   [Math Calculation Bots](./docs/scenarios/math-calculation-bots.md)
+-   [Distributed Build System](./docs/scenarios/distributed-build-system.md)
+-   [Monitoring & Alerting](./docs/scenarios/monitoring-alerting-system.md)
+-   [File Sync & Backup](./docs/scenarios/file-sync-backup.md)
+-   [More Scenarios...](./docs/scenarios/README.md)
 
 ## Features
 
 -   Available for Windows, Linux and macOS
 -   Easy to use
--   Adds a few simple entry points / command line tools that enable network communication between a group of hosts and sub applications.
+-   Adds a few simple entry points / command line tools that enable network communication between a group of hosts and sub applications
+-   **Task System**: Distribute work across multiple clients with tag-based routing
+-   **Duplicate Prevention**: Messages with same ID are rejected within 1 hour
+-   **Comprehensive Logging**: Daily rotating logs with Serilog integration
+-   **Direct Messaging**: Send messages to specific clients using `/msg ClientName`
+-   **File Storage**: Central file repository accessible by all clients
 -   Ability to execute and run tasks between your local apps through command line over the network
 -   Encrypted communication
 -   and more
