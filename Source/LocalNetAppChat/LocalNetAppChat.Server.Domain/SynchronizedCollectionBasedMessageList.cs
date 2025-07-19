@@ -10,6 +10,8 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
     private readonly SynchronizedCollection<ReceivedMessage> _messages = new();
     private readonly ConcurrentDictionary<long, long> _redirectedPatternMessages = new();
     private readonly ConcurrentDictionary<string, long> _clientStates = new();
+    private readonly ConcurrentDictionary<string, DateTime> _messageIdTracker = new();
+    private readonly TimeSpan _duplicatePreventionLifetime = TimeSpan.FromHours(1);
 
     public SynchronizedCollectionBasedMessageList(TimeSpan messageLifetime)
     {
@@ -19,6 +21,7 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
     private void Cleanup()
     {
         var currentEndOfLife = CurrentEndOfLife();
+        var duplicateTrackerEndOfLife = DateTime.Now - _duplicatePreventionLifetime;
 
         for (var i = _messages.Count-1; i >= 0; i--)
         {
@@ -31,11 +34,40 @@ public class SynchronizedCollectionBasedMessageList : IMessageList
                     _redirectedPatternMessages.TryRemove(message.Id, out _);
             }
         }
+
+        // Clean up expired message IDs from duplicate tracker
+        var expiredIds = _messageIdTracker
+            .Where(kvp => kvp.Value < duplicateTrackerEndOfLife)
+            .Select(kvp => kvp.Key)
+            .ToList();
+
+        foreach (var id in expiredIds)
+        {
+            _messageIdTracker.TryRemove(id, out _);
+        }
     }
     
 
     public void Add(ReceivedMessage receivedMessage)
     {
+        // Check if this message ID was already received within the duplicate prevention lifetime
+        if (!string.IsNullOrEmpty(receivedMessage.Message.Id))
+        {
+            var now = DateTime.Now;
+            if (_messageIdTracker.TryGetValue(receivedMessage.Message.Id, out var existingTimestamp))
+            {
+                // Message with this ID already exists and hasn't expired
+                if (existingTimestamp > now - _duplicatePreventionLifetime)
+                {
+                    // Reject duplicate message
+                    return;
+                }
+            }
+            
+            // Track this message ID
+            _messageIdTracker.AddOrUpdate(receivedMessage.Message.Id, now, (_, _) => now);
+        }
+
         _messages.Add(receivedMessage);
 
         Cleanup();
