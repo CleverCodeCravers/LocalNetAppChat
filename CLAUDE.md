@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-LocalNetAppChat (LNAC) is a client-server application for local network communication written in C#/.NET 7.0. It consists of:
+LocalNetAppChat (LNAC) is a client-server application for local network communication written in C#/.NET 8.0. It consists of:
 - **Server**: ASP.NET Core Web API handling message routing and file storage
 - **Client**: Console application for sending/receiving messages
 - **Bot**: Plugin-based application for executing scripts and responding to commands
@@ -100,7 +100,7 @@ Source/LocalNetAppChat/
 
 3. **Script Execution**: Bot can execute PowerShell and Python scripts from designated scripts folder
 
-4. **Cross-Platform**: Uses .NET 7.0 for Windows, Linux, and macOS support
+4. **Cross-Platform**: Uses .NET 8.0 for Windows, Linux, and macOS support
 
 5. **Communication Protocol**: HTTP/HTTPS with optional SSL certificate validation bypass for development
 
