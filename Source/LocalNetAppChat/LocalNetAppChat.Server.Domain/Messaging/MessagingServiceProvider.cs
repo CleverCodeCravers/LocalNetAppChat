@@ -40,7 +40,7 @@ public class MessagingServiceProvider
         var receivedMessage = _messageProcessors.Process(message.ToReceivedMessage()); 
         _messageList.Add(receivedMessage);
 
-        Console.WriteLine($"- [{DateTime.Now:yyyy-MM-dd HH:mm:ss}] queue status {_messageList.GetStatus()}");
+        Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [INF] Queue status: {_messageList.GetStatus()}");
 
         return Result<string>.Success("Ok");
     }
