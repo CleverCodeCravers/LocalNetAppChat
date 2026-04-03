@@ -1,0 +1,39 @@
+name: CI
+
+on: [push, pull_request]
+
+env:
+  DOTNET_VERSION: "8.0.x"
+  SOLUTION_DIR: "Source/LocalNetAppChat"
+
+jobs:
+  build-and-test:
+    name: Build & Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore
+        working-directory: ${{ env.SOLUTION_DIR }}
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ${{ env.SOLUTION_DIR }}
+
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
+        working-directory: ${{ env.SOLUTION_DIR }}
+
+      - name: Coveralls
+        if: matrix.os == 'ubuntu-latest'
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ${{ env.SOLUTION_DIR }}/LocalNetAppChat.Server.Domain.Tests/coverage.info

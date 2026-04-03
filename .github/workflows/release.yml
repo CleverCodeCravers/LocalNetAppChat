@@ -19,6 +19,7 @@ permissions:
 env:
   DOTNET_VERSION: "8.0.x"
   SOLUTION_DIR: "Source/LocalNetAppChat"
+  CLI_PROJECT: "LocalNetAppChat.Cli/LocalNetAppChat.Cli.csproj"
 
 jobs:
   prepare:
@@ -37,27 +38,12 @@ jobs:
         id: version
         run: |
           BUMP="${{ github.event.inputs.bump || 'patch' }}"
+          LATEST=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-version:refname | head -n1)
 
-          # Find latest semver tag (vX.Y.Z format)
-          LATEST_SEMVER=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-version:refname | head -n1)
-
-          if [ -z "$LATEST_SEMVER" ]; then
-            # No semver tags yet. Check for legacy tags (v1.XX format)
-            LATEST_LEGACY=$(git tag --list 'v[0-9]*.[0-9]*' --sort=-version:refname | head -n1)
-            if [ -n "$LATEST_LEGACY" ]; then
-              # Convert legacy tag to semver starting point
-              LEGACY_NUM=$(echo "$LATEST_LEGACY" | sed 's/^v//')
-              MAJOR=$(echo "$LEGACY_NUM" | cut -d. -f1)
-              MINOR=$(echo "$LEGACY_NUM" | cut -d. -f2)
-              CURRENT="${MAJOR}.${MINOR}.0"
-              echo "Found legacy tag $LATEST_LEGACY, using $CURRENT as base"
-            else
-              CURRENT="1.0.0"
-              echo "No tags found, starting at $CURRENT"
-            fi
+          if [ -z "$LATEST" ]; then
+            CURRENT="1.0.0"
           else
-            CURRENT=$(echo "$LATEST_SEMVER" | sed 's/^v//')
-            echo "Found semver tag $LATEST_SEMVER"
+            CURRENT=$(echo "$LATEST" | sed 's/^v//')
           fi
 
           MAJOR=$(echo "$CURRENT" | cut -d. -f1)
@@ -71,11 +57,9 @@ jobs:
           esac
 
           VERSION="${MAJOR}.${MINOR}.${PATCH}"
-          TAG="v${VERSION}"
-
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "Next version: $VERSION (tag: $TAG), bump: $BUMP"
+          echo "tag=v${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Next version: $VERSION (bump: $BUMP)"
 
   test:
     name: Run tests
@@ -85,61 +69,27 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Restore
-        run: dotnet restore
+      - run: dotnet restore
         working-directory: ${{ env.SOLUTION_DIR }}
-
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
+      - run: dotnet build --configuration Release --no-restore
         working-directory: ${{ env.SOLUTION_DIR }}
-
-      - name: Test
-        run: dotnet test --configuration Release --no-build --verbosity normal
+      - run: dotnet test --configuration Release --no-build --verbosity normal
         working-directory: ${{ env.SOLUTION_DIR }}
 
   release:
-    name: Build & Release (${{ matrix.component }}, ${{ matrix.rid }})
+    name: Build & Release (${{ matrix.rid }})
     needs: [prepare, test]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          # Server
-          - component: server
-            project: LocalNetAppChat.Server/LocalNetAppChat.Server.csproj
-            os: ubuntu-latest
+          - os: ubuntu-latest
             rid: linux-x64
-            artifact: lnac-server-linux-x64
-          - component: server
-            project: LocalNetAppChat.Server/LocalNetAppChat.Server.csproj
-            os: windows-latest
+            artifact: lnac-linux-x64
+          - os: windows-latest
             rid: win-x64
-            artifact: lnac-server-win-x64
-          # Client
-          - component: client
-            project: LocalNetAppChat.ConsoleClient/LocalNetAppChat.ConsoleClient.csproj
-            os: ubuntu-latest
-            rid: linux-x64
-            artifact: lnac-client-linux-x64
-          - component: client
-            project: LocalNetAppChat.ConsoleClient/LocalNetAppChat.ConsoleClient.csproj
-            os: windows-latest
-            rid: win-x64
-            artifact: lnac-client-win-x64
-          # Bot
-          - component: bot
-            project: LocalNetAppChat.Bot/LocalNetAppChat.Bot.csproj
-            os: ubuntu-latest
-            rid: linux-x64
-            artifact: lnac-bot-linux-x64
-          - component: bot
-            project: LocalNetAppChat.Bot/LocalNetAppChat.Bot.csproj
-            os: windows-latest
-            rid: win-x64
-            artifact: lnac-bot-win-x64
-
+            artifact: lnac-win-x64
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -152,7 +102,7 @@ jobs:
 
       - name: Publish
         run: >-
-          dotnet publish ${{ matrix.project }}
+          dotnet publish ${{ env.CLI_PROJECT }}
           -c Release
           -o ${{ matrix.artifact }}
           -r ${{ matrix.rid }}

@@ -1,5 +1,5 @@
-using LocalNetAppChat.Bot.Plugins.ScriptExecution;
-using LocalNetAppChat.Bot.Plugins.ScriptExecution.ScriptExecutors;
+using LocalNetAppChat.Cli.Plugins.ScriptExecution;
+using LocalNetAppChat.Cli.Plugins.ScriptExecution.ScriptExecutors;
 using LocalNetAppChat.Domain.Bots.ClientCommands;
 using LocalNetAppChat.Domain.Shared;
 using NSubstitute;

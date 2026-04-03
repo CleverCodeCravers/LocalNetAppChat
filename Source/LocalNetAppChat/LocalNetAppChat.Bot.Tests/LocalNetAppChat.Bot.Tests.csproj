@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LocalNetAppChat.Bot\LocalNetAppChat.Bot.csproj" />
+    <ProjectReference Include="..\LocalNetAppChat.Cli\LocalNetAppChat.Cli.csproj" />
     <ProjectReference Include="..\LocalNetAppChat.Domain\LocalNetAppChat.Domain.csproj" />
   </ItemGroup>
 

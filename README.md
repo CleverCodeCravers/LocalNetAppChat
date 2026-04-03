@@ -1,8 +1,6 @@
 # LocalNetAppChat
 
-[![Server CI](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/server.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/server.yml)
-[![Client CI](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/client.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/client.yml)
-[![Bot CI](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/bot.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/bot.yml)
+[![CI](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/ci.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/CleverCodeCravers/LocalNetAppChat/badge.svg?branch=main)](https://coveralls.io/github/CleverCodeCravers/LocalNetAppChat?branch=main)
 
 **Zero-Config .NET LAN Automation** -- a lightweight server/client C# tool that gives your apps a way to communicate, execute scripts, and share files across your local network. No Docker, no SSH, no complex setup -- just download and run.
@@ -11,7 +9,7 @@
 
 Unlike Ansible (requires SSH), Rundeck (requires a web server), or NATS (requires infrastructure knowledge), LNAC is designed for **zero-config simplicity**:
 
--   **One binary per component** -- download, run, done
+-   **Single binary** -- one `lnac` executable for server, client, and bot
 -   **No agents to install** -- clients connect to a central server via HTTP
 -   **No infrastructure needed** -- no Docker, no databases, no message brokers
 -   **.NET native** -- integrates naturally with C#/.NET ecosystems
@@ -23,16 +21,19 @@ Perfect for small teams, lab environments, build farms, or anyone who needs ligh
 
 ```bash
 # 1. Start the server
-./LocalNetAppChat.Server --key "MySecretKey"
+lnac server --key "MySecretKey"
 
 # 2. Send a message from another machine
-./LocalNetAppChat.ConsoleClient message --server 192.168.1.10 --key "MySecretKey" --clientName "BuildPC" --message "Build complete"
+lnac message --server 192.168.1.10 --key "MySecretKey" --text "Build complete"
 
 # 3. Listen for messages
-./LocalNetAppChat.ConsoleClient listener --server 192.168.1.10 --key "MySecretKey" --clientName "Monitor"
+lnac listener --server 192.168.1.10 --key "MySecretKey" --clientName "Monitor"
 
-# 4. Start a bot for remote script execution
-./LocalNetAppChat.Bot --server 192.168.1.10 --key "MySecretKey" --clientName "WorkerBot" --scriptspath ./scripts
+# 4. Interactive chat
+lnac chat --server 192.168.1.10 --key "MySecretKey"
+
+# 5. Start a bot for remote script execution
+lnac bot --server 192.168.1.10 --key "MySecretKey" --scriptspath ./scripts
 ```
 
 ## Features
@@ -55,19 +56,11 @@ Perfect for small teams, lab environments, build farms, or anyone who needs ligh
 
 ## Installation
 
-Download the latest release for your platform from the [Release Page](https://github.com/CleverCodeCravers/LocalNetAppChat/releases).
+Download `lnac` for your platform from the [Release Page](https://github.com/CleverCodeCravers/LocalNetAppChat/releases).
 
-Each release includes:
-- `lnac-server-{platform}.zip` -- The server
-- `lnac-client-{platform}.zip` -- The client CLI
-- `lnac-bot-{platform}.zip` -- The bot with plugin system
+Available: `lnac-linux-x64.zip`, `lnac-win-x64.zip`
 
-Available platforms: `linux-x64`, `win-x64`
-
-For detailed CLI reference see:
-- [Server CLI](./docs/Server/README.md)
-- [Client CLI](./docs/Client/README.md)
-- [Bot CLI](./docs/Bot/README.md)
+Run `lnac --help` for a list of all commands, or `lnac <command> --help` for command-specific options.
 
 ## Usage Scenarios
 

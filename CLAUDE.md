@@ -4,50 +4,42 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-LocalNetAppChat (LNAC) is a client-server application for local network communication written in C#/.NET 8.0. It consists of:
-- **Server**: ASP.NET Core Web API handling message routing and file storage
-- **Client**: Console application for sending/receiving messages
-- **Bot**: Plugin-based application for executing scripts and responding to commands
+LocalNetAppChat (LNAC) is a unified CLI tool for local network communication written in C#/.NET 8.0. A single `lnac` binary provides:
+- **Server mode**: ASP.NET Core Web API handling message routing, file storage, and task management
+- **Client modes**: Send/receive messages, file operations, task processing, emitter
+- **Bot mode**: Plugin-based command execution (PowerShell/Python scripts)
 
 ## Essential Development Commands
 
 ### Building the Project
 ```bash
-# Build entire solution
 cd Source/LocalNetAppChat
 dotnet build
 
-# Build specific project
-dotnet build LocalNetAppChat.Server/LocalNetAppChat.Server.csproj
-
-# Build in Release mode
-dotnet build --configuration Release
+# Or use the build script
+./build.ps1 build
 ```
 
 ### Running Tests
 ```bash
-# Run all tests
 cd Source/LocalNetAppChat
 dotnet test
-
-# Run tests for specific project
-dotnet test LocalNetAppChat.Domain.Tests/LocalNetAppChat.Domain.Tests.csproj
-dotnet test LocalNetAppChat.Server.Domain.Tests/LocalNetAppChat.Server.Domain.Tests.csproj
 ```
 
-### Running Applications
+### Running the Application
 ```bash
-# Run Server
-cd Source/LocalNetAppChat/LocalNetAppChat.Server
-dotnet run -- --key "MySecretKey"
+cd Source/LocalNetAppChat/LocalNetAppChat.Cli
 
-# Run Client (example: chat mode)
-cd Source/LocalNetAppChat/LocalNetAppChat.ConsoleClient
-dotnet run -- chat --server localhost --key "MySecretKey" --clientName "TestClient"
+# Server mode
+dotnet run -- server --key "MySecretKey"
 
-# Run Bot
-cd Source/LocalNetAppChat/LocalNetAppChat.Bot
-dotnet run -- --server localhost --key "MySecretKey" --clientName "TestBot"
+# Client modes
+dotnet run -- message --server localhost --key "MySecretKey" --text "Hello"
+dotnet run -- listener --server localhost --key "MySecretKey"
+dotnet run -- chat --server localhost --key "MySecretKey"
+
+# Bot mode
+dotnet run -- bot --server localhost --key "MySecretKey" --scriptspath ./scripts
 ```
 
 ## Architecture Overview
@@ -56,62 +48,55 @@ dotnet run -- --server localhost --key "MySecretKey" --clientName "TestBot"
 ```
 Source/LocalNetAppChat/
 ├── CommandLineArguments/           # Shared CLI parsing utilities
-├── LocalNetAppChat.Bot/           # Bot application with plugin system
-│   └── Plugins/                   # Plugin implementations (Ping, Execute, etc.)
-├── LocalNetAppChat.ConsoleClient/ # Client console application
+├── LocalNetAppChat.Cli/           # Unified CLI application (server + client + bot)
+│   └── Plugins/                   # Bot plugin implementations (Ping, Execute, Tasks)
 ├── LocalNetAppChat.Domain/        # Shared domain logic and models
-├── LocalNetAppChat.Server/        # Web API server application
-└── LocalNetAppChat.Server.Domain/ # Server-specific domain logic
+├── LocalNetAppChat.Server.Domain/ # Server-specific domain logic
+├── LocalNetAppChat.Domain.Tests/
+├── LocalNetAppChat.Server.Domain.Tests/
+└── LocalNetAppChat.Bot.Tests/
 ```
 
 ### Key Architectural Patterns
 
-1. **Message Processing Pipeline**
+1. **Unified CLI with Subcommands**
+   - Single entry point (`lnac`) routes to server, client, or bot mode
+   - Server mode starts ASP.NET Core with Minimal API endpoints
+   - Client modes use the OperatingMode strategy pattern
+   - Bot mode runs a polling loop with plugin-based command execution
+
+2. **Message Processing Pipeline**
    - Server uses a pipeline pattern for processing incoming messages
-   - Pipeline components: SecurityValidation → MessageParsing → DirectMessageProcessing → Storage
-   - Located in `LocalNetAppChat.Server.Domain/MessageProcessing/`
+   - Pipeline: AddId → AddTimestamp → ExtractReceiver
+   - Located in `LocalNetAppChat.Server.Domain/Messaging/MessageProcessing/`
 
-2. **Plugin Architecture (Bot)**
-   - Bot plugins implement `IPlugin` interface
+3. **Plugin Architecture (Bot mode)**
+   - Bot plugins implement `IClientCommand` interface
    - Plugins respond to specific commands (e.g., `/ping`, `exec`)
-   - New plugins can be added in `LocalNetAppChat.Bot/Plugins/`
-
-3. **Command Line Parsing**
-   - Shared `CommandLineArguments` library handles CLI parsing
-   - Uses custom tokenizer for parsing complex command strings
-   - Supports both simple arguments and key-value pairs
+   - Plugin implementations in `LocalNetAppChat.Cli/Plugins/`
 
 4. **Client Operating Modes**
    - `listener`: Receive messages only
    - `message`: Send single message
    - `chat`: Interactive send/receive
+   - `bot`: Automated command execution with plugins
+   - `emitter`: Stream command output to server
+   - `taskreceiver`: Process distributed tasks
    - `fileupload/download/delete/listfiles`: File operations
 
-5. **Security Model**
-   - Simple key-based authentication (shared secret)
-   - All clients must provide matching key to connect
-   - Server validates key on every request
-
-### Important Design Decisions
-
-1. **Direct Messaging**: Recent enhancement allows 1:n messaging where messages can be sent to specific clients using `/msg ClientName message`
-
-2. **File Storage**: Server maintains central file storage accessible by all authenticated clients
-
-3. **Script Execution**: Bot can execute PowerShell and Python scripts from designated scripts folder
-
-4. **Cross-Platform**: Uses .NET 8.0 for Windows, Linux, and macOS support
-
-5. **Communication Protocol**: HTTP/HTTPS with optional SSL certificate validation bypass for development
+5. **Security**
+   - API key authentication via `X-API-Key` header (or query parameter for backward compat)
+   - Constant-time key comparison (CryptographicOperations.FixedTimeEquals)
+   - Rate limiting: 100 req/min per IP
+   - Security headers: X-Content-Type-Options, X-Frame-Options
+   - HTTPS support via `--https` flag
 
 ## Common Development Tasks
 
-When implementing new features:
+1. **Adding New Bot Commands**: Create plugin in `LocalNetAppChat.Cli/Plugins/` implementing `IClientCommand`
 
-1. **Adding New Bot Commands**: Create new plugin in `LocalNetAppChat.Bot/Plugins/` implementing `IPlugin`
+2. **Modifying Message Processing**: Update pipeline in `LocalNetAppChat.Server.Domain/Messaging/MessageProcessing/`
 
-2. **Modifying Message Processing**: Update pipeline components in `LocalNetAppChat.Server.Domain/MessageProcessing/`
+3. **Adding Client Modes**: Create new `IOperatingMode` in `LocalNetAppChat.Domain/Clientside/OperatingModes/`
 
-3. **Adding Client Commands**: Extend command parsing in `LocalNetAppChat.ConsoleClient/`
-
-4. **Testing**: Add unit tests in corresponding `.Tests` projects maintaining existing patterns
+4. **Testing**: Add unit tests in corresponding `.Tests` projects maintaining existing NUnit patterns
