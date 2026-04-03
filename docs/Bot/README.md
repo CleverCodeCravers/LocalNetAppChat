@@ -32,7 +32,7 @@ LocalNetAppChat.Bot [options]
     --server             The IP Address the bot should connect to (e.g localhost)
     --port               The port that the bot should connect to (default: 5000)
     --https              Whether to connect per HTTP or HTTPs
-    --key                An Authentication password that the bot should send along the requests to be able to perform tasks. (default: 1234)
+    --key                Authentication key (REQUIRED, must match the server's key)
     --clientName         Specifies the bot name, otherwise the name of the machine will be used
     --ignoresslerrors    Whether to ignore SSL Erros in console.
     --scriptspath        Path of the scripts folder
@@ -40,6 +40,6 @@ LocalNetAppChat.Bot [options]
   Examples:
 
   – Start the bot
-    $ LocalNetAppChat.Bot --server "localhost" --port 54214 --key 1234 --clientName "TheBestBot" --scriptspath "./home/ScriptsFolder"
+    $ LocalNetAppChat.Bot --server "localhost" --port 54214 --key "MySecretKey" --clientName "TheBestBot" --scriptspath "./home/ScriptsFolder"
 
 ```

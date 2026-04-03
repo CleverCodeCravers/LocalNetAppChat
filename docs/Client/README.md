@@ -19,7 +19,7 @@ Consider the message mode as a command to send a message to the server. This can
 To send a direct message to client "Bob":
 
 ```
-$ LocalNetAppChat.ConsoleClient message --server "localhost" --port 51234 --key 1234 --text "/msg Bob Hey there, I am client GithubReadMe"
+$ LocalNetAppChat.ConsoleClient message --server "localhost" --port 51234 --key "MySecretKey" --text "/msg Bob Hey there, I am client GithubReadMe"
 ```
 
 The "/msg" command is a special command that allows you to send a message to only one specific client.
@@ -42,7 +42,7 @@ The File operation mode allows the client to upload, download, delete and get a 
 The task receiver mode allows the client to process tasks from the server. The client polls for new tasks with matching tags, claims them, executes a configured processor script, and reports results back to the server.
 
 ```
-$ LocalNetAppChat.ConsoleClient taskreceiver --server "localhost" --port 51234 --key 1234 --tags "build,test" --processor "./run-task.ps1"
+$ LocalNetAppChat.ConsoleClient taskreceiver --server "localhost" --port 51234 --key "MySecretKey" --tags "build,test" --processor "./run-task.ps1"
 ```
 
 #### Emitter
@@ -50,7 +50,7 @@ $ LocalNetAppChat.ConsoleClient taskreceiver --server "localhost" --port 51234 -
 The emitter mode allows the client to execute a command and stream its output line-by-line to the server in real-time. Each line of output is sent immediately as a message, making it perfect for log streaming, monitoring, or continuous data generation.
 
 ```
-$ LocalNetAppChat.ConsoleClient emitter --server "localhost" --port 51234 --key 1234 --clientName "LogEmitter" --command "tail -f /var/log/app.log"
+$ LocalNetAppChat.ConsoleClient emitter --server "localhost" --port 51234 --key "MySecretKey" --clientName "LogEmitter" --command "tail -f /var/log/app.log"
 ```
 
 ## Client CLI
@@ -77,7 +77,7 @@ LocalNetAppChat.ConsoleClient [options]
     --server             The IP Address the server should start litening on (e.g localhost)
     --port               The port the server should connect to (default: 5000)
     --https              Whether to start the server as HTTPS or HTTP server
-    --key                An Authentication password that the server requires to allow incoming requests from the client!
+    --key                Authentication key (REQUIRED, must match the server's key)
     --tags               Comma-separated list of tags for task filtering in task receiver mode
     --processor          Path to the script/executable to process tasks in task receiver mode
     --command            Command to execute in emitter mode (including arguments)
@@ -85,22 +85,22 @@ LocalNetAppChat.ConsoleClient [options]
   Examples:
 
   – Start the client in listening mode
-    $ LocalNetAppChat.ConsoleClient listener --server "localhost" --port 54214 --key 1234 --clientName "GithubReadMe"
+    $ LocalNetAppChat.ConsoleClient listener --server "localhost" --port 54214 --key "MySecretKey" --clientName "GithubReadMe"
   - Start the client in message mode
-    $ LocalNetAppChat.ConsoleClient message --server "localhost" --port 51234 --key 1234 --text "Hey there, I am client GithubReadMe"
+    $ LocalNetAppChat.ConsoleClient message --server "localhost" --port 51234 --key "MySecretKey" --text "Hey there, I am client GithubReadMe"
   - Start the client in chat mode
-    LocalNetAppChat.ConsoleClient chat --server "localhost" --port 54214 --key 1234 --clientName "GithubReadMe"
+    LocalNetAppChat.ConsoleClient chat --server "localhost" --port 54214 --key "MySecretKey" --clientName "GithubReadMe"
   - Upload a file to the server
-    $ LocalNetAppChat.ConsoleClient fileupload --server "localhost" --port 51234 --key 1234 --file "./README.md"
+    $ LocalNetAppChat.ConsoleClient fileupload --server "localhost" --port 51234 --key "MySecretKey" --file "./README.md"
   - Download a file from the server
-    $ LocalNetAppChat.ConsoleClient filedownload --server "localhost" --port 51234 --key 1234 --file "./README.md" --targetPath "/home/github/Projects"
+    $ LocalNetAppChat.ConsoleClient filedownload --server "localhost" --port 51234 --key "MySecretKey" --file "./README.md" --targetPath "/home/github/Projects"
   - Deletes a file from the server
-    $ LocalNetAppChat.ConsoleClient filedelete --server "localhost" --port 51234 --key 1234 --file "README.md"
+    $ LocalNetAppChat.ConsoleClient filedelete --server "localhost" --port 51234 --key "MySecretKey" --file "README.md"
   - List all files existing on the server
-    $ LocalNetAppChat.ConsoleClient listfiles --server "localhost" --port 51234 --key 1234
+    $ LocalNetAppChat.ConsoleClient listfiles --server "localhost" --port 51234 --key "MySecretKey"
   - Run the client in task receiver mode
-    $ LocalNetAppChat.ConsoleClient taskreceiver --server "localhost" --port 51234 --key 1234 --tags "build,test" --processor "./run-task.ps1"
+    $ LocalNetAppChat.ConsoleClient taskreceiver --server "localhost" --port 51234 --key "MySecretKey" --tags "build,test" --processor "./run-task.ps1"
   - Run the client in emitter mode to stream command output
-    $ LocalNetAppChat.ConsoleClient emitter --server "localhost" --port 51234 --key 1234 --command "ping google.com"
+    $ LocalNetAppChat.ConsoleClient emitter --server "localhost" --port 51234 --key "MySecretKey" --command "ping google.com"
 
 ```

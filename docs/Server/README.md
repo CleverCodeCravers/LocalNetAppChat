@@ -20,40 +20,47 @@ LocalNetAppChat.Server [options]
 
   Options:
 
-    --listenOn           The IP Address the server should start litening on (e.g localhost)
+    --listenOn           The IP Address the server should start listening on (e.g localhost)
     --port               The port the server should connect to (default: 5000)
     --https              Whether to start the server as HTTPS or HTTP server
-    --key                An Authentication password that the client should send along the requests to be able to perform tasks. (default: 1234)
+    --key                Authentication key (REQUIRED). Can also be set via LNAC_KEY environment variable.
+    --message-lifetime   Message lifetime in minutes (default: 10)
 
   Examples:
 
-  – Start the server with the default settings
-    $ LocalNetAppChat.Server
+  – Start the server with a key
+    $ LocalNetAppChat.Server --key "MySecretKey"
   - Start the server in HTTPS mode
-    $ LocalNetAppChat.Server --https
-  - Start the server with different ip and port and custom key
-    $ LocalNetAppChat.Server --listenOn "54.15.12.1" --port "54822" --https --key "HeythereGithubExample"
+    $ LocalNetAppChat.Server --key "MySecretKey" --https
+  - Start the server with custom settings
+    $ LocalNetAppChat.Server --listenOn "54.15.12.1" --port "54822" --https --key "MySecretKey"
+  - Start the server using environment variable
+    $ export LNAC_KEY="MySecretKey"
+    $ LocalNetAppChat.Server
 
 ```
 
 ## Server API Endpoints
 
+Authentication is provided via `X-API-Key` header (recommended) or `key` query parameter (legacy).
+Rate limiting: 100 requests per minute per IP address.
+
 ### Messaging
-- `GET /receive?key={key}&clientName={clientName}` - Poll for new messages
-- `POST /send?key={key}` - Send a message (body: LnacMessage JSON)
+- `GET /receive?clientName={clientName}` - Poll for new messages
+- `POST /send` - Send a message (body: LnacMessage JSON)
 
 ### File Storage
-- `POST /upload?key={key}` - Upload a file (multipart/form-data)
-- `GET /download?key={key}&filename={filename}` - Download a file
-- `GET /listallfiles?key={key}` - List all files
-- `POST /deletefile?key={key}&filename={filename}` - Delete a file
+- `POST /upload` - Upload a file (multipart/form-data)
+- `GET /download?filename={filename}` - Download a file
+- `GET /listallfiles` - List all files
+- `POST /deletefile?filename={filename}` - Delete a file
 
 ### Task Management
-- `POST /tasks/create?key={key}` - Create a new task (body: TaskMessage JSON)
-- `GET /tasks/pending?key={key}&tags={tags}` - Get pending tasks (optional tag filter)
-- `POST /tasks/claim?key={key}&taskId={id}&clientName={name}` - Claim a task
-- `POST /tasks/complete?key={key}&taskId={id}&clientName={name}&success={bool}&result={result}` - Complete a task
-- `GET /tasks/status?key={key}&taskId={id}` - Get task status
+- `POST /tasks/create` - Create a new task (body: TaskMessage JSON)
+- `GET /tasks/pending?tags={tags}` - Get pending tasks (optional tag filter)
+- `POST /tasks/claim?taskId={id}&clientName={name}` - Claim a task
+- `POST /tasks/complete?taskId={id}&clientName={name}&success={bool}&result={result}` - Complete a task
+- `GET /tasks/status?taskId={id}` - Get task status
 
 ## Logging
 
@@ -65,6 +72,8 @@ The server uses Serilog for comprehensive logging:
 
 ## Security
 
-- Key-based authentication required for all endpoints
+- Key-based authentication required for all endpoints (via `X-API-Key` header or query parameter)
+- Rate limiting: 100 requests per minute per IP address
 - Messages are rejected if duplicate ID is detected within 1 hour
 - HTTPS support with `--https` flag
+- Security headers: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`
