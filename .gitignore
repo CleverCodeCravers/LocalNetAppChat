@@ -1,2 +1,31 @@
+# IDE
 /Source/LocalNetAppChat/.idea/.idea.LocalNetAppChat/.idea
 .claude/settings.local.json
+.vs/
+.vscode/
+*.user
+*.suo
+*.DotSettings.user
+
+# Build output
+bin/
+obj/
+publish/
+out/
+
+# Test results
+TestResults/
+coverage/
+*.lcov
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Secrets
+*.pfx
+*.key
+.env
+.env.*
+!.env.example

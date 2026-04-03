@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Threading.RateLimiting;
 using CommandLineArguments;
 using LocalNetAppChat.Domain.Shared;
 using LocalNetAppChat.Server.Domain;
@@ -7,6 +8,7 @@ using LocalNetAppChat.Server.Domain.Messaging.MessageProcessing;
 using LocalNetAppChat.Server.Domain.Security;
 using LocalNetAppChat.Server.Domain.StoringFiles;
 using LocalNetAppChat.Server.Domain.Tasks;
+using Microsoft.AspNetCore.RateLimiting;
 using Serilog;
 using Serilog.Events;
 
@@ -15,7 +17,8 @@ var parser = new Parser(
         new StringCommandLineOption("--listenOn", "The IP Address the server should start litening on (e.g localhost)","localhost"),
         new Int32CommandLineOption("--port", "The port the server should connect to (default: 5000)",5000),
         new BoolCommandLineOption("--https", "Whether to start the server as HTTPS or HTTP server"),
-        new StringCommandLineOption("--key", "An Authentication password that the client should send along the requests to be able to perform tasks. (default: 1234)","1234"),
+        new StringCommandLineOption("--key", "An Authentication password. Can also be set via LNAC_KEY environment variable. Required.",""),
+        new Int32CommandLineOption("--message-lifetime", "Message lifetime in minutes (default: 10)", 10),
         new BoolCommandLineOption("--help","Prints out the commands and their corresponding description")
     });
 
@@ -68,13 +71,23 @@ try
     Log.Information("Starting LocalNetAppChat Server");
 
     var serverKey = parser.TryGetOptionWithValue<string>("--key");
-    var accessControl = new KeyBasedAccessControl(serverKey??string.Empty);
+    if (string.IsNullOrEmpty(serverKey))
+        serverKey = Environment.GetEnvironmentVariable("LNAC_KEY");
+    if (string.IsNullOrEmpty(serverKey))
+    {
+        Log.Fatal("No authentication key provided. Use --key or set LNAC_KEY environment variable.");
+        return;
+    }
 
+    var accessControl = new KeyBasedAccessControl(serverKey);
+
+    var messageLifetimeMinutes = parser.GetOptionWithValue<int>("--message-lifetime");
     var messagingServiceProvider = new MessagingServiceProvider(
         accessControl,
         MessageProcessorFactory.Get(
             new ThreadSafeCounter(),
-            new DateTimeProvider())
+            new DateTimeProvider()),
+        TimeSpan.FromMinutes(messageLifetimeMinutes)
         );
 
     var storageServiceProvider = new StorageServiceProvider(
@@ -89,10 +102,35 @@ try
         parser.GetBoolOption("--https"));
 
     Log.Information("Server configured to listen on {HostingUrl} with key authentication", hostingUrl);
+    Log.Information("Server accepts API key via X-API-Key header or 'key' query parameter");
 
     var builder = WebApplication.CreateBuilder(new[] { "--urls", hostingUrl });
     builder.Host.UseSerilog();
-var app = builder.Build();
+
+    builder.Services.AddRateLimiter(options =>
+    {
+        options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
+            RateLimitPartition.GetFixedWindowLimiter(
+                ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 100,
+                    Window = TimeSpan.FromMinutes(1)
+                }));
+        options.RejectionStatusCode = 429;
+    });
+
+    var app = builder.Build();
+
+    app.UseRateLimiter();
+
+    // Security headers
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+        context.Response.Headers["X-Frame-Options"] = "DENY";
+        await next();
+    });
 
     // Add Serilog request logging
     app.UseSerilogRequestLogging(options =>
@@ -100,10 +138,20 @@ var app = builder.Build();
         options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
     });
 
+    // Helper: extract API key from X-API-Key header or 'key' query parameter
+    string ExtractKey(HttpContext ctx)
+    {
+        var headerKey = ctx.Request.Headers["X-API-Key"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(headerKey))
+            return headerKey;
+        return ctx.Request.Query["key"].FirstOrDefault() ?? string.Empty;
+    }
+
     app.MapGet("/", () => "LocalNetAppChat Server!");
 
-app.MapGet("/receive", (string key, string clientName) =>
+app.MapGet("/receive", (HttpContext ctx, string clientName) =>
 {
+    var key = ExtractKey(ctx);
     Log.Debug("Client {ClientName} requesting messages", clientName);
     var result = messagingServiceProvider.GetMessages(key, clientName);
 
@@ -117,9 +165,10 @@ app.MapGet("/receive", (string key, string clientName) =>
     return JsonSerializer.Serialize(result.Value);
 });
 
-app.MapPost("/send", (string key, LnacMessage message) =>
+app.MapPost("/send", (HttpContext ctx, LnacMessage message) =>
 {
-    Log.Information("Received message from {ClientName}: {MessageText}", message.Name, message.Text);
+    var key = ExtractKey(ctx);
+    Log.Information("Received message from {ClientName}", message.Name);
     var result = messagingServiceProvider.SendMessage(key, message);
 
     if (!result.IsSuccess)
@@ -132,8 +181,9 @@ app.MapPost("/send", (string key, LnacMessage message) =>
     return result.Value;
 });
 
-app.MapPost("/upload", async (HttpRequest request, string key) =>
+app.MapPost("/upload", async (HttpContext ctx, HttpRequest request) =>
 {
+    var key = ExtractKey(ctx);
     if (!request.HasFormContentType)
     {
         Log.Warning("Upload request received without form content type");
@@ -171,8 +221,9 @@ app.MapPost("/upload", async (HttpRequest request, string key) =>
 });
 
 
-app.MapGet("/listallfiles", (string key) =>
+app.MapGet("/listallfiles", (HttpContext ctx) =>
 {
+    var key = ExtractKey(ctx);
     Log.Debug("Listing all files request received");
     var result = storageServiceProvider.GetFiles(key);
     
@@ -186,8 +237,9 @@ app.MapGet("/listallfiles", (string key) =>
     return Results.Json(result.Value);
 });
 
-app.MapGet("/download", async (HttpRequest _, string key, string filename) =>
+app.MapGet("/download", async (HttpContext ctx, string filename) =>
 {
+    var key = ExtractKey(ctx);
     Log.Information("Download request for file {FileName}", filename);
     var result = await storageServiceProvider.Download(key, filename);
     
@@ -201,8 +253,9 @@ app.MapGet("/download", async (HttpRequest _, string key, string filename) =>
     return Results.File(result.Value, fileDownloadName: filename);
 });
 
-app.MapPost("/deletefile", (HttpRequest _, string filename, string key) =>
+app.MapPost("/deletefile", (HttpContext ctx, string filename) =>
 {
+    var key = ExtractKey(ctx);
     Log.Information("Delete request for file {FileName}", filename);
     var result = storageServiceProvider.Delete(key, filename);
     
@@ -217,8 +270,9 @@ app.MapPost("/deletefile", (HttpRequest _, string filename, string key) =>
 });
 
 // Task endpoints
-app.MapPost("/tasks/create", (string key, TaskMessage task) =>
+app.MapPost("/tasks/create", (HttpContext ctx, TaskMessage task) =>
 {
+    var key = ExtractKey(ctx);
     Log.Information("Creating task {TaskId} from {ClientName}", task.Id, task.Name);
     var result = taskManager.CreateTask(key, task);
     
@@ -236,8 +290,9 @@ app.MapPost("/tasks/create", (string key, TaskMessage task) =>
     return Results.Json(new { taskId = result.Value });
 });
 
-app.MapGet("/tasks/pending", (string key, string? tags) =>
+app.MapGet("/tasks/pending", (HttpContext ctx, string? tags) =>
 {
+    var key = ExtractKey(ctx);
     Log.Debug("Getting pending tasks with tags: {Tags}", tags);
     var tagArray = string.IsNullOrEmpty(tags) ? null : tags.Split(',');
     var result = taskManager.GetPendingTasks(key, tagArray);
@@ -252,8 +307,9 @@ app.MapGet("/tasks/pending", (string key, string? tags) =>
     return Results.Json(result.Value);
 });
 
-app.MapPost("/tasks/claim", (string key, string taskId, string clientName) =>
+app.MapPost("/tasks/claim", (HttpContext ctx, string taskId, string clientName) =>
 {
+    var key = ExtractKey(ctx);
     Log.Information("Client {ClientName} claiming task {TaskId}", clientName, taskId);
     var result = taskManager.ClaimTask(key, taskId, clientName);
     
@@ -267,8 +323,9 @@ app.MapPost("/tasks/claim", (string key, string taskId, string clientName) =>
     return Results.Json(result.Value);
 });
 
-app.MapPost("/tasks/complete", (string key, string taskId, string clientName, bool success, string result) =>
+app.MapPost("/tasks/complete", (HttpContext ctx, string taskId, string clientName, bool success, string result) =>
 {
+    var key = ExtractKey(ctx);
     Log.Information("Client {ClientName} completing task {TaskId} with success={Success}", clientName, taskId, success);
     var completeResult = taskManager.CompleteTask(key, taskId, clientName, success, result);
     
@@ -282,8 +339,9 @@ app.MapPost("/tasks/complete", (string key, string taskId, string clientName, bo
     return Results.Ok(completeResult.Value);
 });
 
-app.MapGet("/tasks/status", (string key, string taskId) =>
+app.MapGet("/tasks/status", (HttpContext ctx, string taskId) =>
 {
+    var key = ExtractKey(ctx);
     Log.Debug("Getting status for task {TaskId}", taskId);
     var result = taskManager.GetTaskStatus(key, taskId);
     

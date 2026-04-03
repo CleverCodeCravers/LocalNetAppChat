@@ -5,7 +5,7 @@
 
 Server : [![.github/workflows/server.yml](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/server.yml/badge.svg)](https://github.com/CleverCodeCravers/LocalNetAppChat/actions/workflows/server.yml) [![Coverage Status](https://coveralls.io/repos/github/CleverCodeCravers/LocalNetAppChat/badge.svg?branch=main)](https://coveralls.io/github/CleverCodeCravers/LocalNetAppChat?branch=main)
 
-LocalNetAppChat (LNAC) is a server/client C# command line interface that gives your apps a way to communicate with each other over the local network.
+**Zero-Config .NET LAN Automation** -- a lightweight server/client C# tool that gives your apps a way to communicate, execute scripts, and share files across your local network. No Docker, no SSH, no complex setup -- just download and run.
 
 <!-- TOC -->
 
@@ -24,19 +24,28 @@ LocalNetAppChat (LNAC) is a server/client C# command line interface that gives y
 
 <!-- /TOC -->
 
+## Why LNAC?
+
+Unlike Ansible (requires SSH), Rundeck (requires a web server), or NATS (requires infrastructure knowledge), LNAC is designed for **zero-config simplicity**:
+
+-   **One binary per component** -- download, run, done
+-   **No agents to install** -- clients connect to a central server via HTTP
+-   **No infrastructure needed** -- no Docker, no databases, no message brokers
+-   **.NET native** -- integrates naturally with C#/.NET ecosystems
+-   **Cross-platform** -- Windows, Linux, macOS
+
+Perfect for small teams, lab environments, build farms, or anyone who needs lightweight automation without the overhead of enterprise tools.
+
 ## Vision
 
-LNAC is focusing on giving you a central service with which you can easily group computers together.
+LNAC gives you a central service to group computers together and automate tasks across your local network.
 
-Without the need of programming skills, it gives you a server that supports text messaging and a central file storage, as well as a standard client and a bot that will enable a bunch of scripts to come to life over the net. A bit like a remote shell. But since all clients are connected to the server it enables the computers to also communicate around network borders. You, as a person, can take part in this chat using the client in chat mode, so you can see and debug and issue commands as you like.
-
-The focus usage points at the moment are:
+The focus usage points are:
 
 -   Collecting execution log information (sending messages that can be reviewed by a human)
 -   Sending commands to bots either direct or as a broadcast and receiving their results
--   Exchanging files between the computers that take part.
-
-It should be reasonably secure to use in a trusted local network.
+-   Exchanging files between the computers that take part
+-   Distributing work across multiple machines with the task system
 
 Usage Scenarios include:
 

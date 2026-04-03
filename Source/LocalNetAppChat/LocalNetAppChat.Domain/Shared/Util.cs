@@ -1,21 +1,17 @@
 ﻿namespace LocalNetAppChat.Domain.Shared
-
 {
     public static class Util
     {
+        public static string SanitizeFilename(string filename)
+        {
+            return Path.GetFileName(filename);
+        }
+
+        [Obsolete("Use SanitizeFilename instead")]
         public static string SanatizeFilename(string filename)
         {
-            string result = filename;
-
-            string invalidChars = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-            foreach (char c in invalidChars)
-            {
-                result = result.Replace(c.ToString(), "");
-            }
-
-            return result;
+            return SanitizeFilename(filename);
         }
     }
-
 }
 

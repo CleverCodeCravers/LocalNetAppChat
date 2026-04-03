@@ -99,9 +99,142 @@ public class SimpleFileStorageTests
     public void Deleting_a_non_existing_file_should_fail()
     {
         var storage = GetTestStorage();
-        
+
         var deleteResult = storage.Delete(Key, "test.txt");
         Assert.IsFalse(deleteResult.IsSuccess, "delete should fail");
         Assert.AreEqual(deleteResult.Error, "File does not exist!");
+    }
+
+    [Test]
+    public async Task Upload_with_path_traversal_should_sanitize_filename()
+    {
+        var storage = GetTestStorage();
+
+        var result = await storage.Upload(Key, "../../evil.txt",
+            new MemoryStream(new byte[] { 1, 2, 3 }));
+
+        Assert.That(result.IsSuccess, Is.True, "Upload should succeed with sanitized filename");
+
+        var list = storage.GetFiles(Key);
+        Assert.That(list.Value.Length, Is.EqualTo(1));
+        Assert.That(list.Value[0], Is.EqualTo("evil.txt"));
+    }
+
+    [Test]
+    public async Task Upload_with_absolute_path_should_sanitize_filename()
+    {
+        var storage = GetTestStorage();
+
+        var result = await storage.Upload(Key, "/etc/passwd",
+            new MemoryStream(new byte[] { 1, 2, 3 }));
+
+        Assert.That(result.IsSuccess, Is.True, "Upload should succeed with sanitized filename");
+
+        var list = storage.GetFiles(Key);
+        Assert.That(list.Value.Length, Is.EqualTo(1));
+        Assert.That(list.Value[0], Is.EqualTo("passwd"));
+    }
+
+    [Test]
+    public async Task Download_with_path_traversal_should_not_escape_storage_directory()
+    {
+        var storage = GetTestStorage();
+
+        // Upload a normal file first
+        await storage.Upload(Key, "test.txt",
+            new MemoryStream(new byte[] { 1, 2, 3 }));
+
+        // Try to download with a traversal path
+        var downloadResult = await storage.Download(Key, "../../etc/passwd");
+
+        // Should either fail or return the sanitized file
+        if (downloadResult.IsSuccess)
+        {
+            // If it succeeded, it should have been sanitized to just "passwd" and that file doesn't exist
+            Assert.Fail("Download with path traversal should not succeed unless the sanitized filename exists");
+        }
+        else
+        {
+            Assert.That(downloadResult.Error, Is.Not.Empty);
+        }
+    }
+
+    [Test]
+    public void Delete_with_path_traversal_should_not_escape_storage_directory()
+    {
+        var storage = GetTestStorage();
+
+        var deleteResult = storage.Delete(Key, "../../etc/passwd");
+
+        Assert.That(deleteResult.IsSuccess, Is.False, "Delete with traversal path should fail");
+    }
+
+    [Test]
+    public async Task Upload_with_denied_access_should_fail()
+    {
+        var accessControl = new AccessControlMock(false);
+        var storageTestDirectory =
+            Path.Combine(Directory.GetCurrentDirectory(), "TestStorageDenied");
+        if (Directory.Exists(storageTestDirectory))
+            Directory.Delete(storageTestDirectory, true);
+
+        var storage = new StorageServiceProvider(accessControl, storageTestDirectory);
+
+        var result = await storage.Upload(Key, "test.txt",
+            new MemoryStream(new byte[] { 1, 2, 3 }));
+
+        Assert.That(result.IsSuccess, Is.False);
+        Assert.That(result.Error, Is.EqualTo("Access denied"));
+    }
+
+    [Test]
+    public void GetFiles_with_denied_access_should_fail()
+    {
+        var accessControl = new AccessControlMock(false);
+        var storageTestDirectory =
+            Path.Combine(Directory.GetCurrentDirectory(), "TestStorageDenied2");
+        if (Directory.Exists(storageTestDirectory))
+            Directory.Delete(storageTestDirectory, true);
+
+        var storage = new StorageServiceProvider(accessControl, storageTestDirectory);
+
+        var result = storage.GetFiles(Key);
+
+        Assert.That(result.IsSuccess, Is.False);
+        Assert.That(result.Error, Is.EqualTo("Access denied"));
+    }
+
+    [Test]
+    public async Task Download_with_denied_access_should_fail()
+    {
+        var accessControl = new AccessControlMock(false);
+        var storageTestDirectory =
+            Path.Combine(Directory.GetCurrentDirectory(), "TestStorageDenied3");
+        if (Directory.Exists(storageTestDirectory))
+            Directory.Delete(storageTestDirectory, true);
+
+        var storage = new StorageServiceProvider(accessControl, storageTestDirectory);
+
+        var result = await storage.Download(Key, "test.txt");
+
+        Assert.That(result.IsSuccess, Is.False);
+        Assert.That(result.Error, Is.EqualTo("Access denied"));
+    }
+
+    [Test]
+    public void Delete_with_denied_access_should_fail()
+    {
+        var accessControl = new AccessControlMock(false);
+        var storageTestDirectory =
+            Path.Combine(Directory.GetCurrentDirectory(), "TestStorageDenied4");
+        if (Directory.Exists(storageTestDirectory))
+            Directory.Delete(storageTestDirectory, true);
+
+        var storage = new StorageServiceProvider(accessControl, storageTestDirectory);
+
+        var result = storage.Delete(Key, "test.txt");
+
+        Assert.That(result.IsSuccess, Is.False);
+        Assert.That(result.Error, Is.EqualTo("Access denied"));
     }
 }

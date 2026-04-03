@@ -6,10 +6,9 @@ namespace LocalNetAppChat.Bot.Plugins.ScriptExecution
     {
         public static bool CheckIfScriptExists(string scriptName, string scriptsPath)
         {
-            string searchPattern = scriptName;
-            string[] fileNames = Directory.GetFiles(scriptsPath);
-
-            return fileNames.Length > 0;
+            var sanitizedName = Path.GetFileName(scriptName);
+            var fullPath = Path.Combine(scriptsPath, sanitizedName);
+            return File.Exists(fullPath);
         }
 
         public static string[] GetScripts(string path)

@@ -8,17 +8,17 @@ public class MessagingServiceProvider
 {
     private readonly IAccessControl _accessControl;
 
-    private readonly SynchronizedCollectionBasedMessageList _messageList = 
-        new(TimeSpan.FromMinutes(10));
+    private readonly SynchronizedCollectionBasedMessageList _messageList;
+    private readonly MessageProcessorCollection _messageProcessors;
 
-    readonly MessageProcessorCollection _messageProcessors;
-    
     public MessagingServiceProvider(
         IAccessControl accessControl,
-        MessageProcessorCollection messageProcessors)
+        MessageProcessorCollection messageProcessors,
+        TimeSpan? messageLifetime = null)
     {
         _accessControl = accessControl;
         _messageProcessors = messageProcessors;
+        _messageList = new SynchronizedCollectionBasedMessageList(messageLifetime ?? TimeSpan.FromMinutes(10));
     }
     
     public Result<ReceivedMessage[]> GetMessages(string key, string clientName)

@@ -13,20 +13,21 @@
     </PropertyGroup>
     
     <ItemGroup>
-      <PackageReference Include="coverlet.collector" Version="3.2.0">
+      <PackageReference Include="coverlet.collector" Version="6.0.2">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="coverlet.msbuild" Version="3.2.0">
+      <PackageReference Include="coverlet.msbuild" Version="6.0.2">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0-preview-20221003-04" />
-      <PackageReference Include="NUnit" Version="3.13.3" />
-      <PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+      <PackageReference Include="NUnit" Version="3.14.0" />
+      <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\CommandLineArguments\CommandLineArguments.csproj" />
       <ProjectReference Include="..\LocalNetAppChat.Domain\LocalNetAppChat.Domain.csproj" />
       <ProjectReference Include="..\LocalNetAppChat.Server.Domain\LocalNetAppChat.Server.Domain.csproj" />
     </ItemGroup>

@@ -7,6 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\LocalNetAppChat.Domain\LocalNetAppChat.Domain.csproj" />
     </ItemGroup>
 

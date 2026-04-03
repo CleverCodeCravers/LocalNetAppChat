@@ -27,8 +27,11 @@ public class StorageServiceProvider
         if (!_accessControl.IsAllowed(key))
             return Result<string>.Failure("Access denied");
 
-        var sanatizedFilename = Util.SanatizeFilename(filename);
-        var filePath = Path.Combine(_dataPath, sanatizedFilename);
+        var sanitizedFilename = Util.SanitizeFilename(filename);
+        var filePath = Path.GetFullPath(Path.Combine(_dataPath, sanitizedFilename));
+
+        if (!filePath.StartsWith(Path.GetFullPath(_dataPath), StringComparison.OrdinalIgnoreCase))
+            return Result<string>.Failure("Invalid filename");
 
         using (var fileStream = new FileStream(filePath, FileMode.Create))
         {
@@ -57,8 +60,11 @@ public class StorageServiceProvider
         if (!_accessControl.IsAllowed(key))
             return Result<byte[]>.Failure("Access denied");
 
-        var sanatizedFilename = Util.SanatizeFilename(filename);
-        var filePath = Path.Combine(_dataPath, sanatizedFilename);
+        var sanitizedFilename = Util.SanitizeFilename(filename);
+        var filePath = Path.GetFullPath(Path.Combine(_dataPath, sanitizedFilename));
+
+        if (!filePath.StartsWith(Path.GetFullPath(_dataPath), StringComparison.OrdinalIgnoreCase))
+            return Result<byte[]>.Failure("Invalid filename");
 
         if (!File.Exists(filePath))
             return Result<byte[]>.Failure("File does not exist!");
@@ -73,15 +79,18 @@ public class StorageServiceProvider
     {
         if (!_accessControl.IsAllowed(key))
             return Result<string>.Failure("Access denied");
-        
-        var sanatizedFilename = Util.SanatizeFilename(filename);
-        var filePath = Path.Combine(_dataPath, sanatizedFilename);
-        
+
+        var sanitizedFilename = Util.SanitizeFilename(filename);
+        var filePath = Path.GetFullPath(Path.Combine(_dataPath, sanitizedFilename));
+
+        if (!filePath.StartsWith(Path.GetFullPath(_dataPath), StringComparison.OrdinalIgnoreCase))
+            return Result<string>.Failure("Invalid filename");
+
         if (!File.Exists(filePath))
             return Result<string>.Failure("File does not exist!");
-        
+
         File.Delete(filePath);
-        
+
         return Result<string>.Success("Ok");
     }
 }
