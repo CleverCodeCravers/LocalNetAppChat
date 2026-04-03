@@ -4,7 +4,9 @@
     {
         public static string SanitizeFilename(string filename)
         {
-            return Path.GetFileName(filename);
+            // Handle both / and \ as separators regardless of platform
+            var lastSlash = filename.LastIndexOfAny(new[] { '/', '\\' });
+            return lastSlash >= 0 ? filename[(lastSlash + 1)..] : filename;
         }
 
         [Obsolete("Use SanitizeFilename instead")]
