@@ -82,7 +82,7 @@ public class SimpleFileStorageTests
         var downloadResult = await storage.Download(Key, "test.txt");
         Assert.IsTrue(downloadResult.IsSuccess, "download should work");
         
-        CollectionAssert.AreEqual(fileContent, downloadResult.Value);
+        Assert.That(downloadResult.Value, Is.EqualTo(fileContent));
     }
     
     [Test]

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-LocalNetAppChat (LNAC) is a unified CLI tool for local network communication written in C#/.NET 8.0. A single `lnac` binary provides:
+LocalNetAppChat (LNAC) is a unified CLI tool for local network communication written in C#/.NET 10.0. A single `lnac` binary provides:
 - **Server mode**: ASP.NET Core Web API handling message routing, file storage, and task management
 - **Client modes**: Send/receive messages, file operations, task processing, emitter
 - **Bot mode**: Plugin-based command execution (PowerShell/Python scripts)
